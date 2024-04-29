@@ -2,13 +2,13 @@
 
 import {
 	Button,
+	EyeIcon,
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
 	FormMessage,
-	Icon,
 	Input,
 } from '@/src/components';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -149,7 +149,8 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 							<FormLabel>Password</FormLabel>
 							<FormControl>
 								<>
-									<Icon
+									<EyeIcon
+										isPasswordVisible={isPasswordVisible}
 										onClick={() =>
 											setIsPasswordVisible(
 												(isPasswordVisible) => !isPasswordVisible
@@ -161,7 +162,6 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 										title={
 											isPasswordVisible ? 'Hide Password' : 'Show Password'
 										}
-										icon={isPasswordVisible ? faEye : faEyeSlash}
 									/>
 
 									<Input
