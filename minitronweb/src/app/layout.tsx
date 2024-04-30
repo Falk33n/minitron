@@ -21,28 +21,32 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className='bg-gradientBlue w-full h-screen flex justify-between items-center font-roboto'>
+			<body className='bg-gradientGray w-full h-screen flex justify-between items-center font-roboto'>
 				<nav className='bg-white w-60 h-screen shadow-navbar p-8 flex flex-col justify-between'>
-					<UnorderedList>
-						<AnchorListItem href='/'>
-							Home <LucideHome />
-						</AnchorListItem>
-						<AnchorListItem href='/'>
-							Log In <LucideUserCircle />
-						</AnchorListItem>
-						{/* 						<AnchorListItem href='/chat'> ONLY SHOW WHEN LOGGED IN
+					<div className='relative'>
+						<UnorderedList>
+							<AnchorListItem href='/'>
+								Home <LucideHome />
+							</AnchorListItem>
+							<AnchorListItem href='/login'>
+								Log In <LucideUserCircle />
+							</AnchorListItem>
+							{/* <AnchorListItem href='/chat'>////////////////// ONLY SHOW WHEN LOGGED IN
 							New Chat <LucideFilePen />
 						</AnchorListItem> */}
-					</UnorderedList>
+						</UnorderedList>
+					</div>
 
-					<UnorderedList>
-						<AnchorListItem href='/'>
-							About Us <LucideFileQuestion />
-						</AnchorListItem>
-						<AnchorListItem href='/'>
-							Contact Us <LucidePhoneCall />
-						</AnchorListItem>
-					</UnorderedList>
+					<div className='relative'>
+						<UnorderedList>
+							<AnchorListItem href='/about'>
+								About Us <LucideFileQuestion />
+							</AnchorListItem>
+							<AnchorListItem href='/contact'>
+								Contact Us <LucidePhoneCall />
+							</AnchorListItem>
+						</UnorderedList>
+					</div>
 				</nav>
 				{children}
 			</body>
