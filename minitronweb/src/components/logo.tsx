@@ -1,14 +1,17 @@
-import { ImgHTMLAttributes, forwardRef } from 'react';
+import Image from 'next/image';
+import { HTMLAttributes, forwardRef } from 'react';
 import { cn } from '../utilities/shadUtilities';
 
-export type LogoProps = ImgHTMLAttributes<HTMLImageElement> & {};
+export type LogoProps = HTMLAttributes<HTMLImageElement> & {};
 
 export const Logo = forwardRef<HTMLImageElement, LogoProps>(
 	({ className, ...props }, ref) => {
 		return (
 			<figure>
-				<img
+				<Image
 					className={cn(className)}
+					width={144}
+					height={144}
 					src='/robot.png'
 					alt='A animated robot that represents Minitrons mascot'
 					draggable='false'
