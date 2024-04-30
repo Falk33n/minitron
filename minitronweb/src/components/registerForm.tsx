@@ -11,7 +11,6 @@ import {
 	FormMessage,
 	Input,
 } from '@/src/components';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';

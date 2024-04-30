@@ -57,16 +57,4 @@
 	.bg-reversed-gradientBlue {
 		background: linear-gradient(65deg, #053569, #2b7ace);
 	}
-
-	.border-light {
-		border-color: #c4c4c4;
-	}
-
-	.bg-gradientGray {
-		background: radial-gradient(
-			circle,
-			rgb(255, 255, 255) 50%,
-			rgb(246, 246, 246) 85%
-		);
-	}
 }
