@@ -4,6 +4,7 @@ import {
 	AnchorLink,
 	Button,
 	Checkbox,
+	EyeIcon,
 	Form,
 	FormControl,
 	FormField,
@@ -41,7 +42,6 @@ const formSchema = z.object({
 
 export function LogInForm({ ...props }: LogInFormProps) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-	const [rememberMe, setRememberMe] = useState(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -119,8 +119,8 @@ export function LogInForm({ ...props }: LogInFormProps) {
 							<FormLabel>Password</FormLabel>
 							<FormControl>
 								<>
-									<figure
-										className='cursor-pointer text-primary focus-visible:outline-offset-[3px] focus-visible:outline-primary absolute right-3 -top-1'
+									<EyeIcon
+										isPasswordVisible={isPasswordVisible}
 										onClick={() =>
 											setIsPasswordVisible(
 												(isPasswordVisible) => !isPasswordVisible
@@ -132,13 +132,7 @@ export function LogInForm({ ...props }: LogInFormProps) {
 										title={
 											isPasswordVisible ? 'Hide Password' : 'Show Password'
 										}
-									>
-										{isPasswordVisible ? (
-											<Eye className='size-5' />
-										) : (
-											<EyeOff className='size-5' />
-										)}
-									</figure>
+									/>
 
 									<Input
 										type={!isPasswordVisible ? 'password' : 'text'}

@@ -18,6 +18,8 @@ module.exports = {
 		},
 		extend: {
 			colors: {
+				navbarList: '#e1e1e1',
+				light: '#c4c4c4',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -25,6 +27,7 @@ module.exports = {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
+					tinted: 'hsl(var(--primary))/2',
 					foreground: 'hsl(var(--primary-foreground))',
 				},
 				secondary: {
@@ -59,6 +62,7 @@ module.exports = {
 			},
 			boxShadow: {
 				accounts: '-3px 8px 55px 6px rgba(0,0,0,0.2)',
+				navbar: '15px 0 60px 0 rgba(0,0,0,0.4)',
 			},
 			keyframes: {
 				'accordion-down': {
