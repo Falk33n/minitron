@@ -1,15 +1,15 @@
-import '@fortawesome/fontawesome-svg-core/styles.css';
-import type { Metadata } from 'next';
-import 'tailwindcss/tailwind.css';
-import { Logo } from '../components';
-import '../styles/globals.scss';
 import {
-	LucideFilePen,
+	LucideFileQuestion,
 	LucideHome,
-	LucideNotebookPen,
-	LucidePen,
+	LucidePhoneCall,
 	LucideUserCircle,
 } from 'lucide-react';
+import type { Metadata } from 'next';
+import { ReactNode } from 'react';
+import { AnchorListItem } from '../components';
+import '../styles/globals.scss';
+
+const listContainerClasses = 'flex flex-col gap-6';
 
 export const metadata: Metadata = {
 	title: 'MinitronAI | Digital assistent',
@@ -19,22 +19,30 @@ export const metadata: Metadata = {
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode;
+	children: ReactNode;
 }>) {
 	return (
 		<html lang='en'>
-			<body className='bg-gradientBlue w-full h-screen flex justify-between items-center'>
-				<nav className='bg-white w-60 h-screen'>
-					<ul>
-						<li>
+			<body className='bg-gradientBlue w-full h-screen flex justify-between items-center font-roboto'>
+				<nav className='bg-white w-60 h-screen shadow-navbar p-8 flex flex-col justify-between'>
+					<ul className={listContainerClasses}>
+						<AnchorListItem href='/'>
 							Home <LucideHome />
-						</li>
-						<li>
-							Log In <LucideUserCircle />
-						</li>
-						<li>
+						</AnchorListItem>
+						{/* 						<AnchorListItem href='/chat'> ONLY SHOW WHEN LOGGED IN
 							New Chat <LucideFilePen />
-						</li>
+						</AnchorListItem> */}
+					</ul>
+					<ul className={listContainerClasses}>
+						<AnchorListItem href='/'>
+							Log In <LucideUserCircle />
+						</AnchorListItem>
+						<AnchorListItem href='/'>
+							About Us <LucideFileQuestion />
+						</AnchorListItem>
+						<AnchorListItem href='/'>
+							Contact Us <LucidePhoneCall />
+						</AnchorListItem>
 					</ul>
 				</nav>
 				{children}
