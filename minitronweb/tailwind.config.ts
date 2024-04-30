@@ -62,7 +62,7 @@ module.exports = {
 			},
 			boxShadow: {
 				accounts: '-3px 8px 55px 6px rgba(0,0,0,0.2)',
-				navbar: '15px 0 60px 0 rgba(0,0,0,0.4)',
+				navbar: '3px 0 50px 30px rgba(0,0,0,0.125)',
 			},
 			keyframes: {
 				'accordion-down': {

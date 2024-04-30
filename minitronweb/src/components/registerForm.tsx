@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postAccounts } from '../helpers/api';
+import { postRegister } from '../helpers/api';
 
 export type RegisterFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -54,10 +54,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
-			const response = await postAccounts(
-				'http://localhost:5234/api/User/register',
-				values
-			);
+			const response = await postRegister(values);
 			console.log('Registration successful:', response);
 		} catch (error) {
 			console.error('Registration failed:', error);
