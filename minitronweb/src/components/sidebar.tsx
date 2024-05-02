@@ -3,9 +3,9 @@
 import {
 	LucideBadgeInfo,
 	LucideChevronRight,
-	LucideFilePen,
 	LucideHome,
 	LucidePhoneForwarded,
+	LucidePlusSquare,
 } from 'lucide-react';
 import { HTMLAttributes, forwardRef, useState } from 'react';
 import { cn } from '../utilities/shadUtilities';
@@ -38,10 +38,23 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 							Home <LucideHome aria-hidden />
 						</AnchorListItem>
 						<AnchorListItem href='chat'>
-							New Chat <LucideFilePen aria-hidden />
+							New Chat <LucidePlusSquare aria-hidden />
 						</AnchorListItem>
 					</UnorderedList>
 				</div>
+
+				{/* HISTORY HERE
+				<div>
+					<UnorderedList>
+						<AnchorListItem href=''></AnchorListItem>
+					</UnorderedList>
+          <UnorderedList>
+						<AnchorListItem href=''></AnchorListItem>
+					</UnorderedList>
+          <UnorderedList>
+						<AnchorListItem href=''></AnchorListItem>
+					</UnorderedList>
+				</div> */}
 
 				<div className='relative flex-1 flex flex-col justify-end'>
 					<UnorderedList>

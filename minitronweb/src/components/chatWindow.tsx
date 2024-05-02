@@ -1,7 +1,7 @@
 'use client';
 
-import { LucideSend } from 'lucide-react';
-import { FormHTMLAttributes, forwardRef } from 'react';
+import { LucideArrowUp } from 'lucide-react';
+import { FormHTMLAttributes, forwardRef, useState } from 'react';
 import { cn } from '../utilities/shadUtilities';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -10,9 +10,18 @@ export interface ChatWindowProps extends FormHTMLAttributes<HTMLFormElement> {}
 
 export const ChatWindow = forwardRef<HTMLFormElement, ChatWindowProps>(
 	({ className, children, ...props }, ref) => {
+		const [prompt, setPrompt] = useState('');
+
+		function handleSubmit() {
+			console.log(prompt);
+		}
+
 		return (
 			<form
-				className={cn('flex flex-col mx-auto w-full h-screen px-56', className)}
+				method='post'
+				noValidate
+				onSubmit={handleSubmit}
+				className={cn('flex flex-col mx-auto w-full h-screen px-72', className)}
 				ref={ref}
 				{...props}
 			>
@@ -22,17 +31,22 @@ export const ChatWindow = forwardRef<HTMLFormElement, ChatWindowProps>(
 						type='text'
 						name='prompt'
 						aria-label='Ask MinitronAI a question'
-						className='text-base mb-5 font-normal h-10 bg-background w-full rounded-xl border focus-visible:ring-0 focus:border-ring border-light hover:border-ring px-3 py-6'
+						autoComplete='off'
+						className='text-base mb-5 font-normal h-10 bg-white w-full rounded-xl border focus-visible:ring-0 focus:border-ring border-light hover:border-ring p-6'
 						placeholder='Message MinitronAI'
+						required
+						onChange={(event) => setPrompt(event.target.value)}
 					/>
+
 					<Button
 						variant='chat'
 						size='icon'
-						className='absolute top-[0.3rem] right-5'
+						className='absolute top-[0.3rem] right-3.5'
 						title='Send message'
 						aria-label='Send message'
+						disabled={prompt === ''}
 					>
-						<LucideSend className='rotate-45 text-muted-foreground' />
+						<LucideArrowUp className='text-muted-foreground' />
 					</Button>
 				</div>
 
