@@ -1,43 +1,22 @@
+import { PageContainer } from '@/src/components';
+
 export default function Privacy() {
 	return (
-		<section className='mx-64 py-28 h-screen'>
-			<h1 className='font-bold text-5xl text-center mb-28'>Privacy Policy</h1>
-			<p>
-				Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure ullam eos
-				similique? Cupiditate eveniet deleniti unde inventore expedita dolorum
-				tempore culpa consequatur! Libero corporis nesciunt laboriosam aperiam
-				eveniet quas beatae? Lorem, ipsum dolor sit amet consectetur adipisicing
-				elit. Iure ullam eos similique? Cupiditate eveniet deleniti unde
-				inventore expedita dolorum tempore culpa consequatur! Libero corporis
-				nesciunt laboriosam aperiam eveniet quas beatae? Lorem, ipsum dolor sit
-				amet consectetur adipisicing elit. Iure ullam eos similique? Cupiditate
-				eveniet deleniti unde inventore expedita dolorum tempore culpa
-				consequatur! Libero corporis nesciunt laboriosam aperiam eveniet quas
-				beatae? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure
-				ullam eos similique? Cupiditate eveniet deleniti unde inventore expedita
-				dolorum tempore culpa consequatur! Libero corporis nesciunt laboriosam
-				aperiam eveniet quas beatae? Lorem, ipsum dolor sit amet consectetur
-				adipisicing elit. Iure ullam eos similique? Cupiditate eveniet deleniti
-				unde inventore expedita dolorum tempore culpa consequatur! Libero
-				corporis nesciunt laboriosam aperiam eveniet quas beatae? Lorem, ipsum
-				dolor sit amet consectetur adipisicing elit. Iure ullam eos similique?
-				Cupiditate eveniet deleniti unde inventore expedita dolorum tempore
-				culpa consequatur! Libero corporis nesciunt laboriosam aperiam eveniet
-				quas beatae? Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-				Iure ullam eos similique? Cupiditate eveniet deleniti unde inventore
-				expedita dolorum tempore culpa consequatur! Libero corporis nesciunt
-				laboriosam aperiam eveniet quas beatae? Lorem, ipsum dolor sit amet
-				consectetur adipisicing elit. Iure ullam eos similique? Cupiditate
-				eveniet deleniti unde inventore expedita dolorum tempore culpa
-				consequatur! Libero corporis nesciunt laboriosam aperiam eveniet quas
-				beatae? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure
-				ullam eos similique? Cupiditate eveniet deleniti unde inventore expedita
-				dolorum tempore culpa consequatur! Libero corporis nesciunt laboriosam
-				aperiam eveniet quas beatae? Lorem, ipsum dolor sit amet consectetur
-				adipisicing elit. Iure ullam eos similique? Cupiditate eveniet deleniti
-				unde inventore expedita dolorum tempore culpa consequatur! Libero
-				corporis nesciunt laboriosam aperiam eveniet quas beatae?
+		<PageContainer
+			className='h-[35rem] justify-start p-20'
+			heading='Privacy Policy'
+		>
+			<p className='text-lg mt-16 leading-8 text-white px-16 drop-shadow-text'>
+				Yo man this is the privacy yes very good! Lorem, ipsum dolor sit amet
+				consectetur adipisicing elit. Quo excepturi odio fugit, reprehenderit
+				repudiandae quasi voluptatibus cum nostrum dolorum nisi qui tempore
+				minus? Quaerat, dolores quis numquam nulla cum harum. Lorem, ipsum dolor
+				sit amet consectetur adipisicing elit. Quo excepturi odio fugit,
+				reprehenderit repudiandae quasi voluptatibus cum nostrum dolorum nisi
+				qui tempore minus? Quaerat, dolores quis numquam nulla cum harum. Lorem,
+				ipsum dolor sit amet consectetur adipisicing elit. Yo yeah yo Yo yeah yo
+				Yo yeah yo yeah Yo yeah yo Yo yeah yo Yo yeah yo Yo yeah yo.
 			</p>
-		</section>
+		</PageContainer>
 	);
 }

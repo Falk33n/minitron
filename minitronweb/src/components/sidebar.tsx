@@ -3,9 +3,9 @@
 import {
 	LucideBadgeInfo,
 	LucideChevronRight,
+	LucideFilePen,
 	LucideHome,
 	LucidePhoneForwarded,
-	LucideSquareUserRound,
 } from 'lucide-react';
 import { HTMLAttributes, forwardRef, useState } from 'react';
 import { cn } from '../utilities/shadUtilities';
@@ -34,24 +34,21 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 			>
 				<div className='relative mt-6'>
 					<UnorderedList>
-						<AnchorListItem href='/'>
+						<AnchorListItem href=''>
 							Home <LucideHome aria-hidden />
 						</AnchorListItem>
-						<AnchorListItem href='/login'>
-							Log In <LucideSquareUserRound aria-hidden />
-						</AnchorListItem>
-						{/* <AnchorListItem href='/chat'>////////////////// ONLY SHOW WHEN LOGGED IN
+						<AnchorListItem href='chat'>
 							New Chat <LucideFilePen aria-hidden />
-						</AnchorListItem> */}
+						</AnchorListItem>
 					</UnorderedList>
 				</div>
 
 				<div className='relative flex-1 flex flex-col justify-end'>
 					<UnorderedList>
-						<AnchorListItem href='/about'>
+						<AnchorListItem href='about'>
 							About <LucideBadgeInfo aria-hidden />
 						</AnchorListItem>
-						<AnchorListItem href='/contact'>
+						<AnchorListItem href='contact'>
 							Contact <LucidePhoneForwarded aria-hidden />
 						</AnchorListItem>
 					</UnorderedList>
@@ -65,15 +62,15 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 					className='absolute top-1/2 -translate-y-1/2 -right-10'
 					variant='navbar'
 					size='icon'
-					title={isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}
-					aria-label={isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}
+					title={!isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}
+					aria-label={!isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}
 					onClick={() =>
 						setIsSidebarVisible((isSidebarVisible) => !isSidebarVisible)
 					}
 				>
 					<LucideChevronRight
 						className={`text-muted-foreground size-7 ${
-							isSidebarVisible ? 'rotate-180' : 'rotate-0'
+							!isSidebarVisible ? 'rotate-180' : 'rotate-0'
 						}`}
 					/>
 				</Button>

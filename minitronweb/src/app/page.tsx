@@ -1,18 +1,20 @@
-import { Logo } from '../components';
+import { AnchorLink, SectionWithForm } from '@/src/components';
+import { LogInForm } from '@/src/components/loginForm';
 
 export default function Home() {
 	return (
-		<section className='bg-gradientBlue w-[75%] flex flex-col items-center justify-center py-32 rounded-2xl shadow-accounts mx-auto'>
-			<h1 className='text-[3rem] text-background font-bold text-center drop-shadow-text'>
-				Welcome to Minitron!
-			</h1>
-
-			<Logo />
-
-			<p className='text-background font-medium opacity-95 text-center drop-shadow-text'>
-				Navigate inside the menu to the left to start using your MinitronAI
-				assistent for free
-			</p>
-		</section>
+		<SectionWithForm
+			sectionHeading='Welcome back to Minitron!'
+			sectionDescription='Log in to your account to access Minitron AI'
+			isRegisterPage={false}
+		>
+			<LogInForm formHeading='Log In'>
+				<AnchorLink
+					paragraph="Don't have an account?"
+					link='Register here'
+					href='register'
+				/>
+			</LogInForm>
+		</SectionWithForm>
 	);
 }
