@@ -23,7 +23,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 			<nav
 				className={cn(
 					`bg-white w-60 h-screen top-0 py-8 px-6 flex flex-col justify-between border-r border-r-light transition-all duration-300 ${
-						isSidebarVisible
+						!isSidebarVisible
 							? 'relative left-0 shadow-navbar'
 							: 'absolute -left-[15rem] shadow-navbar-hidden'
 					}`,
@@ -35,13 +35,13 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 				<div className='relative mt-6'>
 					<UnorderedList>
 						<AnchorListItem href='/'>
-							Home <LucideHome />
+							Home <LucideHome aria-hidden />
 						</AnchorListItem>
 						<AnchorListItem href='/login'>
-							Log In <LucideSquareUserRound />
+							Log In <LucideSquareUserRound aria-hidden />
 						</AnchorListItem>
 						{/* <AnchorListItem href='/chat'>////////////////// ONLY SHOW WHEN LOGGED IN
-							New Chat <LucideFilePen />
+							New Chat <LucideFilePen aria-hidden />
 						</AnchorListItem> */}
 					</UnorderedList>
 				</div>
@@ -49,10 +49,10 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 				<div className='relative flex-1 flex flex-col justify-end'>
 					<UnorderedList>
 						<AnchorListItem href='/about'>
-							About <LucideBadgeInfo />
+							About <LucideBadgeInfo aria-hidden />
 						</AnchorListItem>
 						<AnchorListItem href='/contact'>
-							Contact <LucidePhoneForwarded />
+							Contact <LucidePhoneForwarded aria-hidden />
 						</AnchorListItem>
 					</UnorderedList>
 				</div>

@@ -20,13 +20,13 @@ export default function Register() {
 					<AnchorLink
 						paragraph='By registering an account, you agree to our '
 						link='Terms of Service'
-						href='/terms'
+						href='terms'
 					/>
 
 					<AnchorLink
 						paragraph=' and '
 						link='Privacy Policy'
-						href='/privacy'
+						href='privacy'
 					/>
 				</nav>
 			</RegisterForm>

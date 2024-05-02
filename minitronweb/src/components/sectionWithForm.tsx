@@ -16,7 +16,7 @@ export const SectionWithForm = ({
 }: SectionWithFormProps) => {
 	return (
 		<div
-			className={`w-[70%] flex items-center h-[40rem] shadow-accounts rounded-2xl mx-auto ${
+			className={`w-[80%] flex items-center h-[40rem] shadow-accounts rounded-2xl mx-auto ${
 				!isRegisterPage ? 'flex-row-reverse' : ''
 			}`}
 		>
@@ -33,7 +33,7 @@ export const SectionWithForm = ({
 					</h1>
 				)}
 
-				<Logo className='rounded-full drop-shadow-logo my-20 drag-none' />
+				<Logo />
 
 				{sectionDescription && (
 					<p className='text-background font-medium opacity-95 text-center drop-shadow-text'>
