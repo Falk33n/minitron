@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className='bg-gradientGray w-full h-screen flex justify-center items-center font-roboto'>
+			<body className='bg-gradientGray w-full h-screen flex justify-center items-center font-roboto overflow-hidden'>
 				<Sidebar />
 				<main className='w-full'>{children}</main>
 			</body>

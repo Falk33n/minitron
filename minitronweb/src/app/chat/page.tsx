@@ -1,9 +1,5 @@
-import { ChatWindow } from '@/src/components';
+import { ChatContainer } from '@/src/components';
 
 export default function Chat() {
-	return (
-		<div>
-			<ChatWindow />
-		</div>
-	);
+	return <ChatContainer />;
 }
