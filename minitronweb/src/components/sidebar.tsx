@@ -1,23 +1,29 @@
 'use client';
 
 import {
+	AnchorListItem,
+	Button,
+	NewChatPopup,
+	UnorderedList,
+} from '@/src/components';
+import {
 	LucideBadgeInfo,
 	LucideChevronRight,
 	LucideHome,
+	LucideLogOut,
 	LucidePhoneForwarded,
 	LucidePlusSquare,
+	LucideSettings,
 } from 'lucide-react';
 import { HTMLAttributes, forwardRef, useState } from 'react';
 import { cn } from '../utilities/shadUtilities';
-import { AnchorListItem } from './anchorListItem';
-import { Button } from './ui/button';
-import { UnorderedList } from './unorderedList';
 
 export interface SidebarProps extends HTMLAttributes<HTMLElement> {}
 
 export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 	({ className, children, ...props }, ref) => {
 		const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+		const [isNewChatWindowVisible, setIsNewChatWindowVisible] = useState(false);
 
 		return (
 			<nav
@@ -32,12 +38,23 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 				ref={ref}
 				{...props}
 			>
+				{isNewChatWindowVisible && <NewChatPopup />}
+
 				<div className='relative mt-6'>
 					<UnorderedList>
 						<AnchorListItem href=''>
 							Home <LucideHome aria-hidden />
 						</AnchorListItem>
-						<AnchorListItem href='chat'>
+
+						<AnchorListItem
+							href='chat'
+							onClick={(event) => {
+								event.preventDefault();
+								setIsNewChatWindowVisible(
+									(isNewChatWindowVisible) => !isNewChatWindowVisible
+								);
+							}}
+						>
 							New Chat <LucidePlusSquare aria-hidden />
 						</AnchorListItem>
 					</UnorderedList>
@@ -61,8 +78,17 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 						<AnchorListItem href='about'>
 							About <LucideBadgeInfo aria-hidden />
 						</AnchorListItem>
+
 						<AnchorListItem href='contact'>
 							Contact <LucidePhoneForwarded aria-hidden />
+						</AnchorListItem>
+
+						<AnchorListItem href='profile'>
+							Settings <LucideSettings aria-hidden />
+						</AnchorListItem>
+
+						<AnchorListItem href='profile'>
+							Logout <LucideLogOut aria-hidden />
 						</AnchorListItem>
 					</UnorderedList>
 				</div>
@@ -73,7 +99,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 
 				<Button
 					className='absolute top-1/2 -translate-y-1/2 -right-10'
-					variant='navbar'
+					variant='icon'
 					size='icon'
 					title={!isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}
 					aria-label={!isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}

@@ -7,6 +7,7 @@ export * from './checkbox';
 export * from './eyeIcon';
 export * from './link';
 export * from './logo';
+export * from './newChatPopup';
 export * from './pageContainer';
 export * from './registerForm';
 export * from './robotChatBubble';

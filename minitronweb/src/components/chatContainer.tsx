@@ -32,8 +32,8 @@ export const ChatContainer = () => {
 
 	return (
 		<div className='flex flex-col mx-auto w-full h-screen px-72 overflow-y-auto'>
-			<p className='text-muted-foreground text-xs text-center py-8'>
-				MinitronAI can make mistakes. Consider checking important information.
+			<p className='text-muted-foreground text-sm justify-center items-center py-5 flex'>
+				Minitron Code Assistant
 			</p>
 
 			<div className='flex-1 flex flex-col gap-14 pb-20'>
