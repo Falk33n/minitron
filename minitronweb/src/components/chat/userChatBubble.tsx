@@ -1,6 +1,7 @@
 import { LucideUserCircle2 } from 'lucide-react';
 import { HTMLAttributes, forwardRef } from 'react';
 import { cn } from '../../utilities/shadUtilities';
+import { MessageParser } from './messageParser';
 
 export type UserChatBubbleProps = HTMLAttributes<HTMLParagraphElement> & {
 	message: string;
@@ -17,7 +18,7 @@ export const UserChatBubble = forwardRef<
 				ref={ref}
 				{...props}
 			>
-				{message}
+				<MessageParser text={message} />
 			</p>
 
 			<section className='text-muted-foreground flex gap-2 absolute -bottom-7 right-3.5 text-sm'>

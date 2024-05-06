@@ -18,7 +18,7 @@ export const RobotChatBubble = forwardRef<
 				ref={ref}
 				{...props}
 			>
-				<MessageParser markdown={message} />
+				<MessageParser text={message} />
 			</p>
 
 			<section className='text-muted-foreground flex gap-2 absolute -bottom-[1.85rem] left-3.5 text-sm'>
