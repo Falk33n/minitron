@@ -17,7 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postLogIn } from '../helpers/accounts';
+import { postLogIn } from '../../helpers/accounts';
 
 export type LogInFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -147,6 +147,7 @@ export function LogInForm({ ...props }: LogInFormProps) {
 				<div className='flex whitespace-nowrap justify-between text-base -mt-2 mb-3'>
 					<Checkbox
 						label='Remember Me'
+						name='rememberMe'
 						/* checked={rememberMe}
 						onChange={(event) =>
 							setRememberMe((event.target as HTMLInputElement).checked)

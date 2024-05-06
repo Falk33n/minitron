@@ -1,5 +1,5 @@
 import { HTMLAttributes, forwardRef } from 'react';
-import { cn } from '../utilities/shadUtilities';
+import { cn } from '../../utilities/shadUtilities';
 
 export interface UnorderedListProps extends HTMLAttributes<HTMLUListElement> {}
 

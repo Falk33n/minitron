@@ -1,5 +1,5 @@
 import { AnchorLink, SectionWithForm } from '@/src/components';
-import { LogInForm } from '@/src/components/loginForm';
+import { LogInForm } from '@/src/components/forms/loginForm';
 
 export default function Home() {
 	return (
