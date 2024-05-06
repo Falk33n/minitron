@@ -8,25 +8,25 @@ export default function Register() {
 			sectionDescription='Register a new account to access Minitron AI'
 		>
 			<RegisterForm formHeading='Register'>
-				<nav className='-mt-3 text-sm'>
+				<nav className='-mt-3'>
 					<AnchorLink
 						paragraph='Already have an account?'
 						link='Log in here'
-						href='login'
+						href=''
 					/>
 				</nav>
 
-				<nav className='text-xs text-muted-foreground -mt-5 [word-spacing:1px]'>
+				<nav className='text-xs text-muted-foreground -mt-4 [word-spacing:1px]'>
 					<AnchorLink
 						paragraph='By registering an account, you agree to our '
 						link='Terms of Service'
-						href='/terms'
+						href='terms'
 					/>
 
 					<AnchorLink
 						paragraph=' and '
 						link='Privacy Policy'
-						href='/privacy'
+						href='privacy'
 					/>
 				</nav>
 			</RegisterForm>

@@ -8,7 +8,7 @@ export const UnorderedList = forwardRef<HTMLUListElement, UnorderedListProps>(
 		return (
 			<ul
 				className={cn(
-					'flex flex-col gap-6 before:content-[""] before:h-px before:w-full before:bg-light before:absolute before:left-0 before:-bottom-3',
+					'flex flex-col gap-4 before:content-[""] before:h-px before:w-full before:bg-light before:absolute before:left-0 before:-bottom-2',
 					className
 				)}
 				ref={ref}
