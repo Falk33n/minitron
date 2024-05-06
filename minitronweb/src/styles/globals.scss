@@ -54,6 +54,14 @@
 		background: linear-gradient(130deg, #2b7ace, #053569);
 	}
 
+	.bg-gradientGray {
+		background: linear-gradient(
+			130deg,
+			rgba(254, 254, 254, 0.85) 30%,
+			rgba(250, 250, 250, 0.8) 75%
+		);
+	}
+
 	.bg-reversed-gradientBlue {
 		background: linear-gradient(65deg, #053569, #2b7ace);
 	}

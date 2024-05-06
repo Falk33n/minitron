@@ -61,8 +61,9 @@ module.exports = {
 				sm: 'calc(var(--radius) - 4px)',
 			},
 			boxShadow: {
-				accounts: '-3px 8px 55px 6px rgba(0,0,0,0.2)',
-				navbar: '15px 0 60px 0 rgba(0,0,0,0.4)',
+				'accounts': '-3px 8px 55px 6px rgba(0,0,0,0.2)',
+				'navbar': '3px 0 55px 20px rgba(0,0,0,0.1)',
+				'navbar-hidden': '5px 0 55px 20px rgba(0,0,0,0.2)',
 			},
 			keyframes: {
 				'accordion-down': {

@@ -14,11 +14,10 @@ import {
 	Input,
 } from '@/src/components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeOff } from 'lucide-react';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postAccounts } from '../helpers/api';
+import { postLogIn } from '../helpers/accounts';
 
 export type LogInFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -53,10 +52,7 @@ export function LogInForm({ ...props }: LogInFormProps) {
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
-			const response = await postAccounts(
-				'http://localhost:5234/api/Auth/login',
-				values
-			);
+			const response = await postLogIn(values);
 			console.log('Sign in successful:', response);
 		} catch (error) {
 			console.error('Sign in failed:', error);
