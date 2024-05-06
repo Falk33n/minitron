@@ -21,6 +21,7 @@ export const Logo = forwardRef<HTMLImageElement, LogoProps>(
 						)}
 						width={144}
 						height={144}
+						priority
 						src='/robot.png'
 						alt='A animated robot that represents Minitrons mascot'
 						draggable='false'

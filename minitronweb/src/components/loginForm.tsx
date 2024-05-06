@@ -147,6 +147,7 @@ export function LogInForm({ ...props }: LogInFormProps) {
 				<div className='flex whitespace-nowrap justify-between text-base -mt-2 mb-3'>
 					<Checkbox
 						label='Remember Me'
+						name='rememberMe'
 						/* checked={rememberMe}
 						onChange={(event) =>
 							setRememberMe((event.target as HTMLInputElement).checked)

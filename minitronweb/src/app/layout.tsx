@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { Sidebar } from '../components/sidebar';
-import { Providers } from '../providers/providers';
+import { QueryProvider } from '../providers/queryProvider';
 import '../styles/globals.scss';
 
 export const metadata: Metadata = {
@@ -17,10 +17,10 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className='bg-gradientGray w-full h-screen flex justify-center items-center font-roboto overflow-hidden'>
-				<Providers>
+				<QueryProvider>
 					<Sidebar />
 					<main className='w-full'>{children}</main>
-				</Providers>
+				</QueryProvider>
 			</body>
 		</html>
 	);
