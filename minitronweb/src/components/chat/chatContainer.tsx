@@ -2,7 +2,7 @@
 
 import { ChatForm, RobotChatBubble, UserChatBubble } from '@/src/components';
 import { useState } from 'react';
-import { openAI } from '../helpers';
+import { openAI } from '../../helpers';
 
 export const ChatContainer = () => {
 	const [chatHistory, setChatHistory] = useState<string[]>([]);

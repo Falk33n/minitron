@@ -1,6 +1,6 @@
 import { LucideBot } from 'lucide-react';
 import { HTMLAttributes, forwardRef } from 'react';
-import { cn } from '../utilities/shadUtilities';
+import { cn } from '../../utilities/shadUtilities';
 
 export type RobotChatBubbleProps = HTMLAttributes<HTMLParagraphElement> & {
 	message: string;

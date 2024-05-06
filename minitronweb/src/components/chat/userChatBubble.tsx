@@ -1,6 +1,6 @@
 import { LucideUserCircle2 } from 'lucide-react';
 import { HTMLAttributes, forwardRef } from 'react';
-import { cn } from '../utilities/shadUtilities';
+import { cn } from '../../utilities/shadUtilities';
 
 export type UserChatBubbleProps = HTMLAttributes<HTMLParagraphElement> & {
 	message: string;

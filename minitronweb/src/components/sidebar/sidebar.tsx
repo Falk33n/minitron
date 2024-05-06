@@ -18,8 +18,8 @@ import {
 	LucideSettings,
 } from 'lucide-react';
 import { HTMLAttributes, forwardRef, useState } from 'react';
-import { getSession } from '../helpers';
-import { cn } from '../utilities/shadUtilities';
+import { getSession } from '../../helpers';
+import { cn } from '../../utilities/shadUtilities';
 
 export interface SidebarProps extends HTMLAttributes<HTMLElement> {}
 

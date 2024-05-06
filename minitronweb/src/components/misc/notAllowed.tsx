@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { HTMLAttributes, forwardRef } from 'react';
-import { cn } from '../utilities/shadUtilities';
+import { cn } from '../../utilities/shadUtilities';
 
 export type NotAllowedProps = HTMLAttributes<HTMLElement> & {
 	message?: string;

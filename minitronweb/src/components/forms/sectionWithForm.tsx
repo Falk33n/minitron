@@ -1,5 +1,5 @@
 import { FormHTMLAttributes, HTMLAttributes } from 'react';
-import { Logo } from './logo';
+import { Logo } from '../misc/logo';
 
 export type SectionWithFormProps = FormHTMLAttributes<HTMLFormElement> &
 	HTMLAttributes<HTMLElement> & {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
-import { Sidebar } from '../components/sidebar';
+import { Sidebar } from '../components/sidebar/sidebar';
 import { QueryProvider } from '../providers/queryProvider';
 import '../styles/globals.scss';
 
