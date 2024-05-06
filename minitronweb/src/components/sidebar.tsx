@@ -1,18 +1,14 @@
 'use client';
 
-import {
-	AnchorListItem,
-	Button,
-	NewChatPopup,
-	UnorderedList,
-} from '@/src/components';
+import { AnchorListItem, Button, UnorderedList } from '@/src/components';
 import {
 	LucideBadgeInfo,
+	LucideBadgePlus,
 	LucideChevronRight,
 	LucideHome,
 	LucideLogOut,
+	LucideMessageCirclePlus,
 	LucidePhoneForwarded,
-	LucidePlusSquare,
 	LucideSettings,
 } from 'lucide-react';
 import { HTMLAttributes, forwardRef, useState } from 'react';
@@ -23,7 +19,6 @@ export interface SidebarProps extends HTMLAttributes<HTMLElement> {}
 export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 	({ className, children, ...props }, ref) => {
 		const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-		const [isNewChatWindowVisible, setIsNewChatWindowVisible] = useState(false);
 
 		return (
 			<nav
@@ -38,24 +33,14 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 				ref={ref}
 				{...props}
 			>
-				{isNewChatWindowVisible && <NewChatPopup />}
-
 				<div className='relative mt-6'>
 					<UnorderedList>
 						<AnchorListItem href=''>
 							Home <LucideHome aria-hidden />
 						</AnchorListItem>
 
-						<AnchorListItem
-							href='chat'
-							onClick={(event) => {
-								event.preventDefault();
-								setIsNewChatWindowVisible(
-									(isNewChatWindowVisible) => !isNewChatWindowVisible
-								);
-							}}
-						>
-							New Chat <LucidePlusSquare aria-hidden />
+						<AnchorListItem href='chat'>
+							New Chat <LucideMessageCirclePlus aria-hidden />
 						</AnchorListItem>
 					</UnorderedList>
 				</div>
@@ -83,11 +68,13 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 							Contact <LucidePhoneForwarded aria-hidden />
 						</AnchorListItem>
 
+						<AnchorListItem href='createprofile'>
+							Add Agent <LucideBadgePlus aria-hidden />
+						</AnchorListItem>
 						<AnchorListItem href='profile'>
 							Settings <LucideSettings aria-hidden />
 						</AnchorListItem>
-
-						<AnchorListItem href='profile'>
+						<AnchorListItem href='logout'>
 							Logout <LucideLogOut aria-hidden />
 						</AnchorListItem>
 					</UnorderedList>

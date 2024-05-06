@@ -27,3 +27,16 @@ export async function postLogIn(data = {}) {
 
 	return response.json();
 }
+
+export async function getAuth(data = {}) {
+	const response = await fetch(`${baseURL}/Auth/login`, {
+		method: 'POST',
+		body: JSON.stringify(data),
+		headers: {
+			'Credentials': 'include',
+			'Content-Type': 'application/json',
+		},
+	});
+
+	return response.json();
+}
