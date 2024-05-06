@@ -1,6 +1,7 @@
 // Export all components
 export * from './chat/chatContainer';
 export * from './chat/chatForm';
+export * from './chat/messageParser';
 export * from './chat/robotChatBubble';
 export * from './chat/userChatBubble';
 export * from './forms/alert';
