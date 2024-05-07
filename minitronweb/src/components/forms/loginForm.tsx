@@ -12,8 +12,10 @@ import {
 	FormLabel,
 	FormMessage,
 	Input,
+	useToast,
 } from '@/src/components';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -41,6 +43,14 @@ const formSchema = z.object({
 
 export function LogInForm({ ...props }: LogInFormProps) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const { toast } = useToast();
+
+	const { isLoading, error, refetch } = useQuery({
+		queryKey: ['login'],
+		queryFn: () => onSubmit(form.getValues()),
+		retry: false,
+		enabled: false,
+	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -53,125 +63,126 @@ export function LogInForm({ ...props }: LogInFormProps) {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
 			const response = await postLogIn(values);
-			console.log('Sign in successful:', response);
-		} catch (error) {
-			console.error('Sign in failed:', error);
+			toast({
+				variant: 'success',
+				title: 'Success!',
+				description: 'You have successfully logged in.',
+			});
+
+			return response;
+		} catch (e) {
+			console.log(e);
+			toast({
+				variant: 'destructive',
+				title: 'Error!',
+				description: 'Something went wrong. Please try again.',
+			});
+
+			throw error;
 		}
 	}
 
 	return (
-		<Form {...form}>
-			<form
-				noValidate
-				method='post'
-				onSubmit={form.handleSubmit(onSubmit)}
-				className='w-2/5 h-full bg-white flex flex-col gap-7 rounded-l-2xl px-16 py-20'
-			>
-				{props.formHeading && (
-					<h2 className='font-semibold text-3xl text-center'>
-						{props.formHeading}
-					</h2>
-				)}
-
-				<FormField
-					control={form.control}
-					name='email'
-					render={({ field }) => (
-						<FormItem
-							className={`${
-								form.formState.submitCount > 0 && !form.formState.isValid
-									? '-mt-5'
-									: ''
-							}`}
-						>
-							<FormLabel>Email</FormLabel>
-
-							<FormControl>
-								<Input
-									type='email'
-									className={inputStyles}
-									autoComplete='email'
-									required
-									{...field}
-								/>
-							</FormControl>
-
-							<FormMessage />
-						</FormItem>
+		<>
+			<Form {...form}>
+				<form
+					noValidate
+					method='post'
+					onSubmit={form.handleSubmit(async () => {
+						await refetch();
+					})}
+					className='w-2/5 h-full bg-white flex flex-col gap-7 rounded-l-2xl px-16 py-20'
+				>
+					{props.formHeading && (
+						<h2 className='font-semibold text-3xl text-center'>
+							{props.formHeading}
+						</h2>
 					)}
-				/>
 
-				<FormField
-					control={form.control}
-					name='password'
-					render={({ field }) => (
-						<FormItem
-							className={`${'relative'} ${
-								form.formState.submitCount > 0 && !form.formState.isValid
-									? '-mt-5'
-									: ''
-							}`}
-						>
-							<FormLabel>Password</FormLabel>
-							<FormControl>
-								<>
-									<EyeIcon
-										isPasswordVisible={isPasswordVisible}
-										onClick={() =>
-											setIsPasswordVisible(
-												(isPasswordVisible) => !isPasswordVisible
-											)
-										}
-										aria-label={
-											isPasswordVisible ? 'Hide Password' : 'Show Password'
-										}
-										title={
-											isPasswordVisible ? 'Hide Password' : 'Show Password'
-										}
-									/>
+					<FormField
+						control={form.control}
+						name='email'
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Email</FormLabel>
 
+								<FormControl>
 									<Input
-										type={!isPasswordVisible ? 'password' : 'text'}
+										type='email'
 										className={inputStyles}
-										autoComplete={props.autoComplete}
+										autoComplete='email'
 										required
 										{...field}
 									/>
-								</>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+								</FormControl>
 
-				<div className='flex whitespace-nowrap justify-between text-base -mt-2 mb-3'>
-					<Checkbox
-						label='Remember Me'
-						name='rememberMe'
-						/* checked={rememberMe}
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name='password'
+						render={({ field }) => (
+							<FormItem className={'relative'}>
+								<FormLabel>Password</FormLabel>
+								<FormControl>
+									<>
+										<EyeIcon
+											isPasswordVisible={isPasswordVisible}
+											onClick={() =>
+												setIsPasswordVisible(
+													(isPasswordVisible) => !isPasswordVisible
+												)
+											}
+											aria-label={
+												isPasswordVisible ? 'Hide Password' : 'Show Password'
+											}
+											title={
+												isPasswordVisible ? 'Hide Password' : 'Show Password'
+											}
+										/>
+
+										<Input
+											type={!isPasswordVisible ? 'password' : 'text'}
+											className={inputStyles}
+											autoComplete={props.autoComplete}
+											required
+											{...field}
+										/>
+									</>
+								</FormControl>
+								<FormMessage className='' />
+							</FormItem>
+						)}
+					/>
+
+					<div className='flex whitespace-nowrap justify-between text-base -mt-2 mb-3'>
+						<Checkbox
+							label='Remember Me'
+							name='rememberMe'
+							/* checked={rememberMe}
 						onChange={(event) =>
 							setRememberMe((event.target as HTMLInputElement).checked)
 						} */
-					/>
-					<AnchorLink
-						href='/forgotpassword'
-						link='Forgot Password?'
-					/>
-				</div>
+						/>
+						<AnchorLink
+							href='/forgotpassword'
+							link='Forgot Password?'
+						/>
+					</div>
 
-				<Button
-					className={`${'mb-4 mt-2'} ${
-						form.formState.submitCount > 0 && !form.formState.isValid
-							? '-mt-3 mb-0.5'
-							: ''
-					}`}
-					type='submit'
-				>
-					{props.formHeading}
-				</Button>
+					<Button
+						className={'mb-4 mt-2'}
+						type='submit'
+					>
+						{props.formHeading}
+					</Button>
 
-				{props.children}
-			</form>
-		</Form>
+					{props.children}
+				</form>
+			</Form>
+		</>
 	);
 }

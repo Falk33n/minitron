@@ -29,12 +29,11 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 		const { isLoading, error } = useQuery({
 			queryKey: ['session'],
 			queryFn: getSession,
+			retry: false,
 		});
 
 		return (
 			<>
-				{isLoading && <Loader />}
-
 				<nav
 					className={cn(
 						`bg-white w-60 h-screen top-0 py-8 px-6 flex flex-col justify-between border-r border-r-light transition-all duration-300 ${
@@ -53,6 +52,11 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 								Home <LucideHome aria-hidden />
 							</AnchorListItem>
 
+							{isLoading && (
+								<AnchorListItem href='#'>
+									<Loader className='' />
+								</AnchorListItem>
+							)}
 							{!isLoading && !error && (
 								<AnchorListItem href='chat'>
 									New Chat <LucideMessageCirclePlus aria-hidden />
@@ -101,6 +105,11 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
               )
           )} */}
 
+							{isLoading && (
+								<AnchorListItem href='#'>
+									<Loader className='' />
+								</AnchorListItem>
+							)}
 							{!isLoading && !error && (
 								<>
 									<AnchorListItem href='createprofile'>

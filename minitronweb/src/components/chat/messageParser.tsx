@@ -1,3 +1,5 @@
+'use client';
+
 import 'highlight.js/styles/tomorrow-night.css';
 import Highlight from 'react-highlight';
 import Markdown from 'react-markdown';
@@ -7,6 +9,16 @@ export const MessageParser = ({ text }: { text: string }) => {
 	return (
 		<Markdown
 			components={{
+				a: ({ children, href }) => (
+					<a
+						href={href}
+						target='_blank'
+						rel='noreferrer'
+						className='text-primary underline'
+					>
+						{children}
+					</a>
+				),
 				ul: ({ children }) => (
 					<ul className='list-disc list-inside my-2.5'>{children}</ul>
 				),

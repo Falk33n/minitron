@@ -38,7 +38,7 @@ namespace minitronapi.Controllers
           Path = "/"
         });
 
-        return Ok(new { Message = "Success" });
+        return Ok(new { Message = "Success", token });
       }
 
       return Unauthorized("Failed to login");
