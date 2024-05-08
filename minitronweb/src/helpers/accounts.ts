@@ -12,7 +12,11 @@ export async function postRegister(data = {}) {
 		},
 	});
 
-	return response.json();
+	if (!response.ok) {
+		throw new Error('Failed to fetch data');
+	}
+
+	return await response.json();
 }
 
 export async function postLogIn(data = {}) {
@@ -25,5 +29,24 @@ export async function postLogIn(data = {}) {
 		},
 	});
 
-	return response.json();
+	if (!response.ok) {
+		throw new Error('Failed to fetch data');
+	}
+
+	return await response.json();
+}
+
+export async function getSession() {
+	try {
+		const response = await fetch(`${baseURL}/Auth/session`, {
+			method: 'GET',
+			credentials: 'include',
+		});
+
+		if (!response.ok) {
+			throw new Error('Unauthorized');
+		}
+	} catch (error) {
+		throw error;
+	}
 }
