@@ -1,6 +1,7 @@
 import { LucideBot } from 'lucide-react';
 import { HTMLAttributes, forwardRef } from 'react';
 import { cn } from '../../utilities/shadUtilities';
+import { MessageParser } from './messageParser';
 
 export type RobotChatBubbleProps = HTMLAttributes<HTMLParagraphElement> & {
 	message: string;
@@ -17,7 +18,7 @@ export const RobotChatBubble = forwardRef<
 				ref={ref}
 				{...props}
 			>
-				{message}
+				<MessageParser text={message} />
 			</p>
 
 			<section className='text-muted-foreground flex gap-2 absolute -bottom-[1.85rem] left-3.5 text-sm'>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+import { Toaster } from '../components';
 import { Sidebar } from '../components/sidebar/sidebar';
 import { QueryProvider } from '../providers/queryProvider';
 import '../styles/globals.scss';
@@ -18,6 +19,7 @@ export default function RootLayout({
 		<html lang='en'>
 			<body className='bg-gradientGray w-full h-screen flex justify-center items-center font-roboto overflow-hidden'>
 				<QueryProvider>
+					<Toaster />
 					<Sidebar />
 					<main className='w-full'>{children}</main>
 				</QueryProvider>

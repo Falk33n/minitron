@@ -30,14 +30,14 @@ export async function postLogIn(data = {}) {
 	});
 
 	if (!response.ok) {
-		throw new Error('Failed to fetch data');
+		throw new Error();
 	}
 
 	return await response.json();
 }
 
 export async function getSession() {
-	try {
+	/* 	try {
 		const response = await fetch(`${baseURL}/Auth/session`, {
 			method: 'GET',
 			credentials: 'include',
@@ -48,5 +48,7 @@ export async function getSession() {
 		}
 	} catch (error) {
 		throw error;
-	}
+	} */
+
+	return true;
 }

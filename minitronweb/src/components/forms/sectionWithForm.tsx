@@ -16,7 +16,7 @@ export const SectionWithForm = ({
 }: SectionWithFormProps) => {
 	return (
 		<div
-			className={`w-[80%] flex items-center h-[40rem] shadow-accounts rounded-2xl mx-auto ${
+			className={`w-[80%] flex items-center h-[45rem] shadow-accounts rounded-2xl mx-auto ${
 				!isRegisterPage ? 'flex-row-reverse' : ''
 			}`}
 		>

@@ -1,12 +1,13 @@
 import { Loader2 } from 'lucide-react';
 
-export function Loader() {
+export function Loader({ className }: { className?: string }) {
 	return (
 		<button
-			className='fixed top-0 left-0 flex justify-center items-center w-full h-screen bg-black/75 backdrop-blur z-20'
+			className={className + ' flex'}
 			disabled
 		>
-			<Loader2 className='text-primary size-20 animate-spin' />
+			Please wait..
+			<Loader2 className='ml-3 text-primary size-5 animate-spin' />
 		</button>
 	);
 }

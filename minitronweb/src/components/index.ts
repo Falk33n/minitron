@@ -1,6 +1,7 @@
 // Export all components
 export * from './chat/chatContainer';
 export * from './chat/chatForm';
+export * from './chat/messageParser';
 export * from './chat/robotChatBubble';
 export * from './chat/userChatBubble';
 export * from './forms/alert';
@@ -19,3 +20,6 @@ export * from './misc/notAllowed';
 export * from './misc/pageContainer';
 export * from './sidebar/anchorListItem';
 export * from './sidebar/unorderedList';
+export * from './ui/toast';
+export * from './ui/toaster';
+export * from './ui/use-toast';
