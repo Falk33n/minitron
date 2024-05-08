@@ -1,48 +1,58 @@
 'use client';
 
-import { Button, Input } from '@/src/components';
+import { Button } from '@/src/components';
 import { LucideArrowUp } from 'lucide-react';
 import {
 	ChangeEventHandler,
 	FormEventHandler,
 	FormHTMLAttributes,
 	forwardRef,
+	useState,
 } from 'react';
 import { cn } from '../../utilities/shadUtilities';
 
 export type ChatFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	onSubmit: FormEventHandler<HTMLFormElement>;
-	onChange: ChangeEventHandler<HTMLInputElement>;
+	onChange: ChangeEventHandler<HTMLTextAreaElement>;
 	prompt: string;
 };
 
 export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 	({ className, onSubmit, prompt, onChange, children, ...props }, ref) => {
+		const [focusChatBar, setFocusChatBar] = useState(false);
+
 		return (
 			<form
 				method='post'
 				noValidate
-				className={cn(
-					'bg-gradientGray rounded-t-xl sticky bottom-0',
-					className
-				)}
+				className={cn('bg-white rounded-t-xl sticky bottom-0', className)}
 				ref={ref}
 				{...props}
 				onSubmit={onSubmit}
 			>
 				{children}
 
-				<div className='relative mt-auto h-fit'>
-					<Input
-						type='text'
+				<div
+					className={`relative flex mt-auto border h-fit mb-5 border-light rounded-2xl ${
+						focusChatBar ? 'border-primary border-2' : ''
+					}`}
+				>
+					<textarea
 						name='prompt'
 						aria-label='Ask MinitronAI a question'
 						autoComplete='off'
-						className='text-base mb-5 font-normal h-10 bg-white w-full rounded-xl border focus-visible:ring-0 focus:border-ring border-light hover:border-ring p-6'
+						className='resize-none w-full focus-visible:outline-none min-h-10 max-h-auto p-4 pr-16 rounded-2xl overflow-hidden'
 						placeholder='Message MinitronAI'
 						required
 						value={prompt}
 						onChange={onChange}
+						onFocus={() => {
+							setFocusChatBar(true);
+						}}
+						onBlur={() => {
+							setFocusChatBar(false);
+						}}
+						rows={1}
 					/>
 
 					<Button
@@ -53,6 +63,12 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 						aria-label='Send message'
 						type='submit'
 						disabled={prompt === ''}
+						onFocus={() => {
+							setFocusChatBar(true);
+						}}
+						onBlur={() => {
+							setFocusChatBar(false);
+						}}
 					>
 						<LucideArrowUp className='text-muted-foreground' />
 					</Button>

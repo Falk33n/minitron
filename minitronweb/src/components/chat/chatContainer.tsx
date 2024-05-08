@@ -1,39 +1,46 @@
 'use client';
 
 import { ChatForm, RobotChatBubble, UserChatBubble } from '@/src/components';
-import { useState } from 'react';
+import { KeyboardEvent, SyntheticEvent, useState } from 'react';
 import { openAI } from '../../helpers';
 
 export const ChatContainer = () => {
 	const [chatHistory, setChatHistory] = useState<string[]>([]);
 	const [prompt, setPrompt] = useState('');
 
-	async function handleSubmit() {
+	async function handleSubmit(event: SyntheticEvent) {
+		const textArea = event.target as HTMLTextAreaElement;
+		const lineCount = textArea.value.split(/\r?\n/).length;
+		const keyboardEvent = event as KeyboardEvent;
 		const currentPrompt = prompt;
+		textArea.rows = Math.min(8, Math.max(1, lineCount));
 
-		setPrompt('');
-		setChatHistory((chatHistory) => {
-			return [...chatHistory, currentPrompt];
-		});
-
-		const aiResponse = await openAI({
-			message: [...chatHistory, currentPrompt],
-			role: chatHistory.length % 2 === 0 ? 'assistant' : 'user',
-		});
-
-		if (aiResponse) {
+		if (keyboardEvent.key === 'Enter') {
+			event.preventDefault();
+			setPrompt('');
 			setChatHistory((chatHistory) => {
-				return [...chatHistory, aiResponse];
+				return [...chatHistory, currentPrompt];
 			});
-		} else {
-			console.error('AI response was null');
+
+			const aiResponse = await openAI({
+				message: [...chatHistory, currentPrompt],
+				role: chatHistory.length % 2 === 0 ? 'assistant' : 'user',
+			});
+
+			if (aiResponse) {
+				setChatHistory((chatHistory) => {
+					return [...chatHistory, aiResponse];
+				});
+			} else {
+				console.error('AI response was null');
+			}
 		}
 	}
 
 	return (
 		<div className='flex flex-col mx-auto w-full h-screen px-72 overflow-y-auto'>
 			<p className='text-muted-foreground text-sm justify-center items-center py-5 flex'>
-				Minitron Code Assistant
+				MinitronAI
 			</p>
 
 			<div className='flex-1 flex flex-col gap-14 pb-20'>
@@ -58,7 +65,7 @@ export const ChatContainer = () => {
 			<ChatForm
 				onSubmit={(event) => {
 					event.preventDefault();
-					handleSubmit();
+					handleSubmit(event);
 				}}
 				prompt={prompt}
 				onChange={(event) =>

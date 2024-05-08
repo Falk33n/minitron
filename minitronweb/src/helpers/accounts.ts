@@ -1,6 +1,4 @@
-const baseURL = `${
-	process.env.NEXT_PUBLIC_HOST + ':' + process.env.NEXT_PUBLIC_PORT + '/api'
-}`;
+const baseURL = 'http://minitron/api';
 
 export async function postRegister(data = {}) {
 	const response = await fetch(`${baseURL}/User/register`, {
