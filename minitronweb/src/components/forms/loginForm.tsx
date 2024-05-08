@@ -91,10 +91,10 @@ export function LogInForm({ ...props }: LogInFormProps) {
 					onSubmit={form.handleSubmit(async () => {
 						await refetch();
 					})}
-					className='w-2/5 h-full bg-white flex flex-col gap-7 rounded-l-2xl px-16 py-20'
+					className='w-2/5 h-full bg-white flex flex-col gap-8 rounded-l-2xl px-16 py-20 overflow-y-auto'
 				>
 					{props.formHeading && (
-						<h2 className='font-semibold text-3xl text-center'>
+						<h2 className='font-semibold text-3xl text-center mb-3'>
 							{props.formHeading}
 						</h2>
 					)}

@@ -67,7 +67,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 				noValidate
 				method='post'
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='w-2/5 h-full bg-white flex flex-col gap-6 rounded-r-2xl py-12 px-16'
+				className='w-2/5 h-full bg-white flex flex-col gap-9 rounded-r-2xl py-12 px-16 overflow-y-auto'
 			>
 				{props.formHeading && (
 					<h2 className='font-semibold text-3xl text-center'>
