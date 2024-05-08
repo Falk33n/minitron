@@ -78,26 +78,6 @@ builder.Services.AddAuthorization(options =>
 {
   options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
   options.AddPolicy("User", policy => policy.RequireRole("User"));
-});
-
-// Add CORS
-builder.Services.AddCors(options =>
-{
-  options.AddPolicy("AllowSpecificOrigin", builder =>
-  {
-    builder.WithOrigins("http://192.168.90.135:5001", // Your first adapter IP
-                          "http://192.168.56.1:5001",
-                          "http://192.168.90.99:5004",
-                          "http://localhost:3000",
-                          "http://localhost",
-                          "http://192.168.90.188")   // Your second adapter IP
-             .AllowAnyHeader()
-             .AllowAnyMethod()
-             .AllowCredentials(); // Allows credentials if needed
-  });
-});
-
-
 
 
 var app = builder.Build();
@@ -126,8 +106,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
 
