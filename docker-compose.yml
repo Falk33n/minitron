@@ -45,8 +45,6 @@ services:
       - postgres
     ports:
       - "5248:80" # Expose API on port 5000 of the host
-    environment:
-      OPENAI_API_KEY: "sk-proj-2Uxl6uj1P0BKkefUlabGT3BlbkFJhj9xxanR5RP5BDoz8LUS"
     networks:
       - minitron
 
@@ -58,6 +56,8 @@ services:
       - api
     ports:
       - "3000:80"
+    environment:
+      OPENAI_API_KEY: "sk-proj-2Uxl6uj1P0BKkefUlabGT3BlbkFJhj9xxanR5RP5BDoz8LUS"
     restart: always
     networks:
       - minitron
