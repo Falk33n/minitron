@@ -56,8 +56,8 @@ services:
       - api
     ports:
       - "3000:80"
-    environment:
-      OPENAI_API_KEY: "sk-proj-2Uxl6uj1P0BKkefUlabGT3BlbkFJhj9xxanR5RP5BDoz8LUS"
+    env_file:
+      - .env
     restart: always
     networks:
       - minitron
