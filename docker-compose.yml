@@ -56,7 +56,11 @@ services:
       - api
     ports:
       - "3000:80"
+    env_file:
+      - .env
     restart: always
     networks:
       - minitron
       # Expose frontend on port 3000 of the host
+volumes:
+  minitron_postgres_data:

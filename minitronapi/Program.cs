@@ -80,6 +80,8 @@ builder.Services.AddAuthorization(options =>
   options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
 
+
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
