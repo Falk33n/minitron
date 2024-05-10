@@ -26,5 +26,3 @@ services:
     networks:
       - minitron
       # Expose frontend on port 3000 of the host
-volumes:
-  minitron_postgres_data:
