@@ -3,6 +3,7 @@ using minitronapi.Models;
 using minitronapi.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace minitronapi.Controllers
 {
@@ -13,12 +14,14 @@ namespace minitronapi.Controllers
     private readonly UserManager<UserModel> _userManager;
     private readonly SignInManager<UserModel> _signInManager;
     private readonly TokenService _tokenService;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, TokenService tokenService)
+    public AuthController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, TokenService tokenService, ILogger<AuthController> logger)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _tokenService = tokenService;
+      _logger = logger;
     }
 
     [HttpPost("login")]
@@ -38,6 +41,8 @@ namespace minitronapi.Controllers
           Path = "/"
         });
 
+        _logger.LogInformation("User {user} logged in at {time}", user.Email, DateTime.UtcNow);
+
         return Ok(new { Message = "Success", token });
       }
 
@@ -47,8 +52,10 @@ namespace minitronapi.Controllers
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
+      var time = DateTime.UtcNow;
       Response.Cookies.Delete("AuthCookie");
       await _signInManager.SignOutAsync();
+      _logger.LogInformation("User logged out at {time}", time);
       return Ok(new { Message = "Success" });
     }
 
