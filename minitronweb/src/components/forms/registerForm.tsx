@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postRegister } from '../helpers/accounts';
+import { postRegister } from '../../helpers/accounts';
 
 export type RegisterFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -67,7 +67,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 				noValidate
 				method='post'
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='w-2/5 h-full bg-white flex flex-col gap-7 rounded-r-2xl py-12 px-16'
+				className='w-2/5 h-full bg-white flex flex-col gap-9 rounded-r-2xl py-12 px-16 overflow-y-auto'
 			>
 				{props.formHeading && (
 					<h2 className='font-semibold text-3xl text-center'>
@@ -79,13 +79,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 					control={form.control}
 					name='fullName'
 					render={({ field }) => (
-						<FormItem
-							className={`${
-								form.formState.submitCount > 0 && !form.formState.isValid
-									? '-mt-3'
-									: ''
-							}`}
-						>
+						<FormItem>
 							<FormLabel>Full Name</FormLabel>
 
 							<FormControl>
@@ -107,13 +101,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 					control={form.control}
 					name='email'
 					render={({ field }) => (
-						<FormItem
-							className={`${
-								form.formState.submitCount > 0 && !form.formState.isValid
-									? '-mt-5'
-									: ''
-							}`}
-						>
+						<FormItem>
 							<FormLabel>Email</FormLabel>
 
 							<FormControl>
@@ -135,13 +123,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 					control={form.control}
 					name='password'
 					render={({ field }) => (
-						<FormItem
-							className={`${'relative'} ${
-								form.formState.submitCount > 0 && !form.formState.isValid
-									? '-mt-5'
-									: ''
-							}`}
-						>
+						<FormItem className={'relative'}>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
 								<>
@@ -175,11 +157,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 				/>
 
 				<Button
-					className={`${'mb-4 mt-2'} ${
-						form.formState.submitCount > 0 && !form.formState.isValid
-							? '-mt-3 mb-0.5'
-							: ''
-					}`}
+					className={'mb-4 mt-2'}
 					type='submit'
 				>
 					{props.formHeading}

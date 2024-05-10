@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { HTMLAttributes, forwardRef } from 'react';
-import { cn } from '../utilities/shadUtilities';
+import { cn } from '../../utilities/shadUtilities';
 
 export type LogoProps = HTMLAttributes<HTMLImageElement> & {};
 
@@ -21,6 +21,7 @@ export const Logo = forwardRef<HTMLImageElement, LogoProps>(
 						)}
 						width={144}
 						height={144}
+						priority
 						src='/robot.png'
 						alt='A animated robot that represents Minitrons mascot'
 						draggable='false'

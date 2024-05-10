@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { LiHTMLAttributes, forwardRef } from 'react';
-import { cn } from '../utilities/shadUtilities';
+import { cn } from '../../utilities/shadUtilities';
 
 export interface AnchorListItemProps extends LiHTMLAttributes<HTMLLIElement> {
 	href: string;
