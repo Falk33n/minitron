@@ -33,8 +33,8 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 			<>
 				<nav
 					className={cn(
-						`bg-[#F9F9F9] w-[11%] h-screen top-0 py-5 px-4 flex flex-col justify-between transition-all duration-300 ${
-							isSidebarVisible ? 'relative left-0' : 'absolute -left-[13rem]'
+						`bg-[#F9F9F9] w-[17rem] h-screen top-0 py-5 px-4 flex flex-col justify-between transition-all duration-300 ${
+							isSidebarVisible ? 'relative left-0' : 'absolute -left-[17rem]'
 						}`,
 						className
 					)}
@@ -56,7 +56,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 						</UnorderedList>
 					</div>
 
-					<div className='mt-4 flex flex-col'>
+					<div className='mt-2 flex flex-col'>
 						<h6 className='text-muted-foreground/70 px-2 text-sm'>
 							Conversations
 						</h6>
@@ -130,7 +130,10 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 					</h6>
 
 					<Button
-						className='absolute top-1/2 -translate-y-1/2 -right-10'
+						className={`
+							transition-all duration-300 fixed top-1/2 -translate-y-1/2 ${
+								isSidebarVisible ? 'left-56' : 'left-1'
+							}`}
 						variant='icon'
 						size='icon'
 						title={isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}

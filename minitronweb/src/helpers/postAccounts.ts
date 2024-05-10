@@ -35,18 +35,14 @@ export async function postLogIn(data = {}) {
 }
 
 export async function getSession() {
-	/* 	try {
-		const response = await fetch(`${baseURL}/Auth/session`, {
+	/* const response = await fetch(`${baseURL}/Auth/session`, {
 			method: 'GET',
 			credentials: 'include',
 		});
 
 		if (!response.ok) {
 			throw new Error('Unauthorized');
-		}
-	} catch (error) {
-		throw error;
-	} */
+		} */
 
 	return true;
 }
