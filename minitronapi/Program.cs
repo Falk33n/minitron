@@ -37,11 +37,11 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddIdentityCore<UserModel>(options =>
 {
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
+  options.Password.RequireDigit = false;
+  options.Password.RequiredLength = 6;
+  options.Password.RequireLowercase = false;
+  options.Password.RequireUppercase = false;
+  options.Password.RequireNonAlphanumeric = false;
 }).AddRoles<IdentityRole>()
   .AddEntityFrameworkStores<minitronContext>()
   .AddDefaultTokenProviders();
@@ -50,7 +50,7 @@ builder.Services.AddIdentityCore<UserModel>(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "minitronapi", Version = "v1" });
+  c.SwaggerDoc("v1", new() { Title = "minitronapi", Version = "v1" });
 });
 builder.Services.AddScoped<SignInManager<UserModel>>();
 builder.Services.AddScoped<TokenService>();
@@ -64,28 +64,28 @@ builder.Services.AddScoped<ConversationService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tokenSettings:tokenKey"))
-        };
+      options.TokenValidationParameters = new TokenValidationParameters
+      {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tokenSettings:tokenKey"))
+      };
     })
     .AddCookie(IdentityConstants.ApplicationScheme, options =>
       {
-          options.Cookie.HttpOnly = true;
-          options.ExpireTimeSpan = TimeSpan.FromHours(1);
-          options.LoginPath = "/api/Auth/login"; // Adjust as necessary
-          options.LogoutPath = "/api/Auth/logout"; // Adjust as necessary
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+        options.LoginPath = "/api/Auth/login"; // Adjust as necessary
+        options.LogoutPath = "/api/Auth/logout"; // Adjust as necessary
       }); ;
 
 // Add Authorization Policies
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("User", policy => policy.RequireRole("User"));
+  options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+  options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
 
 
@@ -105,9 +105,9 @@ await SeedData.LoadRoles(roleManager);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseHsts();
+  app.UseSwagger();
+  app.UseSwaggerUI();
+  app.UseHsts();
 }
 
 app.UseHttpsRedirection();

@@ -5,9 +5,16 @@ import Highlight from 'react-highlight';
 import Markdown from 'react-markdown';
 import { CodeCopyBar } from './codeCopyBar';
 
-export const MessageParser = ({ text }: { text: string }) => {
+export const MessageParser = ({
+	text,
+	className,
+}: {
+	text: string;
+	className?: string;
+}) => {
 	return (
 		<Markdown
+			className={className}
 			components={{
 				a: ({ children, href }) => (
 					<a

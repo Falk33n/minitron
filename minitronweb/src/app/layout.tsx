@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className='bg-gradientGray w-full h-screen flex justify-center items-center font-roboto overflow-hidden'>
+			<body className='bg-white w-full h-screen flex justify-center items-center font-roboto overflow-hidden'>
 				<QueryProvider>
 					<Toaster />
 					<Sidebar />

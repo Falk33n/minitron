@@ -1,2 +1,5 @@
 export * from './AI';
-export * from './accounts';
+export * from './getAccounts';
+export * from './postAccounts';
+
+export const baseURL = 'http://localhost:5248/api';

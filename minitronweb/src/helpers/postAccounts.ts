@@ -1,6 +1,4 @@
-const baseURL = `${
-	process.env.NEXT_PUBLIC_HOST + ':' + process.env.NEXT_PUBLIC_PORT + '/api'
-}`;
+import { baseURL } from '../helpers/index';
 
 export async function postRegister(data = {}) {
 	const response = await fetch(`${baseURL}/User/register`, {
@@ -37,18 +35,14 @@ export async function postLogIn(data = {}) {
 }
 
 export async function getSession() {
-	/* 	try {
-		const response = await fetch(`${baseURL}/Auth/session`, {
+	/* const response = await fetch(`${baseURL}/Auth/session`, {
 			method: 'GET',
 			credentials: 'include',
 		});
 
 		if (!response.ok) {
 			throw new Error('Unauthorized');
-		}
-	} catch (error) {
-		throw error;
-	} */
+		} */
 
 	return true;
 }

@@ -9,11 +9,8 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import {
 	LucideBadgeInfo,
-	LucideBadgePlus,
 	LucideChevronRight,
-	LucideHome,
-	LucideLogOut,
-	LucideMessageCirclePlus,
+	LucideMessageSquareText,
 	LucidePhoneForwarded,
 	LucideSettings,
 } from 'lucide-react';
@@ -36,22 +33,16 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 			<>
 				<nav
 					className={cn(
-						`bg-white w-60 h-screen top-0 py-8 px-6 flex flex-col justify-between border-r border-r-light transition-all duration-300 ${
-							isSidebarVisible
-								? 'relative left-0 shadow-navbar'
-								: 'absolute -left-[15rem] shadow-navbar-hidden'
+						`bg-[#F9F9F9] w-[17rem] h-screen top-0 py-5 px-4 flex flex-col justify-between transition-all duration-300 ${
+							isSidebarVisible ? 'relative left-0' : 'absolute -left-[17rem]'
 						}`,
 						className
 					)}
 					ref={ref}
 					{...props}
 				>
-					<div className='relative mt-6'>
+					<div>
 						<UnorderedList>
-							<AnchorListItem href=''>
-								Home <LucideHome aria-hidden />
-							</AnchorListItem>
-
 							{isLoading && (
 								<AnchorListItem href='#'>
 									<Loader className='' />
@@ -59,10 +50,16 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 							)}
 							{!isLoading && !error && (
 								<AnchorListItem href='chat'>
-									New Chat <LucideMessageCirclePlus aria-hidden />
+									New Chat <LucideMessageSquareText aria-hidden />
 								</AnchorListItem>
 							)}
 						</UnorderedList>
+					</div>
+
+					<div className='mt-2 flex flex-col'>
+						<h6 className='text-muted-foreground/70 px-2 text-sm'>
+							Conversations
+						</h6>
 					</div>
 
 					{/* HISTORY HERE
@@ -112,28 +109,31 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 							)}
 							{!isLoading && !error && (
 								<>
-									<AnchorListItem href='createprofile'>
+									{/* 			<AnchorListItem href='createprofile'>
 										Add Agent <LucideBadgePlus aria-hidden />
-									</AnchorListItem>
+									</AnchorListItem> */}
 
 									<AnchorListItem href='profile'>
 										Settings <LucideSettings aria-hidden />
 									</AnchorListItem>
 
-									<AnchorListItem href='logout'>
+									{/* 			<AnchorListItem href='logout'>
 										Logout <LucideLogOut aria-hidden />
-									</AnchorListItem>
+									</AnchorListItem> */}
 								</>
 							)}
 						</UnorderedList>
 					</div>
 
-					<h6 className='text-xs text-muted-foreground text-center mt-10'>
+					<h6 className='text-xs text-muted-foreground/70 text-center mt-4'>
 						Copyright © 2024 Minitron. All rights reserved
 					</h6>
 
 					<Button
-						className='absolute top-1/2 -translate-y-1/2 -right-10'
+						className={`
+							transition-all duration-300 fixed top-1/2 -translate-y-1/2 ${
+								isSidebarVisible ? 'left-56' : 'left-1'
+							}`}
 						variant='icon'
 						size='icon'
 						title={isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}

@@ -13,8 +13,7 @@ const openai = new OpenAI({
 export async function openAI({ role, message }: aiProps) {
 	const completion = await openai.chat.completions.create({
 		messages: [{ role: `${role}`, content: `${message.join('\n')}` }],
-		model: 'gpt-3.5-turbo',
-		temperature: 0.7,
+		model: 'gpt-4-turbo',
 	});
 
 	return completion.choices[0].message?.content;
