@@ -23,10 +23,22 @@ var connectionString = $"Host={host};Port={port};Database={database};Username={u
 var tokenKeyString = builder.Configuration["tokenSettings:tokenKey"];
 
 Log.Logger = new LoggerConfiguration()
-.Enrich.FromLogContext()
-.WriteTo.Console()
-.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-.CreateLogger();
+    .MinimumLevel.Debug()
+    .WriteTo.File("Logs/all-logs.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
+                                     e.Properties["SourceContext"].ToString().Contains("AuthController"))
+        .WriteTo.File("Logs/auth-logs.txt", rollingInterval: RollingInterval.Day))
+    .WriteTo.Logger(lc => lc
+    .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
+                                 e.Properties["SourceContext"].ToString().Contains("UserController"))
+    .WriteTo.File("Logs/user-logs.txt", rollingInterval: RollingInterval.Day))
+    .WriteTo.Logger(lc => lc
+    .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
+                                 e.Properties["SourceContext"].ToString().Contains("ChatController"))
+    .WriteTo.File("Logs/chat-logs.txt", rollingInterval: RollingInterval.Day))
+    .CreateLogger();
+
 
 builder.Host.UseSerilog();
 
