@@ -8,7 +8,7 @@ services:
       context: ./minitronapi # Path to your API's Dockerfile
       dockerfile: Dockerfile
     ports:
-      - "5248:80" # Expose API on port 5000 of the host
+      - "5248:5248" # Expose API on port 5248 of the host
     networks:
       - minitron
 
@@ -19,7 +19,7 @@ services:
     depends_on:
       - api
     ports:
-      - "3000:80"
+      - "3000:3000"
     env_file:
       - .env
     restart: always
