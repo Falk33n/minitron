@@ -7,6 +7,8 @@ services:
     build:
       context: ./minitronapi # Path to your API's Dockerfile
       dockerfile: Dockerfile
+      environment:
+      - ASPNETCORE_URLS=http://+:5248
     ports:
       - "5248:5248" # Expose API on port 5248 of the host
     networks:
