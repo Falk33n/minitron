@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postRegister } from '../../helpers/accounts';
+import { postRegister } from '../../helpers/postAccounts';
 
 export type RegisterFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;

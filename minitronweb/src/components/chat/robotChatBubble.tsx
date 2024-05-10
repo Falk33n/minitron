@@ -1,32 +1,31 @@
 import { LucideBot } from 'lucide-react';
-import { HTMLAttributes, forwardRef } from 'react';
+import { HTMLAttributes } from 'react';
 import { cn } from '../../utilities/shadUtilities';
 import { MessageParser } from './messageParser';
 
-export type RobotChatBubbleProps = HTMLAttributes<HTMLParagraphElement> & {
+export type RobotChatBubbleProps = HTMLAttributes<HTMLElement> & {
 	message: string;
 };
 
-export const RobotChatBubble = forwardRef<
-	HTMLParagraphElement,
-	RobotChatBubbleProps
->(({ className, message, ...props }, ref) => {
+export const RobotChatBubble = ({
+	className,
+	message,
+	...props
+}: RobotChatBubbleProps) => {
 	return (
-		<>
-			<p
-				className={cn(className)}
-				ref={ref}
-				{...props}
-			>
-				<MessageParser text={message} />
-			</p>
-
-			<section className='text-muted-foreground flex gap-2 absolute -bottom-[1.85rem] left-3.5 text-sm'>
-				<LucideBot className='size-[1.15rem] -mt-[2px]' />
+		<div>
+			<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
+				<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
 				<h4>MinitronAI</h4>
 			</section>
-		</>
+
+			<MessageParser
+				className={cn(className)}
+				{...props}
+				text={message}
+			/>
+		</div>
 	);
-});
+};
 
 RobotChatBubble.displayName = 'RobotChatBubble';

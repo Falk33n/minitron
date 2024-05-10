@@ -1,29 +1,44 @@
 'use client';
 
-import { Button, Input } from '@/src/components';
+import { Button, Loader } from '@/src/components';
+import { getSession } from '@/src/helpers';
+import { useQuery } from '@tanstack/react-query';
 import { LucideArrowUp } from 'lucide-react';
 import {
 	ChangeEventHandler,
 	FormEventHandler,
 	FormHTMLAttributes,
+	KeyboardEventHandler,
 	forwardRef,
+	useState,
 } from 'react';
 import { cn } from '../../utilities/shadUtilities';
 
 export type ChatFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	onSubmit: FormEventHandler<HTMLFormElement>;
-	onChange: ChangeEventHandler<HTMLInputElement>;
+	onKeyDown: KeyboardEventHandler<HTMLTextAreaElement>;
+	onChange: ChangeEventHandler<HTMLTextAreaElement>;
 	prompt: string;
 };
 
 export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
-	({ className, onSubmit, prompt, onChange, children, ...props }, ref) => {
+	(
+		{ className, onSubmit, prompt, onChange, onKeyDown, children, ...props },
+		ref
+	) => {
+		const [focusChatBar, setFocusChatBar] = useState(false);
+		const { isLoading, error } = useQuery({
+			queryKey: ['session'],
+			queryFn: getSession,
+			retry: false,
+		});
+
 		return (
 			<form
 				method='post'
 				noValidate
 				className={cn(
-					'bg-gradientGray rounded-t-xl sticky bottom-0',
+					'bg-white rounded-t-xl sticky bottom-0 w-[66%]',
 					className
 				)}
 				ref={ref}
@@ -32,29 +47,50 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 			>
 				{children}
 
-				<div className='relative mt-auto h-fit'>
-					<Input
-						type='text'
+				<div
+					className={`relative flex mt-auto border h-fit mb-5 border-light rounded-2xl ${
+						focusChatBar ? 'border-primary border-2' : ''
+					}`}
+				>
+					<textarea
 						name='prompt'
 						aria-label='Ask MinitronAI a question'
 						autoComplete='off'
-						className='text-base mb-5 font-normal h-10 bg-white w-full rounded-xl border focus-visible:ring-0 focus:border-ring border-light hover:border-ring p-6'
+						className='resize-none w-full focus-visible:outline-none min-h-10 max-h-auto p-4 pr-16 rounded-2xl overflow-y-auto'
 						placeholder='Message MinitronAI'
 						required
 						value={prompt}
 						onChange={onChange}
+						onKeyDown={onKeyDown}
+						onFocus={() => {
+							setFocusChatBar(true);
+						}}
+						onBlur={() => {
+							setFocusChatBar(false);
+						}}
+						rows={1}
 					/>
 
 					<Button
 						variant='icon'
 						size='icon'
-						className='absolute top-[0.3rem] right-3.5'
+						className='absolute top-2 right-3.5'
 						title='Send message'
 						aria-label='Send message'
 						type='submit'
 						disabled={prompt === ''}
+						onFocus={() => {
+							setFocusChatBar(true);
+						}}
+						onBlur={() => {
+							setFocusChatBar(false);
+						}}
 					>
-						<LucideArrowUp className='text-muted-foreground' />
+						{isLoading ? (
+							<Loader sm={true} />
+						) : (
+							<LucideArrowUp className='text-muted-foreground size-full scale-75 p-1 bg-muted rounded-2xl hover:bg-primary/10 focus-visible:bg-primary/10' />
+						)}
 					</Button>
 				</div>
 
