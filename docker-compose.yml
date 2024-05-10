@@ -3,40 +3,6 @@ networks:
   minitron:
     driver: bridge
 services:
-  postgres:
-    image: postgres:latest
-    ports:
-      - "5431:5431"
-    environment:
-      POSTGRES_PASSWORD: "postgres"
-    volumes:
-      - minitron_postgres_data:/var/lib/postgresql/data
-    restart: always
-    networks:
-      - minitron
-
-  vllm:
-    image: vllm/vllm-openai:latest
-    ports:
-      - "5003:8000"
-    volumes:
-      - /home/max/models/intel-neural-chat/neural-chat-7b-v3-3/:/mnt/model/
-    networks:
-      - minitron
-    command:
-      - "--host"
-      - "0.0.0.0"
-      - "--model=/mnt/model/"
-      - "--gpu-memory-utilization"
-      - "0.95"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              capabilities: [gpu]
-              count: 1
-
   api:
     build:
       context: ./minitronapi # Path to your API's Dockerfile
