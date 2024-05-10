@@ -1,0 +1,180 @@
+2024-05-10 15:41:32.918 +02:00 [DBG] An 'IServiceProvider' was created for internal use by Entity Framework.
+2024-05-10 15:41:32.993 +02:00 [INF] User profile is available. Using 'C:\Users\Max Planstedt\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-10 15:41:33.464 +02:00 [DBG] The index {'UserId'} was not created on entity type 'IdentityUserRole<string>' as the properties are already covered by the index {'UserId', 'RoleId'}.
+2024-05-10 15:41:33.464 +02:00 [DBG] The index {'UserId'} was not created on entity type 'IdentityUserToken<string>' as the properties are already covered by the index {'UserId', 'LoginProvider', 'Name'}.
+2024-05-10 15:41:33.764 +02:00 [DBG] Entity Framework Core 8.0.4 initialized 'minitronContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL:8.0.2+5a671b9769f2d00a75b0ba42ce30c444a12407e3' with options: None
+2024-05-10 15:41:33.789 +02:00 [DBG] Creating DbConnection.
+2024-05-10 15:41:33.824 +02:00 [DBG] Created DbConnection. (28ms).
+2024-05-10 15:41:33.839 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:33.971 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:33.974 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:33.982 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (5ms).
+2024-05-10 15:41:33.991 +02:00 [DBG] Creating DbCommand for 'ExecuteScalar'.
+2024-05-10 15:41:33.998 +02:00 [DBG] Created DbCommand for 'ExecuteScalar' (3ms).
+2024-05-10 15:41:33.999 +02:00 [DBG] Initialized DbCommand for 'ExecuteScalar' (8ms).
+2024-05-10 15:41:34.000 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.025 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.032 +02:00 [DBG] Executing DbCommand [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2024-05-10 15:41:34.096 +02:00 [INF] Executed DbCommand (64ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2024-05-10 15:41:34.097 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.098 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (1ms).
+2024-05-10 15:41:34.114 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.114 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.114 +02:00 [DBG] Creating DbCommand for 'ExecuteReader'.
+2024-05-10 15:41:34.114 +02:00 [DBG] Created DbCommand for 'ExecuteReader' (0ms).
+2024-05-10 15:41:34.115 +02:00 [DBG] Initialized DbCommand for 'ExecuteReader' (0ms).
+2024-05-10 15:41:34.115 +02:00 [DBG] Executing DbCommand [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2024-05-10 15:41:34.120 +02:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2024-05-10 15:41:34.127 +02:00 [DBG] Closing data reader to 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.128 +02:00 [DBG] A data reader for 'minitrondatabase' on server 'tcp://192.168.90.99:5431' is being disposed after spending 6ms reading results.
+2024-05-10 15:41:34.128 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.128 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (0ms).
+2024-05-10 15:41:34.130 +02:00 [DBG] Migrating using database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.131 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.153 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.153 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.153 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (0ms).
+2024-05-10 15:41:34.154 +02:00 [DBG] Creating DbCommand for 'ExecuteScalar'.
+2024-05-10 15:41:34.154 +02:00 [DBG] Created DbCommand for 'ExecuteScalar' (0ms).
+2024-05-10 15:41:34.154 +02:00 [DBG] Initialized DbCommand for 'ExecuteScalar' (0ms).
+2024-05-10 15:41:34.154 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.154 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.154 +02:00 [DBG] Executing DbCommand [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2024-05-10 15:41:34.155 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2024-05-10 15:41:34.156 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.156 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (0ms).
+2024-05-10 15:41:34.156 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.168 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.168 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.168 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (0ms).
+2024-05-10 15:41:34.168 +02:00 [DBG] Creating DbCommand for 'ExecuteScalar'.
+2024-05-10 15:41:34.168 +02:00 [DBG] Created DbCommand for 'ExecuteScalar' (0ms).
+2024-05-10 15:41:34.168 +02:00 [DBG] Initialized DbCommand for 'ExecuteScalar' (0ms).
+2024-05-10 15:41:34.168 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.169 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.169 +02:00 [DBG] Executing DbCommand [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2024-05-10 15:41:34.170 +02:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+2024-05-10 15:41:34.170 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.170 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (0ms).
+2024-05-10 15:41:34.170 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.170 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.170 +02:00 [DBG] Creating DbCommand for 'ExecuteReader'.
+2024-05-10 15:41:34.170 +02:00 [DBG] Created DbCommand for 'ExecuteReader' (0ms).
+2024-05-10 15:41:34.170 +02:00 [DBG] Initialized DbCommand for 'ExecuteReader' (0ms).
+2024-05-10 15:41:34.170 +02:00 [DBG] Executing DbCommand [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2024-05-10 15:41:34.171 +02:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2024-05-10 15:41:34.171 +02:00 [DBG] Closing data reader to 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.171 +02:00 [DBG] A data reader for 'minitrondatabase' on server 'tcp://192.168.90.99:5431' is being disposed after spending 0ms reading results.
+2024-05-10 15:41:34.171 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.171 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (0ms).
+2024-05-10 15:41:34.183 +02:00 [DBG] No migrations were found in assembly 'minitronapi'.
+2024-05-10 15:41:34.186 +02:00 [INF] No migrations were applied. The database is already up to date.
+2024-05-10 15:41:34.186 +02:00 [DBG] No migrations were found in assembly 'minitronapi'.
+2024-05-10 15:41:34.211 +02:00 [DBG] Compiling query expression: 
+'DbSet<IdentityRole>()
+    .Any()'
+2024-05-10 15:41:34.422 +02:00 [DBG] Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<bool>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.QueryExpression(
+        Projection Mapping:
+            EmptyProjectionMember -> 0
+        SELECT EXISTS (
+            SELECT 1
+            FROM AspNetRoles AS a)), 
+    null, 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, bool>, 
+    minitronapi.Data.minitronContext, 
+    False, 
+    False, 
+    True
+)
+    .Single()'
+2024-05-10 15:41:34.445 +02:00 [DBG] Opening connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.445 +02:00 [DBG] Opened connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.446 +02:00 [DBG] Creating DbCommand for 'ExecuteReader'.
+2024-05-10 15:41:34.446 +02:00 [DBG] Created DbCommand for 'ExecuteReader' (0ms).
+2024-05-10 15:41:34.446 +02:00 [DBG] Initialized DbCommand for 'ExecuteReader' (0ms).
+2024-05-10 15:41:34.446 +02:00 [DBG] Executing DbCommand [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM "AspNetRoles" AS a)
+2024-05-10 15:41:34.447 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM "AspNetRoles" AS a)
+2024-05-10 15:41:34.451 +02:00 [DBG] Closing data reader to 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.451 +02:00 [DBG] A data reader for 'minitrondatabase' on server 'tcp://192.168.90.99:5431' is being disposed after spending 3ms reading results.
+2024-05-10 15:41:34.452 +02:00 [DBG] Closing connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431'.
+2024-05-10 15:41:34.452 +02:00 [DBG] Closed connection to database 'minitrondatabase' on server 'tcp://192.168.90.99:5431' (0ms).
+2024-05-10 15:41:34.479 +02:00 [DBG] Registered model binder providers, in the following order: ["Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BinderTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ServicesModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.HeaderModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FloatingPointTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.EnumTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DateTimeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.SimpleTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.TryParseModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CancellationTokenModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormFileModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormCollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.KeyValuePairModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DictionaryModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexObjectModelBinderProvider"]
+2024-05-10 15:41:34.518 +02:00 [DBG] Hosting starting
+2024-05-10 15:41:34.524 +02:00 [DBG] Reading data from file 'C:\Users\Max Planstedt\AppData\Local\ASP.NET\DataProtection-Keys\key-38dcff6c-593d-42ff-813b-b25442563fa0.xml'.
+2024-05-10 15:41:34.527 +02:00 [DBG] Reading data from file 'C:\Users\Max Planstedt\AppData\Local\ASP.NET\DataProtection-Keys\key-7d40f7d0-e49a-43bd-bf0f-03c0259cc486.xml'.
+2024-05-10 15:41:34.530 +02:00 [DBG] Found key {38dcff6c-593d-42ff-813b-b25442563fa0}.
+2024-05-10 15:41:34.532 +02:00 [DBG] Found key {7d40f7d0-e49a-43bd-bf0f-03c0259cc486}.
+2024-05-10 15:41:34.537 +02:00 [DBG] Considering key {7d40f7d0-e49a-43bd-bf0f-03c0259cc486} with expiration date 2024-05-26 12:30:39Z as default key.
+2024-05-10 15:41:34.539 +02:00 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor, Microsoft.AspNetCore.DataProtection, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2024-05-10 15:41:34.539 +02:00 [DBG] Decrypting secret element using Windows DPAPI.
+2024-05-10 15:41:34.540 +02:00 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2024-05-10 15:41:34.542 +02:00 [DBG] Opening CNG algorithm 'AES' from provider 'null' with chaining mode CBC.
+2024-05-10 15:41:34.545 +02:00 [DBG] Opening CNG algorithm 'SHA256' from provider 'null' with HMAC.
+2024-05-10 15:41:34.547 +02:00 [DBG] Using key {7d40f7d0-e49a-43bd-bf0f-03c0259cc486} as the default key.
+2024-05-10 15:41:34.547 +02:00 [DBG] Key ring with default key {7d40f7d0-e49a-43bd-bf0f-03c0259cc486} was loaded during application startup.
+2024-05-10 15:41:34.573 +02:00 [INF] Now listening on: http://localhost:5248
+2024-05-10 15:41:34.573 +02:00 [DBG] Loaded hosting startup assembly minitronapi
+2024-05-10 15:41:34.573 +02:00 [DBG] Loaded hosting startup assembly Microsoft.AspNetCore.Watch.BrowserRefresh
+2024-05-10 15:41:34.574 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-10 15:41:34.574 +02:00 [INF] Hosting environment: Development
+2024-05-10 15:41:34.574 +02:00 [INF] Content root path: D:\ReposD\minitron\minitronapi
+2024-05-10 15:41:34.574 +02:00 [DBG] Hosting started
+2024-05-10 15:42:02.931 +02:00 [DBG] Connection id "0HN3GURSNCFI6" accepted.
+2024-05-10 15:42:02.931 +02:00 [DBG] Connection id "0HN3GURSNCFI6" started.

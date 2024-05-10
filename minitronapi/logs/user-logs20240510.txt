@@ -1,0 +1,5 @@
+2024-05-10 15:42:53.671 +02:00 [INF] HTTP GET All users retrieved at "2024-05-10T13:42:53.6714009Z"
+2024-05-10 15:43:13.323 +02:00 [INF] HTTP GET User string@string.com retrieved at "2024-05-10T13:43:13.3239464Z"
+2024-05-10 15:44:25.046 +02:00 [INF] HTTP PATCH User hohoh@hmail.com set custom system prompt at "2024-05-10T13:44:25.0469370Z"
+2024-05-10 15:45:35.545 +02:00 [INF] HTTP PATCH User hohoh@hmail.com set custom system prompt to You are not a helpful assistant at all at "2024-05-10T13:45:35.5456425Z"
+2024-05-10 15:46:09.717 +02:00 [INF] HTTP PATCH User hohoh@hmail.com set custom system prompt to 'hello this is a  test' at "2024-05-10T13:46:09.7171968Z"

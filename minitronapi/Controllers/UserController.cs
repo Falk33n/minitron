@@ -13,12 +13,14 @@ namespace minitronapi.Controllers
     public class UserController : ControllerBase
     {
         private readonly minitronContext _context;
-
         private readonly UserManager<UserModel> _userManager;
-        public UserController(minitronContext context, UserManager<UserModel> userManager)
+        private readonly ILogger<UserController> _logger;
+
+        public UserController(minitronContext context, UserManager<UserModel> userManager, ILogger<UserController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [HttpPost("register")]
@@ -43,7 +45,7 @@ namespace minitronapi.Controllers
                         Email = user.Email,
                         FullName = user.FullName
                     };
-
+                    _logger.LogInformation("HTTP {option} User {user} registered at {time}", "POST", user.Email, DateTime.UtcNow);
                     return Ok(userDto);
                 }
                 else
@@ -68,7 +70,7 @@ namespace minitronapi.Controllers
                 Email = user.Email,
                 FullName = user.FullName
             };
-
+            _logger.LogInformation("HTTP {option} User {user} retrieved at {time}", "GET", user.Email, DateTime.UtcNow);
             return Ok(userDto);
         }
 
@@ -83,7 +85,7 @@ namespace minitronapi.Controllers
                 FullName = user.FullName,
                 Id = user.Id
             }).ToList();
-
+            _logger.LogInformation("HTTP {option} All users retrieved at {time}", "GET", DateTime.UtcNow);
             return Ok(userDtos);
         }
 
@@ -99,9 +101,10 @@ namespace minitronapi.Controllers
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
             return NoContent();
         }
+
         [HttpDelete("deletebyid/{email}")]
         public async Task<IActionResult> DeleteUserByEmail(string email)
         {
@@ -114,6 +117,7 @@ namespace minitronapi.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
             return NoContent();
         }
 
@@ -166,10 +170,11 @@ namespace minitronapi.Controllers
                 FullName = user.FullName,
                 Id = user.Id
             };
+            _logger.LogInformation("HTTP {option} User {user} retrieved at {time}", "GET", user.Email, DateTime.UtcNow);
             return Ok(userDto);
         }
 
-        [HttpGet("SetCustomSystemPrompt")]
+        [HttpPatch("SetCustomSystemPrompt")]
         public async Task<IActionResult> SetCustomSystemPrompt(string prompt, string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -179,6 +184,7 @@ namespace minitronapi.Controllers
             }
             user.DefaultSystemPrompt = prompt;
             await _userManager.UpdateAsync(user);
+            _logger.LogInformation("HTTP {option} User {user} set custom system prompt to '{customPrompt}' at {time}", "PATCH", user.Email, prompt, DateTime.UtcNow);
             return Ok("Custom system prompt set successfully.");
         }
 
@@ -190,6 +196,7 @@ namespace minitronapi.Controllers
             {
                 return NotFound();
             }
+            _logger.LogInformation("HTTP {option} User {user} retrieved custom system prompt at {time}", "GET", user.Email, DateTime.UtcNow);
             return Ok(user.DefaultSystemPrompt);
         }
     }

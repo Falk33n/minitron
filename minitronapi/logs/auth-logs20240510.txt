@@ -1,0 +1,2 @@
+2024-05-10 15:42:40.141 +02:00 [INF] HTTP POST User string@string.com logged in at "2024-05-10T13:42:40.1413180Z"
+2024-05-10 15:53:11.176 +02:00 [INF] HTTP POST User string@string.com logged out at "2024-05-10T13:53:11.1720255Z"

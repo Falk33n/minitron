@@ -4,6 +4,7 @@ using minitronapi.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace minitronapi.Controllers
 {
@@ -41,7 +42,7 @@ namespace minitronapi.Controllers
           Path = "/"
         });
 
-        _logger.LogInformation("User {user} logged in at {time}", user.Email, DateTime.UtcNow);
+        _logger.LogInformation("HTTP {option} User {user} logged in at {time}", "POST", user.Email, DateTime.UtcNow);
 
         return Ok(new { Message = "Success", token });
       }
@@ -53,9 +54,13 @@ namespace minitronapi.Controllers
     public async Task<IActionResult> Logout()
     {
       var time = DateTime.UtcNow;
+      var token = Request.Cookies["AuthCookie"];
+      var handler = new JwtSecurityTokenHandler();
+      var user = handler.ReadJwtToken(token).Claims.First(claim => claim.Type == "email").Value;
+
       Response.Cookies.Delete("AuthCookie");
       await _signInManager.SignOutAsync();
-      _logger.LogInformation("User logged out at {time}", time);
+      _logger.LogInformation("HTTP {option} User {user} logged out at {time}", "POST", user, time);
       return Ok(new { Message = "Success" });
     }
 
@@ -63,6 +68,8 @@ namespace minitronapi.Controllers
     public IActionResult CheckSession()
     {
       var token = Request.Cookies["AuthCookie"];
+      var handler = new JwtSecurityTokenHandler();
+      var user = handler.ReadJwtToken(token).Claims.First(claim => claim.Type == "email").Value;
 
       if (string.IsNullOrEmpty(token))
       {
@@ -74,7 +81,7 @@ namespace minitronapi.Controllers
       {
         return Unauthorized(false);
       }
-
+      _logger.LogInformation("HTTP {option} User {user} session is valid", "GET", user);
       return Ok(true);
     }
   }
