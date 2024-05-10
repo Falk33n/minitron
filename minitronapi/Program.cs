@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,13 @@ var password = builder.Configuration["PostgreSQL:Password"];
 var connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
 var tokenKeyString = builder.Configuration["tokenSettings:tokenKey"];
 
+Log.Logger = new LoggerConfiguration()
+.Enrich.FromLogContext()
+.WriteTo.Console()
+.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+.CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<minitronContext>(options =>
     options.UseNpgsql(connectionString));

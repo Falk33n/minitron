@@ -18,13 +18,6 @@ namespace minitronapi.Services
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("http://192.168.90.99:5003/v1/");
             // Get the API key from the configuration/user secrets
-            var apiKey = configuration["OpenAI:ApiKey"];
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new Exception("OpenAI API key is missing.");
-            }
-
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
         }
 
         public async Task<string> SendMessage(List<ChatMessage> conversation)
