@@ -1,9 +1,9 @@
 'use client';
 
 import { Button, Loader, NotAllowed } from '@/src/components';
-import { getSession } from '@/src/helpers';
+import { getSession, getUsers } from '@/src/helpers';
 import { useQuery } from '@tanstack/react-query';
-import { ReactNode, useState } from 'react';
+import { MouseEvent, ReactNode, useState } from 'react';
 
 export default function Admin() {
 	const [logHistory, setLogHistory] = useState<string[]>([]);
@@ -19,9 +19,18 @@ export default function Admin() {
 		setLogHistory([]);
 	};
 
-	const handleUsers = () => {
-		setUserHistory([]);
-	};
+	async function handleUsers(event: MouseEvent<HTMLButtonElement>) {
+		event.preventDefault();
+		const response = await getUsers();
+
+		if (response) {
+			setUserHistory((userHistory) => {
+				return [...userHistory, response];
+			});
+		} else {
+			console.error('AI response was null');
+		}
+	}
 
 	return (
 		<>
@@ -49,7 +58,7 @@ export default function Admin() {
 									<form>
 										<Button
 											className='w-[8rem]'
-											onClick={handleUsers}
+											onClick={(event) => handleUsers(event)}
 										>
 											Show Users
 										</Button>

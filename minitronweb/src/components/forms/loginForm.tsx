@@ -19,7 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postLogIn } from '../../helpers/accounts';
+import { postLogIn } from '../../helpers/postAccounts';
 
 export type LogInFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;

@@ -1,4 +1,4 @@
-const baseURL = 'http://minitron/api';
+import { baseURL } from '../helpers/index';
 
 export async function postRegister(data = {}) {
 	const response = await fetch(`${baseURL}/User/register`, {
