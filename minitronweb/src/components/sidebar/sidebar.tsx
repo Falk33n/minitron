@@ -8,12 +8,11 @@ import {
 } from '@/src/components';
 import { useQuery } from '@tanstack/react-query';
 import {
-	LucideBadgeInfo,
 	LucideChevronRight,
 	LucideMessageSquareText,
-	LucidePhoneForwarded,
 	LucideSettings,
 } from 'lucide-react';
+import Link from 'next/link';
 import { HTMLAttributes, forwardRef, useState } from 'react';
 import { getSession } from '../../helpers';
 import { cn } from '../../utilities/shadUtilities';
@@ -70,46 +69,8 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 						</h6>
 					</div>
 
-					{/* HISTORY HERE
-      <div>
-        <UnorderedList>
-          <AnchorListItem href=''></AnchorListItem>
-        </UnorderedList>
-        <UnorderedList>
-          <AnchorListItem href=''></AnchorListItem>
-        </UnorderedList>
-        <UnorderedList>
-          <AnchorListItem href=''></AnchorListItem>
-        </UnorderedList>
-      </div> */}
-
 					<div className='relative flex-1 flex flex-col justify-end'>
 						<UnorderedList>
-							<AnchorListItem href='about'>
-								About <LucideBadgeInfo aria-hidden />
-							</AnchorListItem>
-
-							<AnchorListItem href='contact'>
-								Contact <LucidePhoneForwarded aria-hidden />
-							</AnchorListItem>
-
-							{/* 						{getSession().then(
-            (authenticated) =>
-              authenticated && (
-                <>
-                  <AnchorListItem href='createprofile'>
-                    Add Agent <LucideBadgePlus aria-hidden />
-                  </AnchorListItem>
-                  <AnchorListItem href='profile'>
-                    Settings <LucideSettings aria-hidden />
-                  </AnchorListItem>
-                  <AnchorListItem href='logout'>
-                    Logout <LucideLogOut aria-hidden />
-                  </AnchorListItem>
-                </>
-              )
-          )} */}
-
 							{isLoading && (
 								<AnchorListItem href='#'>
 									<Loader className='' />
@@ -117,10 +78,6 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 							)}
 							{!isLoading && !error && (
 								<>
-									{/* 			<AnchorListItem href='createprofile'>
-										Add Agent <LucideBadgePlus aria-hidden />
-									</AnchorListItem> */}
-
 									<DropdownMenu>
 										<DropdownMenuTrigger className='rounded-lg flex justify-between font-medium p-2 hover:bg-navbarList/80'>
 											Settings
@@ -129,19 +86,42 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 												aria-hidden
 											/>
 										</DropdownMenuTrigger>
-										<DropdownMenuContent>
+										<DropdownMenuContent className='w-[12rem]'>
+											<DropdownMenuLabel>MinitronAI</DropdownMenuLabel>
+											<DropdownMenuSeparator />
+
+											<DropdownMenuItem className='cursor-pointer hover:bg-navbarList/50 focus-visible:bg-navbarList/50 hover:font-medium focus-visible:font-medium'>
+												<Link href='/about'>About</Link>
+											</DropdownMenuItem>
+											<Link href='/contact'>
+												<DropdownMenuItem className='cursor-pointer hover:bg-navbarList/50 focus-visible:bg-navbarList/50 hover:font-medium focus-visible:font-medium'>
+													Contact
+												</DropdownMenuItem>
+											</Link>
+
+											<DropdownMenuSeparator />
 											<DropdownMenuLabel>My Account</DropdownMenuLabel>
 											<DropdownMenuSeparator />
-											<DropdownMenuItem>Profile</DropdownMenuItem>
-											<DropdownMenuItem>Billing</DropdownMenuItem>
-											<DropdownMenuItem>Team</DropdownMenuItem>
-											<DropdownMenuItem>Subscription</DropdownMenuItem>
+
+											<Link href='/profile'>
+												<DropdownMenuItem className='cursor-pointer hover:bg-navbarList/50 focus-visible:bg-navbarList/50 hover:font-medium focus-visible:font-medium'>
+													Profile
+												</DropdownMenuItem>
+											</Link>
+
+											<Link href='/createprofile'>
+												<DropdownMenuItem className='cursor-pointer hover:bg-navbarList/50 focus-visible:bg-navbarList/50 hover:font-medium focus-visible:font-medium'>
+													Add Agents
+												</DropdownMenuItem>
+											</Link>
+
+											<button className='w-full rounded-lg cursor-pointer hover:bg-navbarList/50 focus-visible:bg-navbarList/50 hover:font-medium focus-visible:font-medium'>
+												<DropdownMenuItem className='cursor-pointer'>
+													Logout
+												</DropdownMenuItem>
+											</button>
 										</DropdownMenuContent>
 									</DropdownMenu>
-
-									{/* 			<AnchorListItem href='logout'>
-										Logout <LucideLogOut aria-hidden />
-									</AnchorListItem> */}
 								</>
 							)}
 						</UnorderedList>

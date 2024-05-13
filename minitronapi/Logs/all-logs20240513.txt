@@ -1,0 +1,2 @@
+2024-05-13 14:02:35.469 +02:00 [DBG] An 'IServiceProvider' was created for internal use by Entity Framework.
+2024-05-13 14:02:35.757 +02:00 [INF] User profile is available. Using 'C:\Users\Emil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
