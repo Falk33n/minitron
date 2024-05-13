@@ -17,6 +17,14 @@ import {
 import { HTMLAttributes, forwardRef, useState } from 'react';
 import { getSession } from '../../helpers';
 import { cn } from '../../utilities/shadUtilities';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 export interface SidebarProps extends HTMLAttributes<HTMLElement> {}
 
@@ -113,9 +121,23 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 										Add Agent <LucideBadgePlus aria-hidden />
 									</AnchorListItem> */}
 
-									<AnchorListItem href='profile'>
-										Settings <LucideSettings aria-hidden />
-									</AnchorListItem>
+									<DropdownMenu>
+										<DropdownMenuTrigger className='rounded-lg flex justify-between font-medium p-2 hover:bg-navbarList/80'>
+											Settings
+											<LucideSettings
+												className='text-primary size-5'
+												aria-hidden
+											/>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent>
+											<DropdownMenuLabel>My Account</DropdownMenuLabel>
+											<DropdownMenuSeparator />
+											<DropdownMenuItem>Profile</DropdownMenuItem>
+											<DropdownMenuItem>Billing</DropdownMenuItem>
+											<DropdownMenuItem>Team</DropdownMenuItem>
+											<DropdownMenuItem>Subscription</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
 
 									{/* 			<AnchorListItem href='logout'>
 										Logout <LucideLogOut aria-hidden />
@@ -131,9 +153,8 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 
 					<Button
 						className={`
-							transition-all duration-300 fixed top-1/2 -translate-y-1/2 ${
-								isSidebarVisible ? 'left-56' : 'left-1'
-							}`}
+							transition-all duration-300 absolute top-1/2 -translate-y-1/2 -right-10
+							`}
 						variant='icon'
 						size='icon'
 						title={isSidebarVisible ? 'Close Sidebar' : 'Open Sidebar'}

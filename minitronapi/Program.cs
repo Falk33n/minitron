@@ -25,6 +25,15 @@ var tokenKeyString = builder.Configuration["tokenSettings:tokenKey"];
 builder.Services.AddDbContext<minitronContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("CorsPolicy",
+    builder => builder.WithOrigins("http://localhost:3000")
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+});
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddIdentityCore<UserModel>(options =>
@@ -108,6 +117,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 

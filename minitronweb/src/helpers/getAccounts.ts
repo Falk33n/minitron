@@ -3,7 +3,6 @@ import { baseURL } from '../helpers/index';
 export async function getUsers() {
 	const response = await fetch(`${baseURL}/User/getall`, {
 		method: 'GET',
-		credentials: 'include',
 	});
 
 	if (!response.ok) {
