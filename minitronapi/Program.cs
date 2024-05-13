@@ -29,14 +29,17 @@ Log.Logger = new LoggerConfiguration()
         .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
                                      e.Properties["SourceContext"].ToString().Contains("AuthController"))
         .WriteTo.File("Logs/auth-logs.txt", rollingInterval: RollingInterval.Day))
+        .WriteTo.Seq("http://192.168.90.99:5341")
     .WriteTo.Logger(lc => lc
     .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
                                  e.Properties["SourceContext"].ToString().Contains("UserController"))
     .WriteTo.File("Logs/user-logs.txt", rollingInterval: RollingInterval.Day))
+    .WriteTo.Seq("http://192.168.90.99:5341")
     .WriteTo.Logger(lc => lc
     .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
                                  e.Properties["SourceContext"].ToString().Contains("ChatController"))
     .WriteTo.File("Logs/chat-logs.txt", rollingInterval: RollingInterval.Day))
+    .WriteTo.Seq("http://192.168.90.99:5341")
     .CreateLogger();
 
 
@@ -44,6 +47,17 @@ builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<minitronContext>(options =>
     options.UseNpgsql(connectionString));
+
+// add Cors, open for localhost:3000  
+//builder.Services.AddCors(options =>
+//{
+//  options.AddPolicy("OpenCorsPolicy", builder =>
+//  {
+//    builder.WithOrigins("http://localhost:3000")
+//           .AllowAnyHeader()
+//           .AllowAnyMethod();
+//  });
+//});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -128,6 +142,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("OpenCorsPolicy");
+app.UseSerilogRequestLogging();
 
 app.MapControllers();
 
