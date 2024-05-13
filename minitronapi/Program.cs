@@ -49,15 +49,15 @@ builder.Services.AddDbContext<minitronContext>(options =>
     options.UseNpgsql(connectionString));
 
 // add Cors, open for localhost:3000  
-//builder.Services.AddCors(options =>
-//{
-//  options.AddPolicy("OpenCorsPolicy", builder =>
-//  {
-//    builder.WithOrigins("http://localhost:3000")
-//           .AllowAnyHeader()
-//           .AllowAnyMethod();
-//  });
-//});
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("OpenCorsPolicy", builder =>
+  {
+    builder.AllowAnyOrigin()
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+  });
+});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -113,6 +113,8 @@ builder.Services.AddAuthorization(options =>
   options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
   options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
+
+builder.Services.AddHttpClient<SeqService>();
 
 
 
