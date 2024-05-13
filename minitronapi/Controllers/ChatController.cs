@@ -15,13 +15,15 @@ namespace minitronapi.Controllers
         private readonly minitronContext _context;
         private readonly RequestService _requestService;
         private readonly ConversationService _conversationService;
+        private readonly ILogger<ChatController> _logger;
 
 
-        public ChatController(minitronContext context, RequestService requestService, ConversationService conversationService)
+        public ChatController(minitronContext context, RequestService requestService, ConversationService conversationService, ILogger<ChatController> logger)
         {
             _context = context;
             _requestService = requestService;
             _conversationService = conversationService;
+            _logger = logger;
         }
 
 
@@ -80,10 +82,15 @@ namespace minitronapi.Controllers
             {
                 request.Conversation = new List<ChatMessage> { systemPrompt };
             }
+            var apiCallStartTime = DateTime.UtcNow;
 
             // Send the conversation to the AI
             var response = await _requestService.SendMessage(request.Conversation);
 
+            var apiCallEndTime = DateTime.UtcNow;
+            var apiCallDuration = apiCallEndTime - apiCallStartTime;
+
+            _logger.LogInformation("API call duration: {apiCallDuration}", apiCallDuration);
             // Format the response
             var formattedResponse = _requestService.FormatResponse(response);
 
@@ -105,7 +112,7 @@ namespace minitronapi.Controllers
 
             await _conversationService.SaveRequestToDatabase(newRequest);
             await _conversationService.SaveResponseToDatabase(newResponse);
-
+            _logger.LogInformation("Request and response saved to database");
             return Ok(new { response = formattedResponse });
         }
 
@@ -138,6 +145,8 @@ namespace minitronapi.Controllers
                 Timestamp = DateTime.UtcNow
             };
             await _conversationService.SaveConversationToDatabase(newConversation);
+
+            _logger.LogInformation("New conversation started with id: {conversationId}", newConversation.ConversationId);
 
             return Ok(new { conversationId = newConversation.ConversationId });
         }
@@ -243,7 +252,7 @@ namespace minitronapi.Controllers
             }
 
             await _conversationService.DeleteConversationById(conversationId);
-
+            _logger.LogInformation("Conversation with id: {conversationId} deleted successfully", conversationId);
             return Ok($"Conversation with id: {conversationId} deleted successfully");
         }
     }

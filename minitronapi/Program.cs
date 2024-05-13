@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,17 +22,41 @@ var password = builder.Configuration["PostgreSQL:Password"];
 var connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
 var tokenKeyString = builder.Configuration["tokenSettings:tokenKey"];
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.File("Logs/all-logs.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
+                                     e.Properties["SourceContext"].ToString().Contains("AuthController"))
+        .WriteTo.File("Logs/auth-logs.txt", rollingInterval: RollingInterval.Day))
+        .WriteTo.Seq("http://192.168.90.99:5341")
+    .WriteTo.Logger(lc => lc
+    .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
+                                 e.Properties["SourceContext"].ToString().Contains("UserController"))
+    .WriteTo.File("Logs/user-logs.txt", rollingInterval: RollingInterval.Day))
+    .WriteTo.Seq("http://192.168.90.99:5341")
+    .WriteTo.Logger(lc => lc
+    .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
+                                 e.Properties["SourceContext"].ToString().Contains("ChatController"))
+    .WriteTo.File("Logs/chat-logs.txt", rollingInterval: RollingInterval.Day))
+    .WriteTo.Seq("http://192.168.90.99:5341")
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<minitronContext>(options =>
     options.UseNpgsql(connectionString));
 
+// add Cors, open for localhost:3000  
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy("CorsPolicy",
-    builder => builder.WithOrigins("http://localhost:3000")
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+  options.AddPolicy("OpenCorsPolicy", builder =>
+  {
+    builder.AllowAnyOrigin()
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+  });
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -89,6 +114,8 @@ builder.Services.AddAuthorization(options =>
   options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
 
+builder.Services.AddHttpClient<SeqService>();
+
 
 
 var app = builder.Build();
@@ -117,8 +144,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors("CorsPolicy");
+app.UseCors("OpenCorsPolicy");
+app.UseSerilogRequestLogging();
 
 app.MapControllers();
 
