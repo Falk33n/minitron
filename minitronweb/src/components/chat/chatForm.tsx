@@ -74,7 +74,7 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 					<Button
 						variant='icon'
 						size='icon'
-						className='absolute top-2 right-3.5'
+						className='absolute bottom-2 right-4'
 						title='Send message'
 						aria-label='Send message'
 						type='submit'

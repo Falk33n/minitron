@@ -1,12 +1,25 @@
 'use client';
 
-import { ChatForm, RobotChatBubble, UserChatBubble } from '@/src/components';
+import {
+	ChatForm,
+	Loader,
+	RobotChatBubble,
+	UserChatBubble,
+} from '@/src/components';
+import { useQuery } from '@tanstack/react-query';
+import { LucideBot } from 'lucide-react';
 import { FormEvent, KeyboardEvent, useState } from 'react';
 import { openAI } from '../../helpers';
 
 export const ChatContainer = () => {
 	const [chatHistory, setChatHistory] = useState<string[]>([]);
 	const [prompt, setPrompt] = useState('');
+	const { isLoading, refetch } = useQuery({
+		queryKey: ['chat', prompt],
+		queryFn: () => fetchAI(prompt),
+		retry: false,
+		enabled: false,
+	});
 
 	function handleKeyDown(
 		event: KeyboardEvent<HTMLFormElement> | KeyboardEvent<HTMLTextAreaElement>
@@ -19,8 +32,9 @@ export const ChatContainer = () => {
 			setPrompt(event.currentTarget.value + '\n');
 		} else if (event.key === 'Enter') {
 			event.preventDefault();
-			handleSubmit(event);
 			event.currentTarget.rows = 1;
+			event.currentTarget.value = '';
+			handleSubmit(event);
 			return;
 		}
 	}
@@ -31,30 +45,33 @@ export const ChatContainer = () => {
 		event.preventDefault();
 
 		if (!prompt || !/^\S/.test(prompt)) return;
-		const currentPrompt = prompt;
-
-		setPrompt('');
 		setChatHistory((chatHistory) => {
-			return [...chatHistory, currentPrompt];
+			return [...chatHistory, prompt];
 		});
+		await refetch();
+		setPrompt('');
+	}
 
-		const aiResponse = await openAI({
-			message: [...chatHistory, currentPrompt],
+	async function fetchAI(prompt: string) {
+		const response = await openAI({
+			message: [...chatHistory, prompt],
 			role: chatHistory.length % 2 === 0 ? 'assistant' : 'user',
 		});
 
-		if (aiResponse) {
+		if (response) {
 			setChatHistory((chatHistory) => {
-				return [...chatHistory, aiResponse];
+				return [...chatHistory, response];
 			});
 		} else {
 			console.error('AI response was null');
 		}
+
+		return response;
 	}
 
 	return (
 		<div className='flex flex-col items-center w-full h-screen overflow-y-auto'>
-			<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[65rem]'>
+			<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[66%]'>
 				MinitronAI
 			</p>
 
@@ -66,6 +83,14 @@ export const ChatContainer = () => {
 					>
 						{index % 2 === 0 ? (
 							<UserChatBubble message={message} />
+						) : isLoading ? (
+							<div>
+								<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
+									<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
+									<h4>MinitronAI</h4>
+								</section>
+								<Loader />
+							</div>
 						) : (
 							<RobotChatBubble message={message} />
 						)}

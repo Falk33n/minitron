@@ -9,10 +9,10 @@ namespace minitronapi.Services
         private readonly string _seqUrl = "http://192.168.90.99:5341/api/";
         private readonly string _apiKey = "oEcKLfFDIdD0jJWRBLch";
 
-        public SeqService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+    public SeqService(HttpClient httpClient)
+    {
+      _httpClient = httpClient;
+    }
 
         public async Task<string> GetLogsAsync()
         {

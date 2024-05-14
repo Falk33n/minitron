@@ -1,4 +1,6 @@
 // Export all components
+export * from './admin/dataWindow';
+export * from './admin/edit';
 export * from './chat/chatContainer';
 export * from './chat/chatForm';
 export * from './chat/messageParser';

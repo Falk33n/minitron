@@ -8,12 +8,9 @@ export function Loader({
 	sm?: boolean;
 }) {
 	return (
-		<button
-			className={className + ' flex'}
-			disabled
-		>
+		<div className={className + ' flex'}>
 			{!sm && 'Please wait..'}
 			<Loader2 className='ml-3 text-primary size-5 animate-spin' />
-		</button>
+		</div>
 	);
 }
