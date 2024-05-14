@@ -7,7 +7,7 @@ namespace minitronapi.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? Image { get; set; }
-        public float Version { get; set; }
+        public float? Version { get; set; }
 
         // Config props
         public string? Model { get; set; } = "/mnt/model";
