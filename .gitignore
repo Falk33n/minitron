@@ -116,4 +116,5 @@ ScaffoldingReadMe.txt
 *.test
 *.dll.config
 *.exe.config
+*.txt
 .env.local

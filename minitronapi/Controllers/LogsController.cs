@@ -29,5 +29,20 @@ namespace minitronapi.Controllers
             }
             return NotFound();
         }
+        [HttpGet("getlogs/{signalId}")]
+        public async Task<IActionResult> GetLogsBySignal(string signalId)
+        {
+            var logsJson = await _seqService.GetLogsBySignalAsync(signalId);
+            if (logsJson != null)
+            {
+                return new ContentResult
+                {
+                    Content = logsJson,
+                    ContentType = "application/json",
+                    StatusCode = 200
+                };
+            }
+            return NotFound();
+        }
     }
 }
