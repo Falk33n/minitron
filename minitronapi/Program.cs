@@ -23,7 +23,7 @@ var connectionString = $"Host={host};Port={port};Database={database};Username={u
 var tokenKeyString = builder.Configuration["tokenSettings:tokenKey"];
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
+    .MinimumLevel.Warning()
     .WriteTo.File("Logs/all-logs.txt", rollingInterval: RollingInterval.Day)
     .WriteTo.Logger(lc => lc
         .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") &&
