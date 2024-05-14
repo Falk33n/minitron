@@ -15,7 +15,7 @@ export const DataWindow = ({
 	refetch,
 	getLogs,
 }: {
-	logHistory: LogType[];
+	logHistory: LogType;
 	userHistory: UserType[];
 	loading: ReactNode;
 	refetch: () => Promise<unknown>;
@@ -34,7 +34,7 @@ export const DataWindow = ({
 							<form>
 								<Button
 									className={`w-[3.5rem] h-[3rem] items-start rounded-b-none ${
-										logHistory.length > 0
+										Object.keys(logHistory).length > 0
 											? 'bg-border text-black hover:bg-border/30'
 											: ''
 									}`}
@@ -101,21 +101,24 @@ export const DataWindow = ({
 							</tbody>
 						</table>
 
-						{logHistory.length > 0 && (
+						{Object.keys(logHistory).length > 0 && (
 							<Accordion
 								className='w-[90%] mx-auto'
 								type='multiple'
 							>
-								<AccordionItem value={`item-${logHistory.length}`}>
+								<AccordionItem value={`item-${Object.keys(logHistory).length}`}>
 									<AccordionTrigger className='font-bold'>
 										Properties
 									</AccordionTrigger>
-									{logHistory.map((message, index) => (
-										<AccordionContent key={index}>
-											<table className='w-full mb-10'>
+									{logHistory.Events?.map((event, parentI) => (
+										<AccordionContent key={parentI}>
+											<table
+												className='w-full mb-10'
+												key={parentI}
+											>
 												<thead>
 													<tr className='[&>th]:border [&>th]:px-4 [&>th]:py-2 flex'>
-														<th className='flex-[6%]'>Log {index + 1}</th>
+														<th className='flex-[6%]'>Log {parentI + 1}</th>
 														<th className='flex-[16%] text-start'>Name</th>
 														<th className='flex-[37%] text-start'>Value</th>
 														<th className='flex-[7%]'>Value ID</th>
@@ -125,7 +128,7 @@ export const DataWindow = ({
 													</tr>
 												</thead>
 												<tbody>
-													{message.Properties?.map((prop, i) => (
+													{event.Properties?.map((prop, i) => (
 														<tr
 															key={i}
 															className='[&>td]:border [&>td]:p-4 flex [&>td]:text-ellipsis [&>td]:overflow-hidden'

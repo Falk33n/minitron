@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
 export default function Admin() {
-	const [logHistory, setLogHistory] = useState<LogType[]>([]);
+	const [logHistory, setLogHistory] = useState<LogType>({ Events: [] });
 	const [userHistory, setUserHistory] = useState<
 		{ id: string; fullName: string; email: string }[]
 	>([]);
@@ -32,7 +32,7 @@ export default function Admin() {
 	}
 
 	async function handleUsers() {
-		setLogHistory([]);
+		setLogHistory({ Events: [] });
 		const response = await getUsers();
 
 		if (response) {

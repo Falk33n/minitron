@@ -5,23 +5,25 @@ export type UserType = {
 };
 
 export type LogType = {
-	Properties?: Array<{
-		Name: string;
-		Value: string | number | { Id: number | null; Name: string };
+	Events: Array<{
+		Properties?: Array<{
+			Name: string;
+			Value: string | number | { Id: number | null; Name: string };
+		}>;
+		Timestamp: string;
+		MessageTemplateTokens: {
+			Text?: string;
+			PropertyName?: string;
+		}[];
+		EventType: string;
+		Level: string;
+		TraceId: string;
+		SpanId: string;
+		SpanKind: string;
+		Id: string;
+		Links: {
+			Self: string;
+			Group: string;
+		};
 	}>;
-	Timestamp: string;
-	MessageTemplateTokens: {
-		Text?: string;
-		PropertyName?: string;
-	}[];
-	EventType: string;
-	Level: string;
-	TraceId: string;
-	SpanId: string;
-	SpanKind: string;
-	Id: string;
-	Links: {
-		Self: string;
-		Group: string;
-	};
 };

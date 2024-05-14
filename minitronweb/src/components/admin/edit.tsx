@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
 import { LucidePencil, LucideTrash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../forms/button';
 
-export const Edit = ({show}: {show: boolean;}) => {
+export const Edit = ({ show }: { show: boolean }) => {
 	const [edit, setEdit] = useState(false);
 
 	return (
