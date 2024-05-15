@@ -16,7 +16,7 @@ export default function Register() {
 					/>
 				</nav>
 
-				<nav className='text-xs text-muted-foreground -mt-4 [word-spacing:1px]'>
+				<nav className='text-muted-foreground -mt-4 [word-spacing:1px]'>
 					<AnchorLink
 						paragraph='By registering an account, you agree to our '
 						link='Terms of Service'

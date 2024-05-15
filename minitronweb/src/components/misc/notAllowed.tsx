@@ -1,31 +1,41 @@
-import Link from 'next/link';
-import { HTMLAttributes, forwardRef } from 'react';
+'use client';
+
+import { AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { HTMLAttributes, forwardRef, useEffect } from 'react';
 import { cn } from '../../utilities/shadUtilities';
+import { AlertDescription, AlertTitle, Alerts } from '../ui/alerts';
 
-export type NotAllowedProps = HTMLAttributes<HTMLElement> & {
-	message?: string;
-};
+export type NotAllowedProps = HTMLAttributes<HTMLDivElement> & {};
 
-export const NotAllowed = forwardRef<HTMLElement, NotAllowedProps>(
-	({ className, message, ...props }, ref) => {
+export const NotAllowed = forwardRef<HTMLDivElement, NotAllowedProps>(
+	({ className, ...props }, ref) => {
+		const router = useRouter();
+
+		useEffect(() => {
+			setTimeout(() => router.push('/'), 7500);
+		});
+
 		return (
-			<section
+			<div
 				className={cn(
-					'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-10 px-[30rem] w-full h-screen bg-gradientGray z-[20] text-center',
+					'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-10 px-[30rem] h-screen bg-white y z-[20] text-center w-full',
 					className
 				)}
 				ref={ref}
 				{...props}
 			>
-				<h1 className='text-5xl font-extrabold text-red-700'>Error!</h1>
-				<p>{message}</p>
-				<Link
-					className='bg-primary py-2 px-7 text-white rounded-full hover:bg-primary/90'
-					href='/'
+				<Alerts
+					variant='destructive'
+					className='w-[22rem]'
 				>
-					Go to Homepage
-				</Link>
-			</section>
+					<AlertCircle className='size-4' />
+					<AlertTitle>Error!</AlertTitle>
+					<AlertDescription>
+						You are not authenticated. Rederecting...
+					</AlertDescription>
+				</Alerts>
+			</div>
 		);
 	}
 );

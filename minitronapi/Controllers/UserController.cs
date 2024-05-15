@@ -23,19 +23,19 @@ namespace minitronapi.Controllers
             _logger = logger;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserModel model)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterUserModel model)
+    {
+      if (ModelState.IsValid)
+      {
+        var user = new UserModel
         {
-            if (ModelState.IsValid)
-            {
-                var user = new UserModel
-                {
-                    Email = model.Email,
-                    UserName = model.Email, // Often the email is used as the UserName
-                    FullName = model.FullName!
-                };
+          Email = model.Email,
+          UserName = model.Email, // Often the email is used as the UserName
+          FullName = model.FullName!
+        };
 
-                var result = await _userManager.CreateAsync(user, model.Password!);
+        var result = await _userManager.CreateAsync(user, model.Password!);
 
                 if (result.Succeeded)
                 {
@@ -56,14 +56,14 @@ namespace minitronapi.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpGet("getbyid/{id}")]
-        public async Task<IActionResult> GetUserById(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+    [HttpGet("getbyid/{id}")]
+    public async Task<IActionResult> GetUserById(string id)
+    {
+      var user = await _userManager.FindByIdAsync(id);
+      if (user == null)
+      {
+        return NotFound();
+      }
 
             var userDto = new GetUserModel
             {
@@ -90,14 +90,14 @@ namespace minitronapi.Controllers
         }
 
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+      var user = await _context.Users.FindAsync(id);
+      if (user == null)
+      {
+        return NotFound();
+      }
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -114,55 +114,55 @@ namespace minitronapi.Controllers
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+      _context.Users.Remove(user);
+      await _context.SaveChangesAsync();
 
             _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
             return NoContent();
         }
 
-        [HttpGet("getcurrentuser")]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var token = Request.Cookies["AuthCookie"];
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized();
-            }
+    [HttpGet("getcurrentuser")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+      var token = Request.Cookies["AuthCookie"];
+      if (string.IsNullOrEmpty(token))
+      {
+        return Unauthorized();
+      }
 
-            // Decode JWT token
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken;
-            try
-            {
-                jwtToken = handler.ReadJwtToken(token);
-            }
-            catch (Exception ex)
-            {
-                // Handle decoding errors (token invalid, expired, etc.)
-                return BadRequest("Invalid token." + ex.Message);
-            }
+      // Decode JWT token
+      var handler = new JwtSecurityTokenHandler();
+      JwtSecurityToken jwtToken;
+      try
+      {
+        jwtToken = handler.ReadJwtToken(token);
+      }
+      catch (Exception ex)
+      {
+        // Handle decoding errors (token invalid, expired, etc.)
+        return BadRequest("Invalid token." + ex.Message);
+      }
 
-            // Extract user identifier from JWT claims (e.g., email or user ID)
-            var userEmail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+      // Extract user identifier from JWT claims (e.g., email or user ID)
+      var userEmail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
 
-            // Testing purposes: print all claims
-            foreach (var claim in jwtToken.Claims)
-            {
-                Console.WriteLine($"Claim type: {claim.Type}, value: {claim.Value}");
-            }
+      // Testing purposes: print all claims
+      foreach (var claim in jwtToken.Claims)
+      {
+        Console.WriteLine($"Claim type: {claim.Type}, value: {claim.Value}");
+      }
 
-            if (string.IsNullOrEmpty(userEmail))
-            {
-                return Unauthorized("User not found.");
-            }
+      if (string.IsNullOrEmpty(userEmail))
+      {
+        return Unauthorized("User not found.");
+      }
 
-            // Retrieve user by email
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
-            {
-                return NotFound();
-            }
+      // Retrieve user by email
+      var user = await _userManager.FindByEmailAsync(userEmail);
+      if (user == null)
+      {
+        return NotFound();
+      }
 
             var userDto = new GetUserModel
             {
