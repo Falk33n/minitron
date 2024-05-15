@@ -1,29 +1,31 @@
 'use client';
 
-import { LucidePencil, LucideTrash2 } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '../forms/button';
+import { LucidePencil, LucideTrash } from 'lucide-react';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
-export const Edit = ({ show }: { show: boolean }) => {
-	const [edit, setEdit] = useState(false);
-
+export const Edit = () => {
 	return (
-		<>
-			{show && (
-				<div onClick={() => setEdit((prev) => !prev)}>
-					<LucidePencil />
-					{edit && (
-						<div>
-							<Button>
-								<LucidePencil />
-							</Button>
-							<Button>
-								<LucideTrash2 />
-							</Button>
-						</div>
-					)}
-				</div>
-			)}
-		</>
+		<DropdownMenu>
+			<DropdownMenuTrigger
+				className='hover:bg-black/5 rounded-sm focus-visible:bg-black/5'
+				title='Edit user information'
+			>
+				<LucidePencil
+					className='size-5 text-primary'
+					aria-label='Click this to open the user editor'
+				/>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className=''>
+				<DropdownMenuItem className=''>
+					<LucidePencil aria-label='Edit user' />
+					<LucideTrash aria-label='Delete user' />
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
