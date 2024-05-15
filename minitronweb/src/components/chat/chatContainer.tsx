@@ -83,7 +83,7 @@ export const ChatContainer = () => {
 					>
 						{index % 2 === 0 ? (
 							<UserChatBubble message={message} />
-						) : isLoading ? (
+						) : index === chatHistory.length - 1 && index % 2 !== 0 ? (
 							<div>
 								<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
 									<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
