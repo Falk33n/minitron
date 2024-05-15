@@ -118,3 +118,6 @@ ScaffoldingReadMe.txt
 *.exe.config
 *.txt
 .env.local
+nginx/Dockerfile.nginx
+nginx/timdev.conf
+docker-compose.tim.yml
