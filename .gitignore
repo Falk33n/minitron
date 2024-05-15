@@ -117,4 +117,9 @@ ScaffoldingReadMe.txt
 *.dll.config
 *.exe.config
 *.txt
+docker-compose.yml
+Dockerfile
 .env.local
+.env
+minitronapi/Dockerfile
+minitronweb/Dockerfile
