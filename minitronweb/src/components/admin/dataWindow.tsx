@@ -7,6 +7,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '../ui/accordion';
+import { Edit } from './edit';
 
 export const DataWindow = ({
 	userHistory,
@@ -34,7 +35,7 @@ export const DataWindow = ({
 							<form>
 								<Button
 									className={`w-[3.5rem] h-[3rem] items-start rounded-b-none ${
-										Object.keys(logHistory).length > 0
+										Object.keys(logHistory).length > 1
 											? 'bg-border text-black hover:bg-border/30'
 											: ''
 									}`}
@@ -85,104 +86,76 @@ export const DataWindow = ({
 										key={index}
 									>
 										<td className={`flex-[5%] text-center font-bold`}>
-											{index}.
+											{index + 1}
 										</td>
 										<td className='flex-[35%]'>{message.id}</td>
 										<td className='flex-[35%]'>{message.email}</td>
 										<td
-											className={`flex-[25%] ${
+											className={`flex-[25%] flex justify-between ${
 												message.fullName === 'string' ? 'bg-black/5' : ''
 											}`}
 										>
 											{message.fullName}
+											<Edit />
 										</td>
 									</tr>
 								))}
 							</tbody>
 						</table>
 
-						{Object.keys(logHistory).length > 0 && (
+						{Object.keys(logHistory).length > 1 && (
 							<Accordion
-								className='w-[90%] mx-auto'
+								className='w-[90%] mx-auto border-t last:mb-20'
 								type='multiple'
 							>
-								<AccordionItem value={`item-${Object.keys(logHistory).length}`}>
-									<AccordionTrigger className='font-bold'>
-										Properties
-									</AccordionTrigger>
-									{logHistory.Events?.map((event, parentI) => (
-										<AccordionContent key={parentI}>
+								{logHistory.Events?.map((event, parentI) => (
+									<AccordionItem
+										key={parentI}
+										value={`item-${parentI + 1}`}
+									>
+										<AccordionTrigger className='font-bold px-4'>
+											Log {parentI + 1}
+										</AccordionTrigger>
+										<AccordionContent>
 											<table
 												className='w-full mb-10'
 												key={parentI}
 											>
 												<thead>
 													<tr className='[&>th]:border [&>th]:px-4 [&>th]:py-2 flex'>
-														<th className='flex-[6%]'>Log {parentI + 1}</th>
-														<th className='flex-[16%] text-start'>Name</th>
-														<th className='flex-[37%] text-start'>Value</th>
-														<th className='flex-[7%]'>Value ID</th>
-														<th className='flex-[34%] text-start'>
-															Value Name
-														</th>
+														<th className='flex-[15%] text-start'>Field</th>
+														<th className='flex-[85%] text-start'>Value</th>
 													</tr>
 												</thead>
 												<tbody>
-													{event.Properties?.map((prop, i) => (
+													{Object.entries(event).map(([key, value], i) => (
 														<tr
 															key={i}
 															className='[&>td]:border [&>td]:p-4 flex [&>td]:text-ellipsis [&>td]:overflow-hidden'
 														>
-															<td className='flex-[6%] text-center font-bold'>
-																{i + 1}.
-															</td>
-															<td className='flex-[16%]'>{prop.Name}</td>
-															<td
-																className={`flex-[37%] ${
-																	(prop.Value &&
-																		typeof prop.Value === 'object') ||
-																	!prop.Value
-																		? 'bg-black/5'
-																		: ''
-																}`}
-															>
-																{prop.Value && typeof prop.Value !== 'object'
-																	? prop.Value
-																	: undefined}
-															</td>
-															<td
-																className={`text-center flex-[7%] ${
-																	prop.Value && typeof prop.Value === 'object'
-																		? prop.Value.Id
-																			? ''
-																			: 'bg-black/5'
-																		: 'bg-black/5'
-																}`}
-															>
-																{prop.Value && typeof prop.Value === 'object'
-																	? prop.Value.Id
-																	: undefined}
-															</td>
-															<td
-																className={`flex-[34%] ${
-																	prop.Value && typeof prop.Value === 'object'
-																		? prop.Value.Name
-																			? ''
-																			: 'bg-black/5'
-																		: 'bg-black/5'
-																}`}
-															>
-																{prop.Value && typeof prop.Value === 'object'
-																	? prop.Value.Name
-																	: undefined}
+															<td className='flex-[15%] font-bold'>{key}</td>
+															<td className='flex-[85%]'>
+																{typeof value === 'object' && value !== null ? (
+																	<p className='whitespace-pre'>
+																		{JSON.stringify(value, null, 4)
+																			.replace(/{/g, '')
+																			.replace(/\[/g, '')
+																			.replace(/]/g, '')
+																			.replace(/,/g, '')
+																			.replace(/}/g, '')
+																			.replace(/"/g, '')}
+																	</p>
+																) : (
+																	value
+																)}
 															</td>
 														</tr>
 													))}
 												</tbody>
 											</table>
 										</AccordionContent>
-									))}
-								</AccordionItem>
+									</AccordionItem>
+								))}
 							</Accordion>
 						)}
 					</>
