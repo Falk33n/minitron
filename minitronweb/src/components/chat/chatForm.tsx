@@ -5,27 +5,22 @@ import { getSession } from '@/src/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { LucideArrowUp } from 'lucide-react';
 import {
-	ChangeEventHandler,
-	FormEventHandler,
-	FormHTMLAttributes,
 	KeyboardEventHandler,
+	MouseEventHandler,
+	TextareaHTMLAttributes,
 	forwardRef,
 	useState,
 } from 'react';
 import { cn } from '../../utilities/shadUtilities';
 
-export type ChatFormProps = FormHTMLAttributes<HTMLFormElement> & {
-	onSubmit: FormEventHandler<HTMLFormElement>;
+export type ChatFormProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	onKeyDown: KeyboardEventHandler<HTMLTextAreaElement>;
-	onChange: ChangeEventHandler<HTMLTextAreaElement>;
-	prompt: string;
+	onClick: MouseEventHandler<HTMLButtonElement>;
+	prompt?: string;
 };
 
-export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
-	(
-		{ className, onSubmit, prompt, onChange, onKeyDown, children, ...props },
-		ref
-	) => {
+export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
+	({ className, prompt, onClick, onKeyDown, children, ...props }, ref) => {
 		const [focusChatBar, setFocusChatBar] = useState(false);
 		const { isLoading, error } = useQuery({
 			queryKey: ['session'],
@@ -41,9 +36,6 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 					'bg-white rounded-t-xl sticky bottom-0 w-[66%]',
 					className
 				)}
-				ref={ref}
-				{...props}
-				onSubmit={onSubmit}
 			>
 				{children}
 
@@ -59,8 +51,6 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 						className='resize-none w-full focus-visible:outline-none min-h-10 max-h-auto p-4 pr-16 rounded-2xl overflow-y-auto'
 						placeholder='Message MinitronAI'
 						required
-						value={prompt}
-						onChange={onChange}
 						onKeyDown={onKeyDown}
 						onFocus={() => {
 							setFocusChatBar(true);
@@ -69,6 +59,8 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 							setFocusChatBar(false);
 						}}
 						rows={1}
+						ref={ref}
+						{...props}
 					/>
 
 					<Button
@@ -79,6 +71,7 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
 						aria-label='Send message'
 						type='submit'
 						disabled={prompt === ''}
+						onClick={onClick}
 						onFocus={() => {
 							setFocusChatBar(true);
 						}}
