@@ -45,7 +45,7 @@ export function LogInForm({ ...props }: LogInFormProps) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const { toast } = useToast();
 
-	const { isLoading, error, refetch } = useQuery({
+	const { refetch } = useQuery({
 		queryKey: ['login'],
 		queryFn: () => onSubmit(form.getValues()),
 		retry: false,
@@ -61,25 +61,22 @@ export function LogInForm({ ...props }: LogInFormProps) {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		try {
-			const response = await postLogIn(values);
+		const response = await postLogIn(values);
+
+		if (response) {
 			toast({
 				variant: 'success',
 				title: 'Success!',
 				description: 'You have successfully logged in.',
 			});
-
-			return response;
-		} catch (e) {
-			console.log(e);
+		} else {
 			toast({
 				variant: 'destructive',
 				title: 'Error!',
 				description: 'Something went wrong. Please try again.',
 			});
-
-			throw error;
 		}
+		return response;
 	}
 
 	return (

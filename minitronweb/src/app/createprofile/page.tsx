@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader, NotAllowed, PageContainer } from '@/src/components';
+import { NotAllowed, PageContainer } from '@/src/components';
 import { getSession } from '@/src/helpers';
 import { useQuery } from '@tanstack/react-query';
 
@@ -13,10 +13,9 @@ export default function CreateProfile() {
 
 	return (
 		<>
-			{isLoading && <Loader className='' />}
 			{error && !isLoading ? (
-				<NotAllowed message={error.message} />
-			) : (
+				<NotAllowed />
+			) : !error && !isLoading ? (
 				<PageContainer
 					className='h-[35rem] justify-start p-20'
 					heading='Add Agents'
@@ -26,6 +25,8 @@ export default function CreateProfile() {
 						very good stuff here
 					</p>
 				</PageContainer>
+			) : (
+				<></>
 			)}
 		</>
 	);

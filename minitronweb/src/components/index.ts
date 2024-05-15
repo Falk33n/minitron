@@ -1,4 +1,6 @@
 // Export all components
+export * from './admin/dataWindow';
+export * from './admin/edit';
 export * from './chat/chatContainer';
 export * from './chat/chatForm';
 export * from './chat/messageParser';
@@ -20,6 +22,7 @@ export * from './misc/notAllowed';
 export * from './misc/pageContainer';
 export * from './sidebar/anchorListItem';
 export * from './sidebar/unorderedList';
+export * from './ui/alerts';
 export * from './ui/toast';
 export * from './ui/toaster';
 export * from './ui/use-toast';

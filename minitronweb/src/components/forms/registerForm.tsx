@@ -10,8 +10,10 @@ import {
 	FormLabel,
 	FormMessage,
 	Input,
+	useToast,
 } from '@/src/components';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -42,6 +44,14 @@ const formSchema = z.object({
 
 export function RegisterForm({ ...props }: RegisterFormProps) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const { toast } = useToast();
+
+	const { refetch } = useQuery({
+		queryKey: ['register'],
+		queryFn: () => onSubmit(form.getValues()),
+		retry: false,
+		enabled: false,
+	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -53,12 +63,22 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		try {
-			const response = await postRegister(values);
-			console.log('Registration successful:', response);
-		} catch (error) {
-			console.error('Registration failed:', error);
+		const response = await postRegister(values);
+
+		if (response) {
+			toast({
+				variant: 'success',
+				title: 'Success!',
+				description: 'You have successfully registered an account.',
+			});
+		} else {
+			toast({
+				variant: 'destructive',
+				title: 'Error!',
+				description: 'Something went wrong. Please try again.',
+			});
 		}
+		return response;
 	}
 
 	return (
@@ -66,7 +86,9 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 			<form
 				noValidate
 				method='post'
-				onSubmit={form.handleSubmit(onSubmit)}
+				onSubmit={form.handleSubmit(async () => {
+					await refetch();
+				})}
 				className='w-2/5 h-full bg-white flex flex-col gap-9 rounded-r-2xl py-12 px-16 overflow-y-auto'
 			>
 				{props.formHeading && (
