@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace minitronapi.Models
@@ -18,6 +19,7 @@ namespace minitronapi.Models
 
         [ForeignKey("ConversationId")]
         public int ConversationId { get; set; } // Foreign key for the conversation table
+        [JsonIgnore]
         public ConversationModel? Conversation { get; set; } // Navigation property for the conversation table
 
     }
