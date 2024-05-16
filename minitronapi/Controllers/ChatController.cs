@@ -138,18 +138,6 @@ namespace minitronapi.Controllers
             return Ok(new { conversationId = newConversation.ConversationId });
         }
 
-        [HttpGet("GetConversationById")]
-        public async Task<IActionResult> GetConversationById(int conversationId)
-        {
-            var conversation = await _conversationService.GetConversationById(conversationId);
-
-            if (conversation == null)
-            {
-                return NotFound($"Conversation with id: {conversationId} not found");
-            }
-
-            return Ok(conversation);
-        }
 
         [HttpGet("GetConversationDetails")]
         public async Task<IActionResult> GetConversationDetails(int conversationId)
@@ -187,7 +175,24 @@ namespace minitronapi.Controllers
         [HttpGet("GetAllConversationsByUserId")]
         public async Task<IActionResult> GetAllConversationsByUserId()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var token = Request.Cookies["AuthCookie"];
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("No authentication token found");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken;
+            try
+            {
+                jwtToken = handler.ReadJwtToken(token);
+            }
+            catch (Exception)
+            {
+                return Unauthorized("Error trying to read JWT token");
+            }
+
+            var userId = jwtToken.Claims.First(claim => claim.Type == "userId").Value;
 
             if (userId == null)
             {
