@@ -72,25 +72,13 @@ namespace minitronapi.Controllers
             }
 
             // Prepare the conversation with the custom system prompt at the beginning
-            var systemPrompt = new ChatMessage { Role = "system", Content = user.DefaultSystemPrompt };
-
-            if (request.Conversation != null)
+            if (request.Conversation == null)
             {
-                request.Conversation.Insert(0, systemPrompt);
+                request.Conversation = new List<ChatMessage>();
             }
-            else
-            {
-                request.Conversation = new List<ChatMessage> { systemPrompt };
-            }
-            var apiCallStartTime = DateTime.UtcNow;
-
             // Send the conversation to the AI
             var response = await _requestService.SendMessage(request.Conversation);
 
-            var apiCallEndTime = DateTime.UtcNow;
-            var apiCallDuration = apiCallEndTime - apiCallStartTime;
-
-            _logger.LogInformation("API call duration: {apiCallDuration}", apiCallDuration);
             // Format the response
             var formattedResponse = _requestService.FormatResponse(response);
 
@@ -100,7 +88,6 @@ namespace minitronapi.Controllers
                 ConversationId = request.ConversationId.Value,
                 Request = request.Conversation.Last().Content!,
                 TimeStamp = DateTime.UtcNow,
-                RequestPrompt = user.DefaultSystemPrompt
             };
 
             var newResponse = new ResponseModel
@@ -176,7 +163,6 @@ namespace minitronapi.Controllers
 
             var requests = await _conversationService.GetRequestsByConversationId(conversationId);
             var responses = await _conversationService.GetResponsesByConversationId(conversationId);
-            var requestPrompts = await _conversationService.GetRequestPromptsByConversationId(conversationId);
 
             if (!requests.Any() && !responses.Any())
             {
@@ -193,7 +179,6 @@ namespace minitronapi.Controllers
                     ResponseId = r.ResponseId,
                     UserRating = r.UserRating
                 }).ToList(),
-                RequestPrompts = requestPrompts,
                 Timestamp = requests.First().TimeStamp
             };
 
@@ -227,7 +212,6 @@ namespace minitronapi.Controllers
                 {
                     ConversationId = conversation.ConversationId,
                     Requests = requests.Select(r => r.Request).ToList(),
-                    RequestPrompts = requests.Select(r => r.RequestPrompt).ToList(),
                     Responses = responses.Select(r => new ResponseModel
                     {
                         ResponseId = r.ResponseId,
