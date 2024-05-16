@@ -13,7 +13,7 @@ namespace minitronapi.Models
         public int RequestId { get; set; } // Primary key for the request table
         public string Request { get; set; } = ""; // The request from the user
         public string RequestPrompt { get; set; } = ""; // The prompt for the request, entire previous messagelist in the conversation
-        public DateTime TimeStamp { get; set; } // The time the request was sent
+        public DateTime TimeStamp { get; set; } = DateTime.UtcNow; // The time the request was sent
         public string CustomSystemPrompt { get; set; } = "You are a helpful assistant"; // The custom system prompt for the user
         public string Model { get; set; } = "/mnt/model"; // The model of the user
 

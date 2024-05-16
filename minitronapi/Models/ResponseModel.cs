@@ -11,7 +11,7 @@ namespace minitronapi.Models
         [Key]
         public int ResponseId { get; set; } // Primary key for the response table
         public string Response { get; set; } = ""; // The response from the AI
-        public DateTime TimeStamp { get; set; } // The time the response was sent
+        public DateTime TimeStamp { get; set; } = DateTime.UtcNow; // The time the response was sent
         public bool? UserRating { get; set; } // The vote of the user, 1 like, 2 dislike
 
 
