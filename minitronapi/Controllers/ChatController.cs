@@ -160,7 +160,7 @@ namespace minitronapi.Controllers
             {
                 return NotFound($"Conversation with id: {conversationId} not found");
             }
-
+            // Get all requests and responses for the conversation
             var requests = await _conversationService.GetRequestsByConversationId(conversationId);
             var responses = await _conversationService.GetResponsesByConversationId(conversationId);
 
