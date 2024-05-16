@@ -6,7 +6,7 @@ import {
 	Loader,
 	UnorderedList,
 } from '@/src/components';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	LucideChevronRight,
 	LucideMessageSquareText,
