@@ -15,50 +15,31 @@ namespace minitronapi.Controllers
         private readonly minitronContext _context;
         private readonly RequestService _requestService;
         private readonly ConversationService _conversationService;
+        private readonly TokenService _tokenService;
         private readonly ILogger<ChatController> _logger;
 
 
-        public ChatController(minitronContext context, RequestService requestService, ConversationService conversationService, ILogger<ChatController> logger)
+        public ChatController(minitronContext context, RequestService requestService, ConversationService conversationService, ILogger<ChatController> logger, TokenService tokenService)
         {
             _context = context;
             _requestService = requestService;
             _conversationService = conversationService;
             _logger = logger;
+            _tokenService = tokenService;
         }
-
 
         [HttpPost("Sendmessage")]
         public async Task<IActionResult> SendMessage([FromBody] SendMessageRequestModel request)
         {
             // Retrieve the token from HttpOnly cookies
-            var token = Request.Cookies["AuthCookie"];
-            if (string.IsNullOrEmpty(token))
+            var authResult = await _tokenService.AuthenticateUser();
+
+            if (authResult == null || !authResult.Success)
             {
                 return Unauthorized("No authentication token found");
             }
 
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken;
-            try
-            {
-                jwtToken = handler.ReadJwtToken(token);
-            }
-            catch (Exception)
-            {
-                return Unauthorized("Error trying to read JWT token");
-            }
-
-            var userId = jwtToken.Claims.First(claim => claim.Type == "userId").Value;
-            if (userId == null)
-            {
-                return Unauthorized("Claim not found");
-            }
-
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-            {
-                return Unauthorized("User not found");
-            }
+            var userId = authResult.UserId;
 
             if (!request.ConversationId.HasValue)
             {
@@ -106,25 +87,14 @@ namespace minitronapi.Controllers
         [HttpPost("StartConversation")]
         public async Task<IActionResult> StartConversation()
         {
+            var authResult = await _tokenService.AuthenticateUser();
 
-            var token = Request.Cookies["AuthCookie"];
-            if (string.IsNullOrEmpty(token))
+            if (authResult == null || !authResult.Success)
             {
                 return Unauthorized("No authentication token found");
             }
 
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken;
-            try
-            {
-                jwtToken = handler.ReadJwtToken(token);
-            }
-            catch (Exception)
-            {
-                return Unauthorized("Error trying to read JWT token");
-            }
-
-            var userId = jwtToken.Claims.First(claim => claim.Type == "userId").Value;
+            var userId = authResult.UserId;
 
             var newConversation = new ConversationModel()
             {
@@ -142,12 +112,25 @@ namespace minitronapi.Controllers
         [HttpGet("GetConversationDetails")]
         public async Task<IActionResult> GetConversationDetails(int conversationId)
         {
+            var authResult = await _tokenService.AuthenticateUser();
+            if (authResult == null || !authResult.Success)
+            {
+                return Unauthorized("No authentication token found");
+            }
+
             var conversation = await _conversationService.GetConversationById(conversationId);
+
+            var userId = authResult.UserId;
+            if (conversation.UserId != userId)
+            {
+                return Unauthorized("User not authorized to view this conversation");
+            }
 
             if (conversation == null)
             {
                 return NotFound($"Conversation with id: {conversationId} not found");
             }
+
             var requests = await _conversationService.GetRequestsByConversationId(conversationId);
             var responses = await _conversationService.GetResponsesByConversationId(conversationId);
 
@@ -175,24 +158,13 @@ namespace minitronapi.Controllers
         [HttpGet("GetAllConversationsByUserId")]
         public async Task<IActionResult> GetAllConversationsByUserId()
         {
-            var token = Request.Cookies["AuthCookie"];
-            if (string.IsNullOrEmpty(token))
+            var authResult = await _tokenService.AuthenticateUser();
+            if (authResult == null || !authResult.Success)
             {
                 return Unauthorized("No authentication token found");
             }
 
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken;
-            try
-            {
-                jwtToken = handler.ReadJwtToken(token);
-            }
-            catch (Exception)
-            {
-                return Unauthorized("Error trying to read JWT token");
-            }
-
-            var userId = jwtToken.Claims.First(claim => claim.Type == "userId").Value;
+            var userId = authResult.UserId;
 
             if (userId == null)
             {
@@ -232,7 +204,20 @@ namespace minitronapi.Controllers
         [HttpDelete("DeleteConversationById")]
         public async Task<IActionResult> DeleteConversationById(int conversationId)
         {
+            var authResult = await _tokenService.AuthenticateUser();
+            if (authResult == null || !authResult.Success)
+            {
+                return Unauthorized("No authentication token found");
+            }
+
+            var userId = authResult.UserId;
+
             var conversation = await _conversationService.GetConversationById(conversationId);
+
+            if (conversation.UserId != userId)
+            {
+                return Unauthorized("User not authorized to delete this conversation");
+            }
 
             if (conversation == null)
             {
