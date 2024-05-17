@@ -5,41 +5,65 @@ import {
 	Loader,
 	RobotChatBubble,
 	UserChatBubble,
+	toast,
 } from '@/src/components';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { LucideBot } from 'lucide-react';
 import {
+	ChangeEvent,
 	Fragment,
 	KeyboardEvent,
 	MouseEvent,
+	use,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react';
 import { minitronAI, openAI } from '../../helpers';
-import { postStartConvo } from '@/src/helpers/convos';
+import { getConvos, postStartConvo } from '@/src/helpers/convos';
+import { useConvo } from '@/src/hooks/useConvo';
 
 export const ChatContainer = () => {
 	const [chatHistory, setChatHistory] = useState<string[]>([]);
+	const [disabled, setDisabled] = useState(true);
+	const [convoId, updateConvoId] = useConvo();
 	const [id, setId] = useState<number>(-1);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
 
-	const { isPending, error, mutate } = useMutation({
+	const { isLoading } = useQuery({
+		queryKey: ['getConvoId'],
+		queryFn: async () => {
+			if (!convoId || convoId === '') return false;
+			if (convoId) {
+				const response = await getConvos(convoId);
+				const convoArray: string[] = [];
+
+				response.responses.forEach((res, i) => {
+					if (response.requests[i]) convoArray.push(response.requests[i]);
+					convoArray.push(res.response);
+				});
+
+				setChatHistory(convoArray);
+			}
+		},
+		retry: false,
+	});
+
+	const { isPending, mutate } = useMutation({
 		mutationKey: ['chat'],
 		mutationFn: async () => {
 			let newId = id;
 
-			setChatHistory((chatHistory) => {
-				return [...chatHistory, promptRef.current!.value];
-			});
-
-			promptRef.current!.value = '';
-
-			if (chatHistory.length === 0 && id === -1) {
+			if (chatHistory.length === 1 && id === -1) {
 				newId = await postStartConvo();
 				newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
 				setId(newId);
+				updateConvoId(newId);
 			}
+
+			promptRef.current!.value = '';
+			setDisabled((prev) => !prev);
 
 			const response = await minitronAI({
 				conversation: chatHistory.map((message, i) => ({
@@ -54,6 +78,12 @@ export const ChatContainer = () => {
 					return [...chatHistory, response];
 				});
 			} else {
+				toast({
+					variant: 'destructive',
+					title: 'Error!',
+					description: 'Something went wrong. Please try again.',
+				});
+
 				console.error('AI response was null');
 			}
 
@@ -68,14 +98,40 @@ export const ChatContainer = () => {
 	}, [chatHistory]);
 
 	function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-		if (event.key === 'Enter' && event.shiftKey) {
-			event.preventDefault();
-			promptRef.current!.value = `${promptRef.current!.value + '\n'}`;
-		} else if (event.key === 'Enter') {
-			event.preventDefault();
-			mutate();
+		if (
+			event.key !== 'Enter' ||
+			(event.key !== 'Enter' && !event.shiftKey) ||
+			!promptRef.current
+		)
 			return;
+		event.preventDefault();
+
+		if (event.key === 'Enter' && event.shiftKey) {
+			promptRef.current.value = `${promptRef.current.value + '\n'}`;
+		} else if (event.key === 'Enter' && !disabled) {
+			setChatHistory((chatHistory) => {
+				return [...chatHistory, promptRef.current!.value];
+			});
+			return mutate();
 		}
+	}
+
+	function handleChange() {
+		if (!promptRef.current) return;
+
+		promptRef.current.style.height = '0px';
+		const textarea = promptRef.current;
+		const hasContent = textarea.value.trim().length > 0;
+		const lineHeight = parseInt(getComputedStyle(textarea).lineHeight, 10);
+		const padding = parseInt(getComputedStyle(textarea).paddingTop, 10) * 2;
+		const maxHeight = lineHeight * 10 + padding;
+		const scrollHeight = textarea.scrollHeight;
+
+		if (disabled === hasContent) setDisabled((prev) => !prev);
+		if (scrollHeight > maxHeight) {
+			textarea.style.paddingRight = '2.75rem';
+		} else textarea.style.paddingRight = '4rem';
+		textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
 	}
 
 	return (
@@ -111,9 +167,13 @@ export const ChatContainer = () => {
 			</div>
 
 			<ChatForm
-				prompt={promptRef.current?.value}
+				disabled={disabled}
 				onKeyDown={handleKeyDown}
-				onClick={() => mutate}
+				onChange={handleChange}
+				onClick={async (e) => {
+					e.preventDefault();
+					mutate();
+				}}
 				ref={promptRef}
 			/>
 		</div>

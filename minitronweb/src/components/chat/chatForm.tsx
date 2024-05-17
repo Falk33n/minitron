@@ -5,6 +5,7 @@ import { getSession } from '@/src/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { LucideArrowUp } from 'lucide-react';
 import {
+	ChangeEventHandler,
 	KeyboardEventHandler,
 	MouseEventHandler,
 	TextareaHTMLAttributes,
@@ -16,11 +17,15 @@ import { cn } from '../../utilities/shadUtilities';
 export type ChatFormProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	onKeyDown: KeyboardEventHandler<HTMLTextAreaElement>;
 	onClick: MouseEventHandler<HTMLButtonElement>;
-	prompt?: string;
+	onChange: ChangeEventHandler<HTMLTextAreaElement>;
+	disabled?: boolean;
 };
 
 export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
-	({ className, prompt, onClick, onKeyDown, children, ...props }, ref) => {
+	(
+		{ className, disabled, onChange, onClick, onKeyDown, children, ...props },
+		ref
+	) => {
 		const [focusChatBar, setFocusChatBar] = useState(false);
 		const { isLoading, error } = useQuery({
 			queryKey: ['session'],
@@ -48,10 +53,11 @@ export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
 						name='prompt'
 						aria-label='Ask MinitronAI a question'
 						autoComplete='off'
-						className='resize-none w-full focus-visible:outline-none min-h-10 max-h-auto p-4 pr-16 rounded-2xl overflow-y-auto'
+						className='resize-none w-full focus-visible:outline-none min-h-10 p-4 pr-16 rounded-2xl overflow-y-auto'
 						placeholder='Message MinitronAI'
 						required
 						onKeyDown={onKeyDown}
+						onChange={onChange}
 						onFocus={() => {
 							setFocusChatBar(true);
 						}}
@@ -70,7 +76,7 @@ export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
 						title='Send message'
 						aria-label='Send message'
 						type='submit'
-						disabled={prompt === ''}
+						disabled={disabled}
 						onClick={onClick}
 						onFocus={() => {
 							setFocusChatBar(true);

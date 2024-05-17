@@ -16,3 +16,8 @@ export type MinitronAiProps = {
 	}[];
 	conversationId: number;
 };
+
+export type ConvoProps = {
+	requests: string[];
+	responses: [{ response: string }];
+};
