@@ -95,13 +95,27 @@ namespace minitronapi.Controllers
             }
 
             var userId = authResult.UserId;
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
 
             var newConversation = new ConversationModel()
             {
                 UserId = userId,
                 Timestamp = DateTime.UtcNow
             };
-            await _conversationService.SaveConversationToDatabase(newConversation);
+
+            var initialSystemPrompt = new ChatMessage()
+            {
+                Role = "system",
+                Content = user.DefaultSystemPrompt
+            };
+
+            var conversationMessages = new List<ChatMessage>() { initialSystemPrompt };
+            await _conversationService.SaveConversationToDatabase(newConversation, conversationMessages);
 
             _logger.LogInformation("New conversation started with id: {conversationId}", newConversation.ConversationId);
 
