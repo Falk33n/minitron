@@ -16,6 +16,7 @@ namespace minitronapi.Services
         public RequestService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClient = httpClientFactory.CreateClient();
+            //_httpClient.BaseAddress = new Uri("https://api.openai.com/v1/");
             _httpClient.BaseAddress = new Uri("http://192.168.90.99:5003/v1/");
             var apiKey = "sk-proj-W3Yvq9YJyksvTSYSpnYpT3BlbkFJg9itGMyBWylglX9aOR91";
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");

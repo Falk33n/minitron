@@ -5,23 +5,26 @@ using minitronapi.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Identity;
+using minitronapi.Services;
 
 namespace minitronapi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UserController : ControllerBase
-    {
-        private readonly minitronContext _context;
-        private readonly UserManager<UserModel> _userManager;
-        private readonly ILogger<UserController> _logger;
+  [ApiController]
+  [Route("api/[controller]")]
+  public class UserController : ControllerBase
+  {
+    private readonly minitronContext _context;
+    private readonly UserManager<UserModel> _userManager;
+    private readonly ILogger<UserController> _logger;
+    private readonly TokenService _tokenService;
 
-        public UserController(minitronContext context, UserManager<UserModel> userManager, ILogger<UserController> logger)
-        {
-            _context = context;
-            _userManager = userManager;
-            _logger = logger;
-        }
+    public UserController(minitronContext context, UserManager<UserModel> userManager, ILogger<UserController> logger, TokenService tokenService)
+    {
+      _context = context;
+      _userManager = userManager;
+      _logger = logger;
+      _tokenService = tokenService;
+    }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserModel model)
@@ -37,24 +40,24 @@ namespace minitronapi.Controllers
 
         var result = await _userManager.CreateAsync(user, model.Password!);
 
-                if (result.Succeeded)
-                {
-                    // Map the user entity to a DTO, omitting the password for security
-                    var userDto = new GetUserModel
-                    {
-                        Email = user.Email,
-                        FullName = user.FullName
-                    };
-                    _logger.LogInformation("HTTP {option} User {user} registered at {time}", "POST", user.Email, DateTime.UtcNow);
-                    return Ok(userDto);
-                }
-                else
-                {
-                    return BadRequest(result.Errors);
-                }
-            }
-            return BadRequest(ModelState);
+        if (result.Succeeded)
+        {
+          // Map the user entity to a DTO, omitting the password for security
+          var userDto = new GetUserModel
+          {
+            Email = user.Email,
+            FullName = user.FullName
+          };
+          _logger.LogInformation("HTTP {option} User {user} registered at {time}", "POST", user.Email, DateTime.UtcNow);
+          return Ok(userDto);
         }
+        else
+        {
+          return BadRequest(result.Errors);
+        }
+      }
+      return BadRequest(ModelState);
+    }
 
     [HttpGet("getbyid/{id}")]
     public async Task<IActionResult> GetUserById(string id)
@@ -65,61 +68,62 @@ namespace minitronapi.Controllers
         return NotFound();
       }
 
-            var userDto = new GetUserModel
-            {
-                Email = user.Email,
-                FullName = user.FullName
-            };
-            _logger.LogInformation("HTTP {option} User {user} retrieved at {time}", "GET", user.Email, DateTime.UtcNow);
-            return Ok(userDto);
-        }
+      var userDto = new GetUserModel
+      {
+        Email = user.Email,
+        FullName = user.FullName
+      };
+      _logger.LogInformation("HTTP {option} User {user} retrieved at {time}", "GET", user.Email, DateTime.UtcNow);
+      return Ok(userDto);
+    }
 
 
-        [HttpGet("getall")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = await _context.Users.ToListAsync();
-            var userDtos = users.Select(user => new GetUserModel
-            {
-                Email = user.Email,
-                FullName = user.FullName,
-                Id = user.Id
-            }).ToList();
-            _logger.LogInformation("HTTP {option} All users retrieved at {time}", "GET", DateTime.UtcNow);
-            return Ok(userDtos);
-        }
+    [HttpGet("getall")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+      var users = await _context.Users.ToListAsync();
+      var userDtos = users.Select(user => new GetUserModel
+      {
+        Email = user.Email,
+        FullName = user.FullName,
+        Id = user.Id
+      }).ToList();
+      _logger.LogInformation("HTTP {option} All users retrieved at {time}", "GET", DateTime.UtcNow);
+      return Ok(userDtos);
+    }
 
 
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteUser(string id)
     {
+      var authResult = await _tokenService.AuthenticateUser();
       var user = await _context.Users.FindAsync(id);
       if (user == null)
       {
         return NotFound();
       }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
-            return NoContent();
-        }
+      _context.Users.Remove(user);
+      await _context.SaveChangesAsync();
+      _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
+      return NoContent();
+    }
 
-        [HttpDelete("deletebyid/{email}")]
-        public async Task<IActionResult> DeleteUserByEmail(string email)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
-            {
-                return NotFound();
-            }
+    [HttpDelete("deletebyid/{email}")]
+    public async Task<IActionResult> DeleteUserByEmail(string email)
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+      if (user == null)
+      {
+        return NotFound();
+      }
 
       _context.Users.Remove(user);
       await _context.SaveChangesAsync();
 
-            _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
-            return NoContent();
-        }
+      _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
+      return NoContent();
+    }
 
     [HttpGet("getcurrentuser")]
     public async Task<IActionResult> GetCurrentUser()
@@ -164,40 +168,40 @@ namespace minitronapi.Controllers
         return NotFound();
       }
 
-            var userDto = new GetUserModel
-            {
-                Email = user.Email,
-                FullName = user.FullName,
-                Id = user.Id
-            };
-            _logger.LogInformation("HTTP {option} User {user} retrieved at {time}", "GET", user.Email, DateTime.UtcNow);
-            return Ok(userDto);
-        }
-
-        [HttpPatch("SetCustomSystemPrompt")]
-        public async Task<IActionResult> SetCustomSystemPrompt(string prompt, string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            user.DefaultSystemPrompt = prompt;
-            await _userManager.UpdateAsync(user);
-            _logger.LogInformation("HTTP {option} User {user} set custom system prompt to '{customPrompt}' at {time}", "PATCH", user.Email, prompt, DateTime.UtcNow);
-            return Ok("Custom system prompt set successfully.");
-        }
-
-        [HttpGet("GetCustomSystemPrompt")]
-        public async Task<IActionResult> GetCustomSystemPrompt(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            _logger.LogInformation("HTTP {option} User {user} retrieved custom system prompt at {time}", "GET", user.Email, DateTime.UtcNow);
-            return Ok(user.DefaultSystemPrompt);
-        }
+      var userDto = new GetUserModel
+      {
+        Email = user.Email,
+        FullName = user.FullName,
+        Id = user.Id
+      };
+      _logger.LogInformation("HTTP {option} User {user} retrieved at {time}", "GET", user.Email, DateTime.UtcNow);
+      return Ok(userDto);
     }
+
+    [HttpPatch("SetCustomSystemPrompt")]
+    public async Task<IActionResult> SetCustomSystemPrompt(string prompt, string id)
+    {
+      var user = await _userManager.FindByIdAsync(id);
+      if (user == null)
+      {
+        return NotFound();
+      }
+      user.DefaultSystemPrompt = prompt;
+      await _userManager.UpdateAsync(user);
+      _logger.LogInformation("HTTP {option} User {user} set custom system prompt to '{customPrompt}' at {time}", "PATCH", user.Email, prompt, DateTime.UtcNow);
+      return Ok("Custom system prompt set successfully.");
+    }
+
+    [HttpGet("GetCustomSystemPrompt")]
+    public async Task<IActionResult> GetCustomSystemPrompt(string id)
+    {
+      var user = await _userManager.FindByIdAsync(id);
+      if (user == null)
+      {
+        return NotFound();
+      }
+      _logger.LogInformation("HTTP {option} User {user} retrieved custom system prompt at {time}", "GET", user.Email, DateTime.UtcNow);
+      return Ok(user.DefaultSystemPrompt);
+    }
+  }
 }
