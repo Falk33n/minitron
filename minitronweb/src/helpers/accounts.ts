@@ -1,4 +1,4 @@
-import { baseURL } from '../helpers/index';
+import { baseURL } from './index';
 
 export async function postRegister(data = {}) {
 	const response = await fetch(`${baseURL}/User/register`, {
@@ -14,7 +14,7 @@ export async function postRegister(data = {}) {
 		throw new Error('Failed to fetch data');
 	}
 
-	return await response.json();
+	return response.json();
 }
 
 export async function postLogIn(data = {}) {
@@ -31,7 +31,7 @@ export async function postLogIn(data = {}) {
 		throw new Error();
 	}
 
-	return await response.json();
+	return response.json();
 }
 
 export async function getSession() {
@@ -43,7 +43,6 @@ export async function getSession() {
 		throw new Error('Unauthorized');
 	}
 
-	return await response.json(); */
-
+	return response.json(); */
 	return true;
 }

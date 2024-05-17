@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  minitronapi:
+    build:
+      context: ./minitronapi
+      dockerfile: Dockerfile
+    ports:
+      - "5249:80"  # External and internal ports
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    #volumes:
+      # - ./minitronapi:/app
+      # - ./minitronapi/appsettings.json:/app/appsettings.json
+    command: dotnet watch run  # Ensures live reloading in development
+
+  minitronweb:
+    build:
+      context: ./minitronweb
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"  # External and internal ports
+    volumes:
+      - ./minitronweb:/app
+      - ./minitronweb/.next:/app/.next
+    command: sh -c "yarn install && yarn dev"  # Explicitly run yarn install and start dev server
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8081:80"  # External and internal ports
+    depends_on:
+      - minitronapi
+      - minitronweb

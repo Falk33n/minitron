@@ -19,7 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postLogIn } from '../../helpers/postAccounts';
+import { postLogIn } from '../../helpers/accounts';
 
 export type LogInFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -33,11 +33,11 @@ const formSchema = z.object({
 		.string()
 		.trim()
 		.regex(/^((?!\.)[\w_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gi, {
-			message: "Invalid email format. E.g. format 'test@example.com'",
+			message:
+				'The value of the email and password does not match to any registered account.',
 		}),
 	password: z.string().regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{12,}$/, {
-		message:
-			'A valid password requires at least one uppercase letter, one lowercase letter, and a minimum of 12 characters.',
+		message: '',
 	}),
 });
 

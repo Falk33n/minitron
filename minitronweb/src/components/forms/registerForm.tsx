@@ -17,7 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postRegister } from '../../helpers/postAccounts';
+import { postRegister } from '../../helpers/accounts';
 
 export type RegisterFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
