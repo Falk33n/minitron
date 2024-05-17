@@ -5,20 +5,90 @@ import {
 	Loader,
 	RobotChatBubble,
 	UserChatBubble,
+	toast,
 } from '@/src/components';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { LucideBot } from 'lucide-react';
-import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react';
-import { openAI } from '../../helpers';
+import {
+	ChangeEvent,
+	Fragment,
+	KeyboardEvent,
+	MouseEvent,
+	use,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
+import { minitronAI, openAI } from '../../helpers';
+import { getConvos, postStartConvo } from '@/src/helpers/convos';
+import { useConvo } from '@/src/hooks/useConvo';
 
 export const ChatContainer = () => {
 	const [chatHistory, setChatHistory] = useState<string[]>([]);
+	const [disabled, setDisabled] = useState(true);
+	const [convoId, updateConvoId] = useConvo();
+	const [id, setId] = useState<number>(-1);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
-	const { isLoading, refetch } = useQuery({
-		queryKey: ['chat', promptRef.current?.value],
-		queryFn: () => fetchAI(promptRef.current!.value),
+
+	const { isLoading } = useQuery({
+		queryKey: ['getConvoId'],
+		queryFn: async () => {
+			if (!convoId || convoId === '') return false;
+			if (convoId) {
+				const response = await getConvos(convoId);
+				const convoArray: string[] = [];
+
+				response.responses.forEach((res, i) => {
+					if (response.requests[i]) convoArray.push(response.requests[i]);
+					convoArray.push(res.response);
+				});
+
+				setChatHistory(convoArray);
+			}
+		},
 		retry: false,
-		enabled: !!promptRef.current?.value,
+	});
+
+	const { isPending, mutate } = useMutation({
+		mutationKey: ['chat'],
+		mutationFn: async () => {
+			let newId = id;
+
+			if (chatHistory.length === 1 && id === -1) {
+				newId = await postStartConvo();
+				newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
+				setId(newId);
+				updateConvoId(newId);
+			}
+
+			promptRef.current!.value = '';
+			setDisabled((prev) => !prev);
+
+			const response = await minitronAI({
+				conversation: chatHistory.map((message, i) => ({
+					content: message,
+					role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
+				})),
+				conversationId: newId,
+			});
+
+			if (response) {
+				setChatHistory((chatHistory) => {
+					return [...chatHistory, response];
+				});
+			} else {
+				toast({
+					variant: 'destructive',
+					title: 'Error!',
+					description: 'Something went wrong. Please try again.',
+				});
+
+				console.error('AI response was null');
+			}
+
+			return response;
+		},
 	});
 
 	useEffect(() => {
@@ -28,51 +98,40 @@ export const ChatContainer = () => {
 	}, [chatHistory]);
 
 	function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-		const lineCount = event.currentTarget.value.split(/\r?\n/).length;
-		event.currentTarget.rows = Math.min(8, Math.max(1, lineCount));
+		if (
+			event.key !== 'Enter' ||
+			(event.key !== 'Enter' && !event.shiftKey) ||
+			!promptRef.current
+		)
+			return;
+		event.preventDefault();
 
 		if (event.key === 'Enter' && event.shiftKey) {
-			event.preventDefault();
-			promptRef.current!.value = `${promptRef.current!.value + '\n'}`;
-		} else if (event.key === 'Enter') {
-			event.preventDefault();
-			handleSubmit(event);
-			return;
-		}
-	}
-
-	function handleSubmit(
-		event: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLTextAreaElement>
-	) {
-		event.preventDefault();
-		if (!promptRef.current?.value || !/^\S/.test(promptRef.current?.value))
-			return;
-
-		console.log(promptRef.current.value);
-		refetch();
-		promptRef.current.value = '';
-	}
-
-	async function fetchAI(prompt: string) {
-		setChatHistory((chatHistory) => {
-			return [...chatHistory, promptRef.current!.value];
-		});
-
-		const response = await openAI({
-			message: [...chatHistory, prompt],
-			role: chatHistory.length % 2 === 0 ? 'assistant' : 'user',
-		});
-
-		if (response) {
+			promptRef.current.value = `${promptRef.current.value + '\n'}`;
+		} else if (event.key === 'Enter' && !disabled) {
 			setChatHistory((chatHistory) => {
-				return [...chatHistory, response];
+				return [...chatHistory, promptRef.current!.value];
 			});
-			console.log(response);
-		} else {
-			console.error('AI response was null');
+			return mutate();
 		}
+	}
 
-		return response;
+	function handleChange() {
+		if (!promptRef.current) return;
+
+		promptRef.current.style.height = '0px';
+		const textarea = promptRef.current;
+		const hasContent = textarea.value.trim().length > 0;
+		const lineHeight = parseInt(getComputedStyle(textarea).lineHeight, 10);
+		const padding = parseInt(getComputedStyle(textarea).paddingTop, 10) * 2;
+		const maxHeight = lineHeight * 10 + padding;
+		const scrollHeight = textarea.scrollHeight;
+
+		if (disabled === hasContent) setDisabled((prev) => !prev);
+		if (scrollHeight > maxHeight) {
+			textarea.style.paddingRight = '2.75rem';
+		} else textarea.style.paddingRight = '4rem';
+		textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
 	}
 
 	return (
@@ -83,9 +142,8 @@ export const ChatContainer = () => {
 
 			<div className='flex-1 flex flex-col gap-10 pb-20 w-[65%] px-8'>
 				{chatHistory.map((message, index) => (
-					<>
+					<Fragment key={index}>
 						<section
-							key={index}
 							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground bg-white relative break-words`}
 						>
 							{index % 2 === 0 ? (
@@ -95,11 +153,8 @@ export const ChatContainer = () => {
 							)}
 						</section>
 
-						{chatHistory.slice(-1)[0] === message && isLoading && (
-							<div
-								key={index + 1}
-								className='ml-6 mt-2'
-							>
+						{chatHistory.slice(-1)[0] === message && isPending && (
+							<div className='ml-6 mt-2'>
 								<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
 									<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
 									<h4>MinitronAI</h4>
@@ -107,14 +162,18 @@ export const ChatContainer = () => {
 								<Loader />
 							</div>
 						)}
-					</>
+					</Fragment>
 				))}
 			</div>
 
 			<ChatForm
-				prompt={promptRef.current?.value}
+				disabled={disabled}
 				onKeyDown={handleKeyDown}
-				onClick={() => handleSubmit}
+				onChange={handleChange}
+				onClick={async (e) => {
+					e.preventDefault();
+					mutate();
+				}}
 				ref={promptRef}
 			/>
 		</div>

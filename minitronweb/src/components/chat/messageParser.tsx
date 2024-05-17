@@ -9,7 +9,7 @@ export const MessageParser = ({
 	text,
 	className,
 }: {
-	text: string;
+	text: string | Response;
 	className?: string;
 }) => {
 	return (
@@ -62,7 +62,7 @@ export const MessageParser = ({
 				},
 			}}
 		>
-			{text}
+			{text as string}
 		</Markdown>
 	);
 };
