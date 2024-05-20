@@ -21,3 +21,10 @@ export type ConvoProps = {
 	requests: string[];
 	responses: [{ response: string }];
 };
+
+export type AllConvosProps = [
+	{
+		conversationId: number;
+		requests: string[];
+	}
+];

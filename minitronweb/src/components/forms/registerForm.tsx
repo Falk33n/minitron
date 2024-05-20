@@ -18,6 +18,7 @@ import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { postRegister } from '../../helpers/accounts';
+import { useRouter } from 'next/navigation';
 
 export type RegisterFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -45,6 +46,7 @@ const formSchema = z.object({
 export function RegisterForm({ ...props }: RegisterFormProps) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const { toast } = useToast();
+	const router = useRouter();
 
 	const { refetch } = useQuery({
 		queryKey: ['register'],
@@ -71,6 +73,7 @@ export function RegisterForm({ ...props }: RegisterFormProps) {
 				title: 'Success!',
 				description: 'You have successfully registered an account.',
 			});
+			setTimeout(() => router.push('/'), 3000);
 		} else {
 			toast({
 				variant: 'destructive',

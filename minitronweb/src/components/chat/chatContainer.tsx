@@ -3,6 +3,7 @@
 import {
 	ChatForm,
 	Loader,
+	NotAllowed,
 	RobotChatBubble,
 	UserChatBubble,
 	toast,
@@ -10,31 +11,28 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { LucideBot } from 'lucide-react';
 import {
-	ChangeEvent,
 	Fragment,
 	KeyboardEvent,
-	MouseEvent,
-	use,
+	useContext,
 	useEffect,
-	useMemo,
 	useRef,
 	useState,
 } from 'react';
-import { minitronAI, openAI } from '../../helpers';
+import { minitronAI } from '../../helpers';
 import { getConvos, postStartConvo } from '@/src/helpers/convos';
 import { useConvo } from '@/src/hooks/useConvo';
+import { ClearConvoCtx } from '@/src/providers/clearConvo';
 
 export const ChatContainer = () => {
 	const [chatHistory, setChatHistory] = useState<string[]>([]);
 	const [disabled, setDisabled] = useState(true);
 	const [convoId, updateConvoId] = useConvo();
-	const [id, setId] = useState<number>(-1);
+	const { forceClear, setForceClear, newChat } = useContext(ClearConvoCtx);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
 
-	const { isLoading } = useQuery({
+	const { error, isLoading, refetch } = useQuery({
 		queryKey: ['getConvoId'],
 		queryFn: async () => {
-			if (!convoId || convoId === '') return false;
 			if (convoId) {
 				const response = await getConvos(convoId);
 				const convoArray: string[] = [];
@@ -43,25 +41,25 @@ export const ChatContainer = () => {
 					if (response.requests[i]) convoArray.push(response.requests[i]);
 					convoArray.push(res.response);
 				});
-
 				setChatHistory(convoArray);
 			}
+			return true;
 		},
 		retry: false,
 	});
 
+	async function handleNewChat() {
+		if (convoId) return;
+		let newId = await postStartConvo();
+		newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
+		updateConvoId(newId);
+		return newId;
+	}
+
 	const { isPending, mutate } = useMutation({
 		mutationKey: ['chat'],
 		mutationFn: async () => {
-			let newId = id;
-
-			if (chatHistory.length === 1 && id === -1) {
-				newId = await postStartConvo();
-				newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
-				setId(newId);
-				updateConvoId(newId);
-			}
-
+			let newId = await handleNewChat();
 			promptRef.current!.value = '';
 			setDisabled((prev) => !prev);
 
@@ -70,7 +68,7 @@ export const ChatContainer = () => {
 					content: message,
 					role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
 				})),
-				conversationId: newId,
+				conversationId: newId ? newId : parseInt(convoId!, 10),
 			});
 
 			if (response) {
@@ -83,19 +81,11 @@ export const ChatContainer = () => {
 					title: 'Error!',
 					description: 'Something went wrong. Please try again.',
 				});
-
 				console.error('AI response was null');
 			}
-
 			return response;
 		},
 	});
-
-	useEffect(() => {
-		document
-			.querySelector('main > div')
-			?.scrollTo({ top: 99999999, left: 0, behavior: 'smooth' });
-	}, [chatHistory]);
 
 	function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
 		if (
@@ -107,7 +97,8 @@ export const ChatContainer = () => {
 		event.preventDefault();
 
 		if (event.key === 'Enter' && event.shiftKey) {
-			promptRef.current.value = `${promptRef.current.value + '\n'}`;
+			promptRef.current.value += '\n';
+			handleChange();
 		} else if (event.key === 'Enter' && !disabled) {
 			setChatHistory((chatHistory) => {
 				return [...chatHistory, promptRef.current!.value];
@@ -134,26 +125,45 @@ export const ChatContainer = () => {
 		textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
 	}
 
+	useEffect(() => {
+		document
+			.querySelector('main > div')
+			?.scrollTo({ top: 99999999, left: 0, behavior: 'smooth' });
+	}, [chatHistory]);
+
+	useEffect(() => {
+		if (!newChat) refetch();
+		if (!forceClear) return;
+		setChatHistory([]);
+		setForceClear(false);
+	}, [forceClear, convoId]);
+
 	return (
-		<div className='flex flex-col items-center w-full h-screen overflow-y-auto'>
-			<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[66%]'>
-				MinitronAI
-			</p>
+		<>
+			{error && !isLoading ? (
+				<NotAllowed />
+			) : (
+				<div className='flex flex-col items-center w-full h-screen overflow-y-auto'>
+					<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[66%]'>
+						MinitronAI
+					</p>
 
-			<div className='flex-1 flex flex-col gap-10 pb-20 w-[65%] px-8'>
-				{chatHistory.map((message, index) => (
-					<Fragment key={index}>
-						<section
-							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground bg-white relative break-words`}
-						>
-							{index % 2 === 0 ? (
-								<UserChatBubble message={message} />
-							) : (
-								<RobotChatBubble message={message} />
-							)}
-						</section>
+					<div className='flex-1 flex flex-col gap-10 pb-20 w-[65%] px-8'>
+						{chatHistory.map((message, index) => (
+							<Fragment key={index}>
+								<section
+									className={`py-4 px-6 rounded-2xl w-[90%] text-foreground bg-white relative break-words`}
+								>
+									{index % 2 === 0 ? (
+										<UserChatBubble message={message} />
+									) : (
+										<RobotChatBubble message={message} />
+									)}
+								</section>
+							</Fragment>
+						))}
 
-						{chatHistory.slice(-1)[0] === message && isPending && (
+						{isPending && (
 							<div className='ml-6 mt-2'>
 								<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
 									<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
@@ -162,21 +172,21 @@ export const ChatContainer = () => {
 								<Loader />
 							</div>
 						)}
-					</Fragment>
-				))}
-			</div>
+					</div>
 
-			<ChatForm
-				disabled={disabled}
-				onKeyDown={handleKeyDown}
-				onChange={handleChange}
-				onClick={async (e) => {
-					e.preventDefault();
-					mutate();
-				}}
-				ref={promptRef}
-			/>
-		</div>
+					<ChatForm
+						disabled={disabled}
+						onKeyDown={handleKeyDown}
+						onChange={handleChange}
+						onClick={async (e) => {
+							e.preventDefault();
+							mutate();
+						}}
+						ref={promptRef}
+					/>
+				</div>
+			)}
+		</>
 	);
 };
 

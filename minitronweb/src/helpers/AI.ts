@@ -13,6 +13,7 @@ export async function openAI({ role, message }: OpenAiProps) {
 		model: 'gpt-4-turbo',
 	});
 
+	if (!completion) throw new Error('Something went wrong');
 	return completion.choices[0].message?.content;
 }
 
@@ -24,5 +25,7 @@ export async function minitronAI(data: MinitronAiProps) {
 		},
 		body: JSON.stringify(data),
 	});
+
+	if (!res.ok) throw new Error('Something went wrong');
 	return ((await res.json()) as { response: string }).response;
 }
