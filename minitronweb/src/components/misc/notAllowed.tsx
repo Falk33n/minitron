@@ -13,7 +13,7 @@ export const NotAllowed = forwardRef<HTMLDivElement, NotAllowedProps>(
 		const router = useRouter();
 
 		useEffect(() => {
-			setTimeout(() => router.push('/'), 7500);
+			setTimeout(() => router.push('/'), 1500);
 		});
 
 		return (
