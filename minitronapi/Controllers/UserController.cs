@@ -109,7 +109,7 @@ namespace minitronapi.Controllers
       return NoContent();
     }
 
-    [HttpDelete("deletebyid/{email}")]
+    [HttpDelete("deletebyemail/{email}")]
     public async Task<IActionResult> DeleteUserByEmail(string email)
     {
       var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -202,6 +202,60 @@ namespace minitronapi.Controllers
       }
       _logger.LogInformation("HTTP {option} User {user} retrieved custom system prompt at {time}", "GET", user.Email, DateTime.UtcNow);
       return Ok(user.DefaultSystemPrompt);
+    }
+
+    [HttpPatch("MakeAdmin")]
+    public async Task<IActionResult> MakeAdmin(string id)
+    {
+      var authResult = await _tokenService.AuthenticateUser();
+      if (authResult == null || !authResult.Success)
+      {
+        return Unauthorized("No authentication token found");
+      }
+      var userId = authResult.UserId;
+      var user = await _context.Users.FindAsync(userId);
+      var userToEdit = await _userManager.FindByIdAsync(id);
+      if (user == null)
+      {
+        return NotFound("No user found");
+      }
+      //check if the user making the call is admin
+      if (!await _userManager.IsInRoleAsync(user, "Admin"))
+      {
+        return Unauthorized("User is not admin");
+      }
+      if (userToEdit == null)
+      {
+        return NotFound("No user to edit found");
+      }
+      await _userManager.AddToRoleAsync(userToEdit, "Admin");
+      await _userManager.UpdateAsync(userToEdit);
+
+      return Ok($"user {userToEdit!.FullName} is now admin");
+    }
+
+    [HttpGet("IsAdmin")]
+    public async Task<IActionResult> IsAdmin()
+    {
+      var authResult = await _tokenService.AuthenticateUser();
+      if (authResult == null || !authResult.Success)
+      {
+        return Unauthorized("No authentication token found");
+      }
+      var userId = authResult.UserId;
+      var user = await _context.Users.FindAsync(userId);
+      if (user == null)
+      {
+        return NotFound("No user found");
+      }
+      if (await _userManager.IsInRoleAsync(user, "Admin"))
+      {
+        return Ok(true);
+      }
+      else
+      {
+        return Ok(false);
+      }
     }
   }
 }
