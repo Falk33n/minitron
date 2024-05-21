@@ -91,12 +91,12 @@ export const DataWindow = ({
 										<td className='flex-[35%]'>{message.id}</td>
 										<td className='flex-[35%]'>{message.email}</td>
 										<td
-											className={`flex-[25%] flex justify-between ${
+											className={`flex-[25%] flex justify-between relative ${
 												message.fullName === 'string' ? 'bg-black/5' : ''
 											}`}
 										>
 											{message.fullName}
-											<Edit />
+											<Edit id={message.id} />
 										</td>
 									</tr>
 								))}
