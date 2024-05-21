@@ -53,7 +53,9 @@ namespace minitronapi.Services
             var data = new
             {
                 messages = conversation.Select(m => new { role = m.Role, content = m.Content }).ToArray(),
-                model = "/mnt/model/"
+                model = "/mnt/model/",
+                max_tokens = 100,
+                temperature = 0.2,
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
