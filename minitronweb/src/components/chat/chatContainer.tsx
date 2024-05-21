@@ -24,10 +24,10 @@ import { useConvo } from '@/src/hooks/useConvo';
 import { ClearConvoCtx } from '@/src/providers/clearConvo';
 
 export const ChatContainer = () => {
-	const [chatHistory, setChatHistory] = useState<string[]>([]);
 	const [disabled, setDisabled] = useState(true);
 	const [convoId, updateConvoId] = useConvo();
-	const { forceClear, setForceClear, newChat } = useContext(ClearConvoCtx);
+	const { forceClear, setForceClear, newChat, chatHistory, setChatHistory } =
+		useContext(ClearConvoCtx);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
 
 	const { error, isLoading, refetch } = useQuery({

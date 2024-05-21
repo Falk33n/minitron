@@ -27,8 +27,3 @@ export type LogType = {
 		};
 	}>;
 };
-
-export type SingleUserType = {
-	fullName: string;
-	email: string;
-};

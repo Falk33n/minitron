@@ -16,15 +16,10 @@ export default function CreateProfile() {
 			{error && !isLoading ? (
 				<NotAllowed />
 			) : !error && !isLoading ? (
-				<PageContainer
-					className='h-[35rem] justify-start p-20'
-					heading='Add Agents'
-				>
-					<p className='text-lg mt-16 leading-8 text-white px-16 drop-shadow-text'>
-						We are currently fixing here take it chill man soon it will come
-						very good stuff here
-					</p>
-				</PageContainer>
+				<div className='flex min-h-screen w-full'>
+					<div className='bg-primary w-full'>hello</div>
+					<div className='bg-destructive w-full'>hello</div>
+				</div>
 			) : (
 				<></>
 			)}

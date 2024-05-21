@@ -1,7 +1,7 @@
 'use client';
 
-import 'highlight.js/styles/tomorrow-night.css';
-import Highlight from 'react-highlight';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Markdown from 'react-markdown';
 import { CodeCopyBar } from './codeCopyBar';
 
@@ -43,12 +43,13 @@ export const MessageParser = ({
 							/>
 
 							<div className='rounded-b-2xl p-4 mb-6 bg-[#1D1F21]'>
-								<Highlight
+								<SyntaxHighlighter
 									{...(props as any)}
 									language={match[1]}
+									style={dark}
 								>
 									{String(children).replace(/\n$/, '')}
-								</Highlight>
+								</SyntaxHighlighter>
 							</div>
 						</>
 					) : (

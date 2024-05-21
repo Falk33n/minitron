@@ -96,7 +96,10 @@ export const DataWindow = ({
 											}`}
 										>
 											{message.fullName}
-											<Edit id={message.id} />
+											<Edit
+												refetch={refetch}
+												userId={message.id}
+											/>
 										</td>
 									</tr>
 								))}

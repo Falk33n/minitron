@@ -15,13 +15,16 @@ export const UserChatBubble = ({
 }: ChatBubbleProps) => {
 	return (
 		<div>
-			<section className='text-black flex gap-2 mb-1 text-sm -ml-7'>
+			<section className='text-black flex gap-2 mb-2 text-sm -ml-7'>
 				<LucideUserCircle2 className='size-4 text-muted-foreground' />
 				<h4 className='-mt-px font-bold'>You</h4>
 			</section>
 
 			<MessageParser
-				className={cn(className)}
+				className={cn(
+					'bg-[#F4F4F4] p-2 rounded-xl w-fit max-w-full',
+					className
+				)}
 				{...props}
 				text={message}
 			/>
