@@ -57,6 +57,8 @@ namespace minitronapi.Controllers
             {
                 request.Conversation = new List<ChatMessage>();
             }
+
+            Console.WriteLine(request.Conversation);
             // Send the conversation to the AI
             var response = await _requestService.SendMessage(request.Conversation);
 
@@ -82,6 +84,7 @@ namespace minitronapi.Controllers
             await _conversationService.SaveResponseToDatabase(newResponse);
             _logger.LogInformation("Request and response saved to database");
             return Ok(new { response = formattedResponse });
+            //return Ok(request.Conversation);
         }
 
         [HttpPost("StartConversation")]
@@ -108,13 +111,7 @@ namespace minitronapi.Controllers
                 Timestamp = DateTime.UtcNow
             };
 
-            var initialSystemPrompt = new ChatMessage()
-            {
-                Role = "system",
-                Content = user.DefaultSystemPrompt
-            };
-
-            var conversationMessages = new List<ChatMessage>() { initialSystemPrompt };
+            var conversationMessages = new List<ChatMessage>();
             await _conversationService.SaveConversationToDatabase(newConversation, conversationMessages);
 
             _logger.LogInformation("New conversation started with id: {conversationId}", newConversation.ConversationId);
