@@ -3,4 +3,4 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --frozen-lockfile --verbose
 COPY . .
-CMD ["npm", "dev"]
+CMD ["npm", "run dev"]

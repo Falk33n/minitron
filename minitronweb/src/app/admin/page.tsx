@@ -4,7 +4,7 @@ import { DataWindow, Loader, NotAllowed } from '@/src/components';
 import { getLogs, getSession, getUsers } from '@/src/helpers';
 import { LogType } from '@/src/types/adminTypes';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function Admin() {
 	const [logHistory, setLogHistory] = useState<LogType>({ Events: [] });

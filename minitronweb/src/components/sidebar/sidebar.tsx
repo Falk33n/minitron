@@ -44,6 +44,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 		const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 		const [convoId] = useConvo();
 		const {
+			chatHistory,
 			setForceClear,
 			chatSummarize,
 			setChatSummarize,
@@ -84,9 +85,9 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 		});
 
 		useEffect(() => {
-			if (!convoId) return;
+			if (!convoId || chatHistory.length > 2) return;
 			getAllConvoRefetch();
-		}, [convoId]);
+		}, [convoId, chatHistory]);
 
 		return (
 			<>
@@ -172,7 +173,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 
 										<Link href='/createprofile'>
 											<DropdownMenuItem className='cursor-pointer hover:bg-navbarList/50 focus-visible:bg-navbarList/50 hover:font-medium focus-visible:font-medium'>
-												Add Agents
+												Create AI Profile
 											</DropdownMenuItem>
 										</Link>
 
