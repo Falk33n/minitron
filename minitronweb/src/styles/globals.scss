@@ -61,4 +61,17 @@
 	.bg-reversed-gradientBlue {
 		background: linear-gradient(65deg, #053569, #2b7ace);
 	}
+
+	::-webkit-scrollbar {
+		width: 7px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: rgba(192, 192, 192, 0.5);
+		border-radius: 5px;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: rgb(170, 170, 170, 0.8);
+	}
 }

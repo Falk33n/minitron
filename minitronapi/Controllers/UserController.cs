@@ -256,6 +256,21 @@ namespace minitronapi.Controllers
       {
         return Ok(false);
       }
+
+    [HttpPatch("EditUser")]
+    public async Task<IActionResult> EditUser(EditUserModel model)
+    {
+      var userId = model.UserId;
+      var user = await _context.Users.FindAsync(userId);
+
+      user.FullName = model.FullName;
+      user.Email = model.Email;
+
+      _context.Users.Update(user);
+      await _context.SaveChangesAsync();
+
+      return Ok("User updated successfully!");
+
     }
   }
 }

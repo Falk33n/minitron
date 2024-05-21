@@ -1,3 +1,4 @@
+import { SingleUserType } from '../types/adminTypes';
 import { baseURL } from './index';
 
 export async function getUsers() {
@@ -5,10 +6,7 @@ export async function getUsers() {
 		method: 'GET',
 	});
 
-	if (!response.ok) {
-		throw new Error("Couldn't retrieve users");
-	}
-
+	if (!response.ok) throw new Error("Couldn't retrieve users");
 	return response.json();
 }
 
@@ -17,9 +15,18 @@ export async function getLogs() {
 		method: 'GET',
 	});
 
-	if (!response.ok) {
-		throw new Error("Couldn't retrieve logs");
-	}
-
+	if (!response.ok) throw new Error("Couldn't retrieve logs");
 	return response.json();
+}
+
+export async function getSingleUser(id: string) {
+	if (!id || id === '') throw new Error("Couldn't retrieve id");
+
+	const url = new URL(`${baseURL}/User/getbyid/${id}`);
+	const response = await fetch(url, {
+		method: 'GET',
+	});
+
+	if (!response.ok) throw new Error("Couldn't retrieve the user");
+	return response.json() as Promise<SingleUserType>;
 }

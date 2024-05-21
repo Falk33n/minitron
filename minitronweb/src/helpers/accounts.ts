@@ -10,10 +10,7 @@ export async function postRegister(data = {}) {
 		},
 	});
 
-	if (!response.ok) {
-		throw new Error('Failed to fetch data');
-	}
-
+	if (!response.ok) throw new Error('Failed to register');
 	return response.json();
 }
 
@@ -27,22 +24,26 @@ export async function postLogIn(data = {}) {
 		},
 	});
 
-	if (!response.ok) {
-		throw new Error();
-	}
+	if (!response.ok) throw new Error('Failed to log in');
+	return response.json();
+}
 
+export async function postLogout() {
+	const response = await fetch(`${baseURL}/Auth/logout`, {
+		method: 'POST',
+	});
+
+	if (!response.ok) {
+		throw new Error('Something went wrong');
+	}
 	return response.json();
 }
 
 export async function getSession() {
-	/* const response = await fetch(`${baseURL}/Auth/session`, {
+	const response = await fetch(`${baseURL}/Auth/session`, {
 		method: 'GET',
 	});
 
-	if (!response.ok) {
-		throw new Error('Unauthorized');
-	}
-
-	return response.json(); */
-	return true;
+	if (!response.ok) throw new Error('Unauthorized');
+	return response.json();
 }

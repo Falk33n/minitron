@@ -16,10 +16,11 @@ import {
 } from '@/src/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import { FormHTMLAttributes, useState } from 'react';
+import { FormHTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { postLogIn } from '../../helpers/accounts';
+import { useRouter } from 'next/navigation';
 
 export type LogInFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -44,6 +45,7 @@ const formSchema = z.object({
 export function LogInForm({ ...props }: LogInFormProps) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const { toast } = useToast();
+	const router = useRouter();
 
 	const { refetch } = useQuery({
 		queryKey: ['login'],
@@ -55,8 +57,8 @@ export function LogInForm({ ...props }: LogInFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: '',
-			password: '',
+			email: 'string@string.com',
+			password: 'Stringstring1337',
 		},
 	});
 
@@ -69,6 +71,7 @@ export function LogInForm({ ...props }: LogInFormProps) {
 				title: 'Success!',
 				description: 'You have successfully logged in.',
 			});
+			router.push('/chat');
 		} else {
 			toast({
 				variant: 'destructive',
