@@ -2,6 +2,7 @@ import { HTMLAttributes } from 'react';
 
 export type ChatBubbleProps = HTMLAttributes<HTMLElement> & {
 	message: string | Response;
+	testAi?: boolean;
 };
 
 export type OpenAiProps = {

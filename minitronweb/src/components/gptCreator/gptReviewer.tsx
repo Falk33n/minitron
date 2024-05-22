@@ -1,59 +1,25 @@
 'use client';
 
-import {
-	ChatForm,
-	ChatRender,
-	Loader,
-	NotAllowed,
-	RobotChatBubble,
-	UserChatBubble,
-	toast,
-} from '@/src/components';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { LucideBot } from 'lucide-react';
-import {
-	Fragment,
-	KeyboardEvent,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from 'react';
-import { minitronAI } from '../../helpers';
-import { getConvos, postStartConvo } from '@/src/helpers/convos';
-import { useConvo } from '@/src/hooks/useConvo';
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
+import { ChatForm } from '../chat/chatForm';
+import { ChatRender } from '../chat/chatRender';
+import { toast } from '../ui/use-toast';
+import { minitronAI, postStartConvo } from '@/src/helpers';
+import { useMutation } from '@tanstack/react-query';
 import { ClearConvoCtx } from '@/src/providers/clearConvo';
+import { useConvo } from '@/src/hooks/useConvo';
 
-export const ChatContainer = () => {
+export function GptReviewer() {
 	const [disabled, setDisabled] = useState(true);
 	const [convoId, updateConvoId] = useConvo();
-	const { forceClear, setForceClear, newChat, chatHistory, setChatHistory } =
-		useContext(ClearConvoCtx);
+	const { testAiChatHistory, setTestAiChatHistory } = useContext(ClearConvoCtx);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
-
-	const { error, isLoading, refetch } = useQuery({
-		queryKey: ['getConvoId'],
-		queryFn: async () => {
-			if (convoId) {
-				const response = await getConvos(convoId);
-				const convoArray: string[] = [];
-
-				response.responses.forEach((res, i) => {
-					if (response.requests[i]) convoArray.push(response.requests[i]);
-					convoArray.push(res.response);
-				});
-				setChatHistory(convoArray);
-			}
-			return true;
-		},
-		retry: false,
-	});
 
 	async function handleNewChat() {
 		if (convoId) return;
 		let newId = await postStartConvo();
 		newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
-		updateConvoId('chat', newId);
+		updateConvoId('createprofile', newId);
 		return newId;
 	}
 
@@ -65,7 +31,7 @@ export const ChatContainer = () => {
 			setDisabled((prev) => !prev);
 
 			const response = await minitronAI({
-				conversation: chatHistory.map((message, i) => ({
+				conversation: testAiChatHistory.map((message, i) => ({
 					content: message,
 					role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
 				})),
@@ -73,8 +39,8 @@ export const ChatContainer = () => {
 			});
 
 			if (response) {
-				setChatHistory((chatHistory) => {
-					return [...chatHistory, response];
+				setTestAiChatHistory((testAiChatHistory) => {
+					return [...testAiChatHistory, response];
 				});
 			} else {
 				toast({
@@ -101,8 +67,8 @@ export const ChatContainer = () => {
 			promptRef.current.value += '\n';
 			handleChange();
 		} else if (event.key === 'Enter' && !disabled) {
-			setChatHistory((chatHistory) => {
-				return [...chatHistory, promptRef.current!.value];
+			setTestAiChatHistory((testAiChatHistory) => {
+				return [...testAiChatHistory, promptRef.current!.value];
 			});
 			return mutate();
 		}
@@ -128,46 +94,28 @@ export const ChatContainer = () => {
 
 	useEffect(() => {
 		document
-			.querySelector('main > div')
+			.querySelector('main > div > div')
 			?.scrollTo({ top: 99999999, left: 0, behavior: 'smooth' });
-	}, [chatHistory]);
-
-	useEffect(() => {
-		if (!newChat) refetch();
-		if (!forceClear) return;
-		setChatHistory([]);
-		setForceClear(false);
-	}, [forceClear, convoId]);
+	}, [testAiChatHistory]);
 
 	return (
-		<>
-			{error && !isLoading ? (
-				<NotAllowed />
-			) : (
-				<div className='flex flex-col items-center w-full h-screen overflow-y-auto'>
-					<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[80%]'>
-						MinitronAI
-					</p>
+		<div className='bg-muted-foreground/5 w-full flex flex-col items-center h-screen overflow-y-auto'>
+			<section className='pt-9 w-full text-center sticky top-0 z-[10] bg-[#F7F8F9]'>
+				<h3 className='font-medium text-lg'>Playground</h3>
+			</section>
+			<ChatRender
+				isPending={isPending}
+				chatHistory={testAiChatHistory}
+				testAi={true}
+			/>
 
-					<ChatRender
-						isPending={isPending}
-						chatHistory={chatHistory}
-					/>
-
-					<ChatForm
-						disabled={disabled}
-						onKeyDown={handleKeyDown}
-						onChange={handleChange}
-						onClick={async (e) => {
-							e.preventDefault();
-							mutate();
-						}}
-						ref={promptRef}
-					/>
-				</div>
-			)}
-		</>
+			<ChatForm
+				disabled={false}
+				onKeyDown={handleKeyDown}
+				onChange={handleChange}
+				testAi={true}
+				ref={promptRef}
+			/>
+		</div>
 	);
-};
-
-ChatContainer.displayName = 'ChatContainer';
+}

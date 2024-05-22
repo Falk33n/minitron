@@ -17,7 +17,9 @@ export const RobotChatBubble = ({
 			</section>
 
 			<MessageParser
-				className={cn(className)}
+				className={cn(
+					className
+				)}
 				{...props}
 				text={message}
 			/>

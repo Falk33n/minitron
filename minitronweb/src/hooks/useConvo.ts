@@ -8,8 +8,8 @@ export const useConvo = () => {
 		return search.get('conversationId');
 	}, [search]);
 
-	function updateConvoId(id: number) {
-		router.push(`/chat?conversationId=${id}`);
+	function updateConvoId(location: string, id: number) {
+		router.push(`/${location}?conversationId=${id}`);
 	}
 
 	return [convoId, updateConvoId] as const;

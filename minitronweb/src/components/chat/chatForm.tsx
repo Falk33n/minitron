@@ -16,14 +16,24 @@ import { cn } from '../../utilities/shadUtilities';
 
 export type ChatFormProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	onKeyDown: KeyboardEventHandler<HTMLTextAreaElement>;
-	onClick: MouseEventHandler<HTMLButtonElement>;
+	onClick?: MouseEventHandler<HTMLButtonElement>;
 	onChange: ChangeEventHandler<HTMLTextAreaElement>;
 	disabled?: boolean;
+	testAi?: boolean;
 };
 
 export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
 	(
-		{ className, disabled, onChange, onClick, onKeyDown, children, ...props },
+		{
+			className,
+			disabled,
+			testAi,
+			onChange,
+			onClick,
+			onKeyDown,
+			children,
+			...props
+		},
 		ref
 	) => {
 		const [focusChatBar, setFocusChatBar] = useState(false);
@@ -38,7 +48,8 @@ export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
 				method='post'
 				noValidate
 				className={cn(
-					'bg-white rounded-t-xl sticky bottom-0 w-[66%]',
+					'rounded-t-xl sticky bottom-0 w-[80%]',
+					testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white',
 					className
 				)}
 			>

@@ -19,6 +19,8 @@ type ClearConvoProps = {
 	setNewChat: Dispatch<SetStateAction<boolean>>;
 	chatHistory: string[];
 	setChatHistory: Dispatch<SetStateAction<string[]>>;
+	testAiChatHistory: string[];
+	setTestAiChatHistory: Dispatch<SetStateAction<string[]>>;
 };
 
 export const ClearConvoCtx = createContext<ClearConvoProps>({
@@ -38,6 +40,10 @@ export const ClearConvoCtx = createContext<ClearConvoProps>({
 	setChatHistory: () => {
 		[];
 	},
+	testAiChatHistory: [],
+	setTestAiChatHistory: () => {
+		[];
+	},
 });
 
 export function ClearConvo({ children }: { children: ReactNode }) {
@@ -46,6 +52,8 @@ export function ClearConvo({ children }: { children: ReactNode }) {
 	const [idHistory, setIdHistory] = useState<number[]>([]);
 	const [newChat, setNewChat] = useState(true);
 	const [chatHistory, setChatHistory] = useState<string[]>([]);
+	const [testAiChatHistory, setTestAiChatHistory] = useState<string[]>([]);
+
 	return (
 		<ClearConvoCtx.Provider
 			value={{
@@ -59,6 +67,8 @@ export function ClearConvo({ children }: { children: ReactNode }) {
 				setNewChat,
 				chatHistory,
 				setChatHistory,
+				testAiChatHistory,
+				setTestAiChatHistory,
 			}}
 		>
 			{children}
