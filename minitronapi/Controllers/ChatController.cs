@@ -87,6 +87,41 @@ namespace minitronapi.Controllers
             //return Ok(request.Conversation);
         }
 
+        [HttpPost("SendMessageToOpenAI")]
+        public async Task<IActionResult> SendMessageToOpenAI([FromBody] SendMessageRequestModel request)
+        {
+            var authResult = await _tokenService.AuthenticateUser();
+
+            if (authResult == null || !authResult.Success)
+            {
+                return Unauthorized("No authentication token found");
+            }
+
+            var userId = authResult.UserId;
+
+            if (!request.ConversationId.HasValue)
+            {
+                var newConversation = new ConversationModel()
+                {
+                    UserId = userId,
+                    Timestamp = DateTime.UtcNow,
+                };
+                await _conversationService.SaveConversationToDatabase(newConversation);
+                request.ConversationId = newConversation.ConversationId;
+            }
+
+            if (request.Conversation == null)
+            {
+                request.Conversation = new List<ChatMessage>();
+            }
+
+            var response = await _requestService.SendMessageToOpenAI(request.Conversation);
+
+            var formattedResponse = _requestService.FormatResponse(response);
+
+            return Ok(new { response = formattedResponse });
+        }
+
         [HttpPost("StartConversation")]
         public async Task<IActionResult> StartConversation()
         {

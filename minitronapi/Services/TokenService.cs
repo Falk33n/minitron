@@ -127,5 +127,22 @@ namespace minitronapi.Services
 
             return new AuthResult { Success = true, UserId = userId };
         }
+
+        public async Task<bool> IsUserAdmin()
+        {
+            var authResult = await AuthenticateUser();
+            if (authResult == null || !authResult.Success)
+            {
+                return false;
+            }
+
+            var user = await _context.Users.FindAsync(authResult.UserId);
+            if (user == null)
+            {
+                return false;
+            }
+
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
     }
 }

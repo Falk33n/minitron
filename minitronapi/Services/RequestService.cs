@@ -53,7 +53,9 @@ namespace minitronapi.Services
             var data = new
             {
                 messages = conversation.Select(m => new { role = m.Role, content = m.Content }).ToArray(),
-                model = "/mnt/model/"
+                model = "/mnt/model/",
+                max_tokens = 100,
+                temperature = 0.2,
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
@@ -73,6 +75,37 @@ namespace minitronapi.Services
             }
         }
 
+        public async Task<string> SendMessageToOpenAI(List<ChatMessage> conversation)
+        {
+            var data = new
+            {
+                messages = conversation.Select(m => new { role = m.Role, content = m.Content }).ToArray(),
+                model = "gpt-3.5-turbo"
+            };
+
+            // Create the content
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            _httpClient.BaseAddress = new Uri("https://api.openai.com/v1/");
+            // Send the message
+            var response = await _httpClient.PostAsync("chat/completions", content);
+
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response
+                var responseString = await response.Content.ReadAsStringAsync();
+                var responseObject = JsonConvert.DeserializeObject<AIResponse>(responseString)!;
+                // Return the response
+                return responseObject.Choices?[0].Message?.Content ?? "";
+            }
+            else
+            {
+                // Read the error response
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                throw new Exception($"OpenAI API call failed: {response.StatusCode}, Details: {errorResponse}");
+            }
+        }
 
         public string FormatResponse(string input)
         {
