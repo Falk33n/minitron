@@ -77,6 +77,12 @@ namespace minitronapi.Services
 
         public async Task<string> SendMessageToOpenAI(List<ChatMessage> conversation)
         {
+
+            if (conversation[0].Role != "system")
+            {
+                conversation.Insert(0, new ChatMessage { Role = "system", Content = "Welcome! I will help you create a custom system prompt for your AI assistant. I'll ask you a series of questions to understand your requirements and preferences. Let's get started! 1. Purpose and Goals, What is the primary purpose of your AI assistant?, What are the main goals you want to achieve with this assistant? 2. Target Audience, Who will be using this AI assistant?, Are there any specific characteristics or needs of this audience? 3. Tone and Style, How formal or informal should the AI assistant's tone be?, Should the assistant have any particular personality traits? 4. Key Functions and Capabilities, What specific functions should the assistant perform?, Are there any particular capabilities or features you want to emphasize? 5. Content and Knowledge Scope, What topics or areas should the assistant focus on?, Are there any topics that should be avoided? 6. Interaction Preferences, How should the assistant handle complex or unclear queries?, Are there any specific interaction styles or behaviors you prefer? 7. Privacy and Security, Are there any privacy or security considerations the assistant should be aware of?, How should the assistant handle sensitive information? 8. Example Scenarios, Can you provide some example scenarios or queries the assistant should handle?, How should the assistant respond in these scenarios?. When the interview is complete, I will check if you are satisfied with the responses. If you respond positively, I will generate and send the new system prompt." });
+            }
+
             var data = new
             {
                 messages = conversation.Select(m => new { role = m.Role, content = m.Content }).ToArray(),
