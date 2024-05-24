@@ -5,7 +5,7 @@ FROM nginx:latest
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy the custom configuration file from the host machine to the container
-COPY maxdev.conf /etc/nginx/conf.d/
+COPY timdev.conf /etc/nginx/conf.d/
 
 # Optionally expose port 80 if you plan to run this container directly
 EXPOSE 80
