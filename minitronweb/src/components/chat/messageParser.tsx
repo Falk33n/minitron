@@ -1,5 +1,3 @@
-'use client';
-
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Markdown from 'react-markdown';

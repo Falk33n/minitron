@@ -17,7 +17,7 @@ import { cn } from '../../utilities/shadUtilities';
 export type ChatFormProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	onKeyDown: KeyboardEventHandler<HTMLTextAreaElement>;
 	onClick?: MouseEventHandler<HTMLButtonElement>;
-	onChange: ChangeEventHandler<HTMLTextAreaElement>;
+	onChange?: ChangeEventHandler<HTMLTextAreaElement>;
 	disabled?: boolean;
 	testAi?: boolean;
 };

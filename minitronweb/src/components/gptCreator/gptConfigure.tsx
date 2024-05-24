@@ -129,7 +129,6 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 									type='text'
 									placeholder='Name of the AI'
 									autoComplete='off'
-									defaultValue={name}
 									required
 									{...field}
 								/>
@@ -151,7 +150,6 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 									type='text'
 									autoComplete='off'
 									placeholder='Brief description of the AI'
-									defaultValue={description}
 									required
 									{...field}
 								/>
@@ -172,7 +170,6 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 									type='text'
 									autoComplete='off'
 									placeholder='Set the tone of the AI (E.g. formal, informal)'
-									defaultValue={tone}
 									required
 									{...field}
 								/>
@@ -193,7 +190,6 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 									type='text'
 									autoComplete='off'
 									placeholder='Set the personality of the AI'
-									defaultValue={style}
 									required
 									{...field}
 								/>
@@ -215,7 +211,6 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 									className='resize-none w-full rounded-md text-sm ring-offset-background border border-input bg-background bg-background placeholder:text-muted-foreground min-h-24 p-4 overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1'
 									placeholder='The instructions given to the AI'
 									required
-									defaultValue={systemPrompt}
 									rows={3}
 									onKeyDown={handleKeyDown}
 									{...field}
@@ -243,7 +238,6 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 											<StartersSuggestion
 												i={i}
 												field={field}
-												starters={starters}
 											/>
 										</>
 									</FormControl>
