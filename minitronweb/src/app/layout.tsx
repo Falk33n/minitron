@@ -5,6 +5,7 @@ import { Sidebar } from '../components/sidebar/sidebar';
 import { QueryProvider } from '../providers/queryProvider';
 import '../styles/globals.scss';
 import { ClearConvo } from '../providers/clearConvo';
+import { Suspensed } from '../providers/suspense';
 
 export const metadata: Metadata = {
 	title: 'MinitronAI | Digital assistent',
@@ -19,13 +20,15 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className='bg-white w-full h-screen flex justify-center items-center font-roboto overflow-hidden'>
-				<QueryProvider>
-					<ClearConvo>
-						<Toaster />
-						<Sidebar />
-						<main className='w-full'>{children}</main>
-					</ClearConvo>
-				</QueryProvider>
+				<Suspensed>
+					<QueryProvider>
+						<ClearConvo>
+							<Toaster />
+							<Sidebar />
+							<main className='w-full'>{children}</main>
+						</ClearConvo>
+					</QueryProvider>
+				</Suspensed>
 			</body>
 		</html>
 	);
