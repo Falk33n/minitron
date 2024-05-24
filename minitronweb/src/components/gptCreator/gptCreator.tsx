@@ -56,7 +56,7 @@ export function GptCreator() {
 				return [
 					...chatHistory,
 					'Hello Im ready to begin, please start your next message with Hello!',
-					response,
+					response.replaceAll('<br>', '\n'),
 				];
 			});
 		} else {
@@ -99,8 +99,9 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 
 			if (response) {
 				setChatHistory((chatHistory) => {
-					return [...chatHistory, response];
+					return [...chatHistory, response.replaceAll('<br>', '\n')];
 				});
+				console.log(response);
 
 				/* 				const gptCreationData = parseGPTCreationData(response);
 				if (gptCreationData) {
@@ -166,11 +167,12 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 		document
 			.querySelector('main > div > div')
 			?.scrollTo({ top: 99999999, left: 0, behavior: 'smooth' });
-	}, [chatHistory]);
+	}, [chatHistory, configVisible]);
 
 	return (
 		<GetGptData>
-			<div className='bg-white w-full flex flex-col items-center h-screen overflow-y-auto'>
+			<span></span>
+			{/* 			<div className='bg-white w-full flex flex-col items-center h-screen overflow-y-auto'>
 				<div className='w-full flex justify-center sticky top-0 z-[10] bg-white'>
 					<div className='w-[45%] bg-black/5 flex gap-3 justify-center py-3 rounded-xl mt-4'>
 						<Button
@@ -222,7 +224,7 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 				/>
 
 				<GptConfigure configVisible={configVisible} />
-			</div>
+			</div> */}
 		</GetGptData>
 	);
 }

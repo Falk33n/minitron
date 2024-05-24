@@ -86,7 +86,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 
 		useEffect(() => {
 			if (!convoId || chatHistory.length > 2) return;
-			getAllConvoRefetch();
+			getAllConvoRefetch(); //eslint-disable-next-line
 		}, [convoId, chatHistory]);
 
 		return (
