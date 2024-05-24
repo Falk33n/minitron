@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using minitronapi.Data;
 using minitronapi.Models;
+using minitronapi.Services;
 
 namespace minitronapi.Controllers
 {
@@ -9,10 +10,12 @@ namespace minitronapi.Controllers
     public class AgentController : ControllerBase
     {
         private readonly minitronContext _context;
+        private readonly TokenService _tokenService;
 
-        public AgentController(minitronContext context)
+        public AgentController(minitronContext context, TokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
         [HttpPost("CreateAgent")]
@@ -40,6 +43,20 @@ namespace minitronapi.Controllers
         {
             var agents = _context.Agents.ToList();
             return Ok(agents);
+        }
+
+        [HttpGet("GetAgentsByUserId/{id}")]
+        public async Task<IActionResult> GetAgentsByUserId()
+        {
+            var authResult = await _tokenService.AuthenticateUser();
+            if (authResult == null)
+            {
+                return Unauthorized();
+            }
+            var userId = authResult.UserId;
+            var user = await _context.Users.FindAsync(userId);
+            //var agents = await _context.Agents.Select(a => a.UserId == userId).;
+            return Ok(user);
         }
 
         [HttpGet("GetAgentById/{id}")]
