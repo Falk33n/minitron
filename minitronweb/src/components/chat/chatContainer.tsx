@@ -136,7 +136,7 @@ export const ChatContainer = () => {
 		if (!newChat) refetch();
 		if (!forceClear) return;
 		setChatHistory([]);
-		setForceClear(false);
+		setForceClear(false); //eslint-disable-next-line
 	}, [forceClear, convoId]);
 
 	return (
