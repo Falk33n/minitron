@@ -1,0 +1,48 @@
+version: '3.8'
+networks:
+  minitron-max:
+    driver: bridge
+services:
+  minitronapi:
+    build:
+      context: ./minitronapi
+      dockerfile: Dockerfile
+    ports:
+      - "5250:80"  # External and internal ports
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    #volumes:
+      # - ./minitronapi:/app
+      # - ./minitronapi/appsettings.json:/app/appsettings.json
+    command: dotnet watch run  # Ensures live reloading in development
+    networks:
+      - minitron-max
+
+  minitronweb:
+    build:
+      context: ./minitronweb
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3000"  # External and internal ports
+    volumes:
+      - ./minitronweb:/app
+      - ./minitronweb/.next:/app/.next
+    command: sh -c "yarn install && yarn dev"  # Explicitly run yarn install and start dev server
+    depends_on:
+      - minitronapi
+    networks:
+      - minitron-max
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:80"  # External and internal ports
+    depends_on:
+      - minitronapi
+      - minitronweb
+    networks:
+      - minitron-max
