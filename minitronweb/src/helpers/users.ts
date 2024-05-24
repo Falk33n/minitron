@@ -37,3 +37,12 @@ export async function deleteSingleUser(id: string) {
 	if (!response.ok) throw new Error("Couldn't delete the user");
 	return response;
 }
+
+export async function getCurrentUser() {
+	const response = await fetch(`${baseURL}/User/getcurrentuser`, {
+		method: 'GET',
+	});
+
+	if (!response.ok) throw new Error("Couldn't retrieve the current user");
+	return response.json() as Promise<UserType>;
+}

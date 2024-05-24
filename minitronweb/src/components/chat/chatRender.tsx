@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { RobotChatBubble } from './robotChatBubble';
 import { UserChatBubble } from './userChatBubble';
 import { LucideBot } from 'lucide-react';
@@ -9,11 +9,15 @@ export function ChatRender({
 	isPending,
 	configVisible,
 	testAi,
+	gptCreationAi,
+	children,
 }: {
 	chatHistory: string[];
 	isPending: boolean;
 	configVisible?: boolean;
 	testAi?: boolean;
+	gptCreationAi?: boolean;
+	children?: ReactNode;
 }) {
 	return (
 		<div
@@ -25,23 +29,37 @@ export function ChatRender({
 		>
 			{chatHistory.map((message, index) => (
 				<Fragment key={index}>
-					<section
-						className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words ${
-							testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
-						}`}
-					>
-						{index % 2 === 0 ? (
-							<UserChatBubble
-								testAi={testAi}
-								message={message}
-							/>
-						) : (
-							<RobotChatBubble message={message} />
-						)}
-					</section>
+					{index !== 0 && (
+						<section
+							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words ${
+								testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
+							}`}
+						>
+							{gptCreationAi &&
+								(index % 2 !== 0 ? (
+									<RobotChatBubble message={message} />
+								) : (
+									<UserChatBubble
+										testAi={testAi}
+										message={message}
+									/>
+								))}
+
+							{!gptCreationAi &&
+								(index % 2 === 0 ? (
+									<UserChatBubble
+										testAi={testAi}
+										message={message}
+									/>
+								) : (
+									<RobotChatBubble message={message} />
+								))}
+						</section>
+					)}
 				</Fragment>
 			))}
 
+			{children}
 			{isPending && (
 				<div className='ml-6 mt-2'>
 					<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>

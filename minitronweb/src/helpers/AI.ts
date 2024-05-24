@@ -29,3 +29,16 @@ export async function minitronAI(data: MinitronAiProps) {
 	if (!res.ok) throw new Error('Something went wrong');
 	return ((await res.json()) as { response: string }).response;
 }
+
+export async function gptBuilderAI(data: MinitronAiProps) {
+	const res = await fetch(`${baseURL}/Chat/SendMessageToOpenAI`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(data),
+	});
+
+	if (!res.ok) throw new Error('Something went wrong');
+	return ((await res.json()) as { response: string }).response;
+}

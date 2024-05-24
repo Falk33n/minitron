@@ -27,11 +27,12 @@ export const MessageParser = ({
 					</a>
 				),
 				ul: ({ children }) => (
-					<ul className='list-disc list-inside my-2.5'>{children}</ul>
+					<ul className='list-disc list-inside my-3.5 ml-5'>{children}</ul>
 				),
-				ol: ({ children }) => (
-					<ol className='list-decimal list-inside my-2.5'>{children}</ol>
+				li: ({ children }) => (
+					<li className='leading-8 my-1.5 only:font-semibold'>{children}</li>
 				),
+				ol: ({ children }) => <ol className='my-3.5'>{children}</ol>,
 				code: ({ node, className, children, ...props }) => {
 					const match = /language-(\w+)/.exec(className || '');
 

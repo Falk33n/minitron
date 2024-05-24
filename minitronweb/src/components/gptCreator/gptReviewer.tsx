@@ -4,22 +4,18 @@ import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
 import { ChatForm } from '../chat/chatForm';
 import { ChatRender } from '../chat/chatRender';
 import { toast } from '../ui/use-toast';
-import { minitronAI, postStartConvo } from '@/src/helpers';
+import { gptBuilderAI, postStartConvo } from '@/src/helpers';
 import { useMutation } from '@tanstack/react-query';
 import { ClearConvoCtx } from '@/src/providers/clearConvo';
-import { useConvo } from '@/src/hooks/useConvo';
 
 export function GptReviewer() {
 	const [disabled, setDisabled] = useState(true);
-	const [convoId, updateConvoId] = useConvo();
 	const { testAiChatHistory, setTestAiChatHistory } = useContext(ClearConvoCtx);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
 
 	async function handleNewChat() {
-		if (convoId) return;
 		let newId = await postStartConvo();
 		newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
-		updateConvoId('createprofile', newId);
 		return newId;
 	}
 
@@ -30,12 +26,12 @@ export function GptReviewer() {
 			promptRef.current!.value = '';
 			setDisabled((prev) => !prev);
 
-			const response = await minitronAI({
+			const response = await gptBuilderAI({
 				conversation: testAiChatHistory.map((message, i) => ({
 					content: message,
 					role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
 				})),
-				conversationId: newId ? newId : parseInt(convoId!, 10),
+				conversationId: newId,
 			});
 
 			if (response) {
@@ -110,7 +106,7 @@ export function GptReviewer() {
 			/>
 
 			<ChatForm
-				disabled={false}
+				disabled={disabled}
 				onKeyDown={handleKeyDown}
 				onChange={handleChange}
 				testAi={true}

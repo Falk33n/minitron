@@ -6,12 +6,15 @@ import { ControllerRenderProps, useFormContext } from 'react-hook-form';
 export function StartersSuggestion({
 	i,
 	field,
+	starters,
 }: {
 	i: number;
 	field: ControllerRenderProps<
 		{
 			name: string;
 			desc: string;
+			tone: string;
+			style: string;
 			instructions: string;
 			starters: {
 				starter: string;
@@ -19,6 +22,7 @@ export function StartersSuggestion({
 		},
 		`starters.${number}.starter`
 	>;
+	starters: string;
 }) {
 	const { setValue } = useFormContext();
 
@@ -27,8 +31,9 @@ export function StartersSuggestion({
 			<Input
 				type='text'
 				autoComplete='off'
-				placeholder={i > 3 ? 'Optional' : 'Required'}
-				required={i > 3 ? false : true}
+				placeholder='E.g. How do I bake a cake'
+				required
+				defaultValue={starters}
 				{...field}
 			/>
 

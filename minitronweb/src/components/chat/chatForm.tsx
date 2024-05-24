@@ -64,7 +64,7 @@ export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
 						name='prompt'
 						aria-label='Ask MinitronAI a question'
 						autoComplete='off'
-						className='resize-none w-full focus-visible:outline-none min-h-10 p-4 pr-16 rounded-2xl overflow-y-auto'
+						className='resize-none w-full focus-visible:outline-none bg-white min-h-10 p-4 pr-16 rounded-2xl overflow-y-auto'
 						placeholder='Message MinitronAI'
 						required
 						onKeyDown={onKeyDown}
