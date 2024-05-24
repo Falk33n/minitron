@@ -3,110 +3,190 @@
 import {
 	ChatForm,
 	Loader,
+	NotAllowed,
 	RobotChatBubble,
 	UserChatBubble,
+	toast,
 } from '@/src/components';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { LucideBot } from 'lucide-react';
-import { FormEvent, KeyboardEvent, useState } from 'react';
-import { openAI } from '../../helpers';
+import {
+	Fragment,
+	KeyboardEvent,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
+import { minitronAI } from '../../helpers';
+import { getConvos, postStartConvo } from '@/src/helpers/convos';
+import { useConvo } from '@/src/hooks/useConvo';
+import { ClearConvoCtx } from '@/src/providers/clearConvo';
 
 export const ChatContainer = () => {
-	const [chatHistory, setChatHistory] = useState<string[]>([]);
-	const [prompt, setPrompt] = useState('');
-	const { isLoading, refetch } = useQuery({
-		queryKey: ['chat', prompt],
-		queryFn: () => fetchAI(prompt),
+	const [disabled, setDisabled] = useState(true);
+	const [convoId, updateConvoId] = useConvo();
+	const { forceClear, setForceClear, newChat, chatHistory, setChatHistory } =
+		useContext(ClearConvoCtx);
+	const promptRef = useRef<HTMLTextAreaElement>(null);
+
+	const { error, isLoading, refetch } = useQuery({
+		queryKey: ['getConvoId'],
+		queryFn: async () => {
+			if (convoId) {
+				const response = await getConvos(convoId);
+				const convoArray: string[] = [];
+
+				response.responses.forEach((res, i) => {
+					if (response.requests[i]) convoArray.push(response.requests[i]);
+					convoArray.push(res.response);
+				});
+				setChatHistory(convoArray);
+			}
+			return true;
+		},
 		retry: false,
-		enabled: false,
 	});
 
-	function handleKeyDown(
-		event: KeyboardEvent<HTMLFormElement> | KeyboardEvent<HTMLTextAreaElement>
-	) {
-		const lineCount = event.currentTarget.value.split(/\r?\n/).length;
-		event.currentTarget.rows = Math.min(8, Math.max(1, lineCount));
-
-		if (event.key === 'Enter' && event.shiftKey) {
-			event.preventDefault();
-			setPrompt(event.currentTarget.value + '\n');
-		} else if (event.key === 'Enter') {
-			event.preventDefault();
-			event.currentTarget.rows = 1;
-			event.currentTarget.value = '';
-			handleSubmit(event);
-			return;
-		}
+	async function handleNewChat() {
+		if (convoId) return;
+		let newId = await postStartConvo();
+		newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
+		updateConvoId(newId);
+		return newId;
 	}
 
-	async function handleSubmit(
-		event: FormEvent<HTMLFormElement> | KeyboardEvent<HTMLTextAreaElement>
-	) {
+	const { isPending, mutate } = useMutation({
+		mutationKey: ['chat'],
+		mutationFn: async () => {
+			let newId = await handleNewChat();
+			promptRef.current!.value = '';
+			setDisabled((prev) => !prev);
+
+			const response = await minitronAI({
+				conversation: chatHistory.map((message, i) => ({
+					content: message,
+					role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
+				})),
+				conversationId: newId ? newId : parseInt(convoId!, 10),
+			});
+
+			if (response) {
+				setChatHistory((chatHistory) => {
+					return [...chatHistory, response];
+				});
+			} else {
+				toast({
+					variant: 'destructive',
+					title: 'Error!',
+					description: 'Something went wrong. Please try again.',
+				});
+				console.error('AI response was null');
+			}
+			return response;
+		},
+	});
+
+	function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+		if (
+			event.key !== 'Enter' ||
+			(event.key !== 'Enter' && !event.shiftKey) ||
+			!promptRef.current
+		)
+			return;
 		event.preventDefault();
 
-		if (!prompt || !/^\S/.test(prompt)) return;
-		setChatHistory((chatHistory) => {
-			return [...chatHistory, prompt];
-		});
-		await refetch();
-		setPrompt('');
-	}
-
-	async function fetchAI(prompt: string) {
-		const response = await openAI({
-			message: [...chatHistory, prompt],
-			role: chatHistory.length % 2 === 0 ? 'assistant' : 'user',
-		});
-
-		if (response) {
+		if (event.key === 'Enter' && event.shiftKey) {
+			promptRef.current.value += '\n';
+			handleChange();
+		} else if (event.key === 'Enter' && !disabled) {
 			setChatHistory((chatHistory) => {
-				return [...chatHistory, response];
+				return [...chatHistory, promptRef.current!.value];
 			});
-		} else {
-			console.error('AI response was null');
+			return mutate();
 		}
-
-		return response;
 	}
+
+	function handleChange() {
+		if (!promptRef.current) return;
+
+		promptRef.current.style.height = '0px';
+		const textarea = promptRef.current;
+		const hasContent = textarea.value.trim().length > 0;
+		const lineHeight = parseInt(getComputedStyle(textarea).lineHeight, 10);
+		const padding = parseInt(getComputedStyle(textarea).paddingTop, 10) * 2;
+		const maxHeight = lineHeight * 10 + padding;
+		const scrollHeight = textarea.scrollHeight;
+
+		if (disabled === hasContent) setDisabled((prev) => !prev);
+		if (scrollHeight > maxHeight) {
+			textarea.style.paddingRight = '2.75rem';
+		} else textarea.style.paddingRight = '4rem';
+		textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+	}
+
+	useEffect(() => {
+		document
+			.querySelector('main > div')
+			?.scrollTo({ top: 99999999, left: 0, behavior: 'smooth' });
+	}, [chatHistory]);
+
+	useEffect(() => {
+		if (!newChat) refetch();
+		if (!forceClear) return;
+		setChatHistory([]);
+		setForceClear(false);
+	}, [forceClear, convoId]);
 
 	return (
-		<div className='flex flex-col items-center w-full h-screen overflow-y-auto'>
-			<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[66%]'>
-				MinitronAI
-			</p>
+		<>
+			{error && !isLoading ? (
+				<NotAllowed />
+			) : (
+				<div className='flex flex-col items-center w-full h-screen overflow-y-auto'>
+					<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[66%]'>
+						MinitronAI
+					</p>
 
-			<div className='flex-1 flex flex-col gap-10 pb-20 w-[65%] px-8'>
-				{chatHistory.map((message, index) => (
-					<section
-						key={index}
-						className={`py-4 px-6 rounded-2xl w-[90%] text-foreground bg-white relative break-words`}
-					>
-						{index % 2 === 0 ? (
-							<UserChatBubble message={message} />
-						) : isLoading ? (
-							<div>
+					<div className='flex-1 flex flex-col gap-10 pb-20 w-[65%] px-8'>
+						{chatHistory.map((message, index) => (
+							<Fragment key={index}>
+								<section
+									className={`py-4 px-6 rounded-2xl w-[90%] text-foreground bg-white relative break-words`}
+								>
+									{index % 2 === 0 ? (
+										<UserChatBubble message={message} />
+									) : (
+										<RobotChatBubble message={message} />
+									)}
+								</section>
+							</Fragment>
+						))}
+
+						{isPending && (
+							<div className='ml-6 mt-2'>
 								<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
 									<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
 									<h4>MinitronAI</h4>
 								</section>
 								<Loader />
 							</div>
-						) : (
-							<RobotChatBubble message={message} />
 						)}
-					</section>
-				))}
-			</div>
+					</div>
 
-			<ChatForm
-				prompt={prompt}
-				onSubmit={handleSubmit}
-				onKeyDown={handleKeyDown}
-				onChange={(e) => {
-					setPrompt((e.target as HTMLTextAreaElement).value);
-				}}
-			/>
-		</div>
+					<ChatForm
+						disabled={disabled}
+						onKeyDown={handleKeyDown}
+						onChange={handleChange}
+						onClick={async (e) => {
+							e.preventDefault();
+							mutate();
+						}}
+						ref={promptRef}
+					/>
+				</div>
+			)}
+		</>
 	);
 };
 

@@ -16,10 +16,11 @@ import {
 } from '@/src/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import { FormHTMLAttributes, useState } from 'react';
+import { FormHTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { postLogIn } from '../../helpers/postAccounts';
+import { postLogIn } from '../../helpers/accounts';
+import { useRouter } from 'next/navigation';
 
 export type LogInFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -33,17 +34,18 @@ const formSchema = z.object({
 		.string()
 		.trim()
 		.regex(/^((?!\.)[\w_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gi, {
-			message: "Invalid email format. E.g. format 'test@example.com'",
+			message:
+				'The value of the email and password does not match to any registered account.',
 		}),
 	password: z.string().regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{12,}$/, {
-		message:
-			'A valid password requires at least one uppercase letter, one lowercase letter, and a minimum of 12 characters.',
+		message: '',
 	}),
 });
 
 export function LogInForm({ ...props }: LogInFormProps) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const { toast } = useToast();
+	const router = useRouter();
 
 	const { refetch } = useQuery({
 		queryKey: ['login'],
@@ -55,8 +57,8 @@ export function LogInForm({ ...props }: LogInFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: '',
-			password: '',
+			email: 'string@string.com',
+			password: 'Stringstring1337',
 		},
 	});
 
@@ -69,6 +71,7 @@ export function LogInForm({ ...props }: LogInFormProps) {
 				title: 'Success!',
 				description: 'You have successfully logged in.',
 			});
+			router.push('/chat');
 		} else {
 			toast({
 				variant: 'destructive',

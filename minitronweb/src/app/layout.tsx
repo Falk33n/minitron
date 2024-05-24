@@ -4,6 +4,7 @@ import { Toaster } from '../components';
 import { Sidebar } from '../components/sidebar/sidebar';
 import { QueryProvider } from '../providers/queryProvider';
 import '../styles/globals.scss';
+import { ClearConvo } from '../providers/clearConvo';
 
 export const metadata: Metadata = {
 	title: 'MinitronAI | Digital assistent',
@@ -19,9 +20,11 @@ export default function RootLayout({
 		<html lang='en'>
 			<body className='bg-white w-full h-screen flex justify-center items-center font-roboto overflow-hidden'>
 				<QueryProvider>
-					<Toaster />
-					<Sidebar />
-					<main className='w-full'>{children}</main>
+					<ClearConvo>
+						<Toaster />
+						<Sidebar />
+						<main className='w-full'>{children}</main>
+					</ClearConvo>
 				</QueryProvider>
 			</body>
 		</html>

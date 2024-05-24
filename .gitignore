@@ -117,7 +117,11 @@ ScaffoldingReadMe.txt
 *.dll.config
 *.exe.config
 *.txt
-docker-compose.yml
+
+.env.local
+docker-compose.max.yml
+nginx/maxdev.conf
+nginx/Dockerfile.nginx
 Dockerfile
 .env.local
 .env

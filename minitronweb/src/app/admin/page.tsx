@@ -1,10 +1,10 @@
 'use client';
 
 import { DataWindow, Loader, NotAllowed } from '@/src/components';
-import { getLogs, getUsers } from '@/src/helpers';
+import { getLogs, getSession, getUsers } from '@/src/helpers';
 import { LogType } from '@/src/types/adminTypes';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function Admin() {
 	const [logHistory, setLogHistory] = useState<LogType>({ Events: [] });
@@ -12,10 +12,22 @@ export default function Admin() {
 		{ id: string; fullName: string; email: string }[]
 	>([]);
 
-	const { isLoading, error, refetch } = useQuery({
+	const { isLoading: sessionLoading, error: sessionError } = useQuery({
+		queryKey: ['session'],
+		queryFn: getSession,
+		retry: false,
+	});
+
+	const authenticated = useMemo(() => {
+		if (!sessionError && !sessionLoading) return true;
+		return false;
+	}, [sessionError, sessionLoading]);
+
+	const { isLoading: usersLoading, refetch } = useQuery({
 		queryKey: ['getUsers'],
 		queryFn: handleUsers,
 		retry: false,
+		enabled: authenticated,
 	});
 
 	async function handleLogs() {
@@ -46,9 +58,9 @@ export default function Admin() {
 
 	return (
 		<>
-			{error && !isLoading ? (
-				<NotAllowed message={error.message} />
-			) : (
+			{sessionError && !sessionLoading ? (
+				<NotAllowed />
+			) : !sessionError && !sessionLoading ? (
 				<div className='flex flex-col h-screen py-12 overflow-auto'>
 					<div className='w-[85%] h-full m-auto flex flex-col items-center'>
 						<section className='size-full m-10 px-10 pt-5 pb-10 rounded-2xl flex flex-col'>
@@ -57,11 +69,13 @@ export default function Admin() {
 								refetch={refetch}
 								userHistory={userHistory}
 								logHistory={logHistory}
-								loading={isLoading && <Loader />}
+								loading={usersLoading && <Loader />}
 							/>
 						</section>
 					</div>
 				</div>
+			) : (
+				<></>
 			)}
 		</>
 	);

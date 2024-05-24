@@ -45,6 +45,31 @@ namespace minitronapi.Services
             request.RequestPrompt = prompt;
             await _context.SaveChangesAsync();
         }
+        public async Task SaveConversationToDatabase(ConversationModel conversation, List<ChatMessage> initialMessages)
+        {
+            await _context.Conversations.AddAsync(conversation);
+            await _context.SaveChangesAsync();
+
+            foreach (var message in initialMessages)
+            {
+                if (message.Role == "system")
+                {
+                    var request = new RequestModel()
+                    {
+                        ConversationId = conversation.ConversationId,
+                        TimeStamp = DateTime.UtcNow,
+                        RequestPrompt = message.Content!,
+                        Request = message.Content!
+                    };
+                    await SaveRequestToDatabase(request);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
         public async Task SaveConversationToDatabase(ConversationModel conversation)
         {
             await _context.Conversations.AddAsync(conversation);

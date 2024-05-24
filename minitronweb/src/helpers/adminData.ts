@@ -1,3 +1,4 @@
+import { UserType } from '../types/adminTypes';
 import { baseURL } from './index';
 
 export async function getUsers() {
@@ -5,10 +6,7 @@ export async function getUsers() {
 		method: 'GET',
 	});
 
-	if (!response.ok) {
-		throw new Error("Couldn't retrieve users");
-	}
-
+	if (!response.ok) throw new Error("Couldn't retrieve users");
 	return response.json();
 }
 
@@ -17,9 +15,6 @@ export async function getLogs() {
 		method: 'GET',
 	});
 
-	if (!response.ok) {
-		throw new Error("Couldn't retrieve logs");
-	}
-
+	if (!response.ok) throw new Error("Couldn't retrieve logs");
 	return response.json();
 }

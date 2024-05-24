@@ -1,7 +1,8 @@
 'use client';
 
-import { ChatContainer, Loader, NotAllowed } from '@/src/components';
+import { ChatContainer, NotAllowed } from '@/src/components';
 import { getSession } from '@/src/helpers';
+import { useConvo } from '@/src/hooks/useConvo';
 import { useQuery } from '@tanstack/react-query';
 
 export default function Chat() {
@@ -13,11 +14,12 @@ export default function Chat() {
 
 	return (
 		<>
-			{isLoading && <Loader className='' />}
 			{error && !isLoading ? (
-				<NotAllowed message={error.message} />
-			) : (
+				<NotAllowed />
+			) : !error && !isLoading ? (
 				<ChatContainer />
+			) : (
+				<></>
 			)}
 		</>
 	);

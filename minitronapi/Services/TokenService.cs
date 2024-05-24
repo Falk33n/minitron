@@ -17,11 +17,15 @@ namespace minitronapi.Services
     {
         private readonly IConfiguration _config;
         private readonly UserManager<UserModel> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly minitronContext _context;
 
-        public TokenService(IConfiguration config, UserManager<UserModel> userManager)
+        public TokenService(IConfiguration config, UserManager<UserModel> userManager, IHttpContextAccessor httpContextAccessor, minitronContext context)
         {
             _config = config;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
+            _context = context;
         }
 
         public async Task<string> CreateToken(UserModel user)
@@ -88,6 +92,57 @@ namespace minitronapi.Services
             {
                 return false;
             }
+        }
+
+        public async Task<AuthResult> AuthenticateUser()
+        {
+            var token = _httpContextAccessor.HttpContext!.Request.Cookies["AuthCookie"];
+            if (string.IsNullOrEmpty(token))
+            {
+                return new AuthResult { Success = false, ErrorMessage = "No authentication token found" };
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken;
+            try
+            {
+                jwtToken = handler.ReadJwtToken(token);
+            }
+            catch (Exception)
+            {
+                return new AuthResult { Success = false, ErrorMessage = "Error trying to read JWT token" };
+            }
+
+            var userId = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "userId")?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new AuthResult { Success = false, ErrorMessage = "Claim not found" };
+            }
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return new AuthResult { Success = false, ErrorMessage = "User not found" };
+            }
+
+            return new AuthResult { Success = true, UserId = userId };
+        }
+
+        public async Task<bool> IsUserAdmin()
+        {
+            var authResult = await AuthenticateUser();
+            if (authResult == null || !authResult.Success)
+            {
+                return false;
+            }
+
+            var user = await _context.Users.FindAsync(authResult.UserId);
+            if (user == null)
+            {
+                return false;
+            }
+
+            return await _userManager.IsInRoleAsync(user, "Admin");
         }
     }
 }
