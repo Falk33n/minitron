@@ -56,7 +56,7 @@ export function GptCreator() {
 				return [
 					...chatHistory,
 					'Hello Im ready to begin, please start your next message with Hello!',
-					response,
+					response.replaceAll('<br>', '\n'),
 				];
 			});
 		} else {
@@ -99,8 +99,9 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 
 			if (response) {
 				setChatHistory((chatHistory) => {
-					return [...chatHistory, response];
+					return [...chatHistory, response.replaceAll('<br>', '\n')];
 				});
+				console.log(response);
 
 				/* 				const gptCreationData = parseGPTCreationData(response);
 				if (gptCreationData) {
