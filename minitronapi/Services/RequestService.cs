@@ -113,9 +113,6 @@ namespace minitronapi.Services
             var result = Regex.Replace(input, @"\[.*?\]", "");
             result = Regex.Replace(result, @"<<.*?>>", "");
 
-            // Replace '\n' with <br>
-            result = result.Replace("\n", "<br>");
-
             return result;
         }
 
