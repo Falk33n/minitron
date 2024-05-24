@@ -162,10 +162,6 @@ export function LogInForm({ ...props }: LogInFormProps) {
 						<Checkbox
 							label='Remember Me'
 							name='rememberMe'
-							/* checked={rememberMe}
-						onChange={(event) =>
-							setRememberMe((event.target as HTMLInputElement).checked)
-						} */
 						/>
 						<AnchorLink
 							href='/forgotpassword'

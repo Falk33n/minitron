@@ -2,6 +2,7 @@ import { HTMLAttributes } from 'react';
 
 export type ChatBubbleProps = HTMLAttributes<HTMLElement> & {
 	message: string | Response;
+	testAi?: boolean;
 };
 
 export type OpenAiProps = {
@@ -12,7 +13,7 @@ export type OpenAiProps = {
 export type MinitronAiProps = {
 	conversation: {
 		content: string;
-		role: 'user' | 'assistant';
+		role: 'user' | 'assistant' | 'system';
 	}[];
 	conversationId: number;
 };
@@ -28,3 +29,12 @@ export type AllConvosProps = [
 		requests: string[];
 	}
 ];
+
+export type GPTCreationType = {
+	id: string;
+	name: string;
+	description: string;
+	systemPrompt: string;
+	tone: string;
+	style: string;
+};

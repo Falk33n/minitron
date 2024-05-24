@@ -4,12 +4,9 @@ import { cn } from '../../utilities/shadUtilities';
 import { MessageParser } from './messageParser';
 import { ChatBubbleProps } from '@/src/types/aiTypes';
 
-export type UserChatBubbleProps = HTMLAttributes<HTMLParagraphElement> & {
-	message: string | Response;
-};
-
 export const UserChatBubble = ({
 	className,
+	testAi,
 	message,
 	...props
 }: ChatBubbleProps) => {
@@ -22,7 +19,8 @@ export const UserChatBubble = ({
 
 			<MessageParser
 				className={cn(
-					'bg-[#F4F4F4] p-2 rounded-xl w-fit max-w-full',
+					'p-4 rounded-xl w-fit max-w-full',
+					testAi && testAi ? 'bg-[#DEDFE0]/60' : 'bg-[#F4F4F4]',
 					className
 				)}
 				{...props}
