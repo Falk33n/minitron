@@ -62,6 +62,13 @@ namespace minitronapi.Controllers
     [HttpGet("getbyid/{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {
+      var isAdmin = await _tokenService.IsUserAdmin();
+
+      if (!isAdmin)
+      {
+        return Unauthorized("User is not admin");
+      }
+
       var user = await _userManager.FindByIdAsync(id);
       if (user == null)
       {
@@ -81,6 +88,14 @@ namespace minitronapi.Controllers
     [HttpGet("getall")]
     public async Task<IActionResult> GetAllUsers()
     {
+
+      var isAdmin = await _tokenService.IsUserAdmin();
+
+      if (!isAdmin)
+      {
+        return Unauthorized("User is not admin");
+      }
+
       var users = await _context.Users.ToListAsync();
       var userDtos = users.Select(user => new GetUserModel
       {
@@ -102,7 +117,25 @@ namespace minitronapi.Controllers
       {
         return NotFound();
       }
+      if (authResult == null || !authResult.Success)
+      {
+        return Unauthorized("No authentication token found");
+      }
+      var userId = authResult.UserId;
 
+      var conversations = await _context.Conversations.Where(c => c.UserId == user.Id).ToListAsync();
+      var requests = conversations.SelectMany(c => c.RequestList).ToList();
+      var responses = conversations.SelectMany(c => c.ResponseList).ToList();
+
+      if (requests.Count > 0)
+      {
+        _context.Requests.RemoveRange(requests);
+      }
+      if (responses.Count > 0)
+      {
+        _context.Responses.RemoveRange(responses);
+      }
+      _context.Conversations.RemoveRange(conversations);
       _context.Users.Remove(user);
       await _context.SaveChangesAsync();
       _logger.LogInformation("HTTP {option} User {user} deleted at {time}", "DELETE", user.Email, DateTime.UtcNow);
@@ -117,7 +150,19 @@ namespace minitronapi.Controllers
       {
         return NotFound();
       }
+      var conversations = await _context.Conversations.Where(c => c.UserId == user.Id).ToListAsync();
+      var requests = conversations.SelectMany(c => c.RequestList).ToList();
+      var responses = conversations.SelectMany(c => c.ResponseList).ToList();
 
+      if (requests.Count > 0)
+      {
+        _context.Requests.RemoveRange(requests);
+      }
+      if (responses.Count > 0)
+      {
+        _context.Responses.RemoveRange(responses);
+      }
+      _context.Conversations.RemoveRange(conversations);
       _context.Users.Remove(user);
       await _context.SaveChangesAsync();
 
