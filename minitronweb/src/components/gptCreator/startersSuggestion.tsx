@@ -1,12 +1,10 @@
 import { LucideX } from 'lucide-react';
-import { useState } from 'react';
 import { Input } from '../forms/input';
 import { ControllerRenderProps, useFormContext } from 'react-hook-form';
 
 export function StartersSuggestion({
 	i,
 	field,
-	starters,
 }: {
 	i: number;
 	field: ControllerRenderProps<
@@ -22,7 +20,6 @@ export function StartersSuggestion({
 		},
 		`starters.${number}.starter`
 	>;
-	starters: string;
 }) {
 	const { setValue } = useFormContext();
 
@@ -33,7 +30,6 @@ export function StartersSuggestion({
 				autoComplete='off'
 				placeholder='E.g. How do I bake a cake'
 				required
-				defaultValue={starters}
 				{...field}
 			/>
 
