@@ -37,4 +37,5 @@ export type GPTCreationType = {
 	systemPrompt: string;
 	tone: string;
 	style: string;
+	starters: string[];
 };

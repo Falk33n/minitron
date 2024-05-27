@@ -1,6 +1,6 @@
 import { LucideX } from 'lucide-react';
-import { Input } from '../forms/input';
 import { ControllerRenderProps, useFormContext } from 'react-hook-form';
+import { Input } from '../forms/input';
 
 export function StartersSuggestion({
 	i,
@@ -31,7 +31,7 @@ export function StartersSuggestion({
 				placeholder='E.g. How do I bake a cake'
 				required
 				{...field}
-			/>
+        />
 
 			<button
 				className='absolute top-1 text-muted-foreground focus-visible:outline-primary focus-visible:text-black hover:text-black right-2'

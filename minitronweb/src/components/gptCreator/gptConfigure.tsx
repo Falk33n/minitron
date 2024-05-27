@@ -1,6 +1,13 @@
 'use client';
 
+import { createNewGpt, getCurrentUser } from '@/src/helpers';
+import { GetGptDataCtx } from '@/src/providers/getGptData';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { KeyboardEvent, useContext, useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '../forms/button';
 import {
 	Form,
 	FormControl,
@@ -10,15 +17,8 @@ import {
 	FormMessage,
 } from '../forms/form';
 import { Input } from '../forms/input';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { StartersSuggestion } from './startersSuggestion';
-import { KeyboardEvent, useContext } from 'react';
-import { Button } from '../forms/button';
-import { createNewGpt, getCurrentUser } from '@/src/helpers';
 import { toast } from '../ui/use-toast';
-import { useRouter } from 'next/navigation';
-import { GetGptDataCtx } from '@/src/providers/getGptData';
+import { StartersSuggestion } from './startersSuggestion';
 
 const formSchema = z.object({
 	name: z.string().trim().regex(/^.+$/, {
@@ -53,12 +53,12 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: '',
-			desc: '',
-			instructions: '',
-			tone: '',
-			style: '',
-			starters: Array(4).fill({ starter: '' }),
+			name: name ? name : '',
+			desc: description ? description : '',
+			instructions: systemPrompt ? systemPrompt : '',
+			tone: tone ? tone : '',
+			style: style ? style : '',
+			starters: Array(4).fill({ starter: starters ? starters : '' }),
 		},
 	});
 
@@ -83,6 +83,7 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 			systemPrompt: values.instructions,
 			tone: values.tone,
 			style: values.style,
+			starters: values.starters.map((starters) => starters.starter),
 		});
 
 		if (res) {
@@ -106,6 +107,10 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 		control: form.control,
 		name: 'starters',
 	});
+
+	useEffect(() => {
+		console.log(systemPrompt);
+	}, [systemPrompt]);
 
 	return (
 		<Form {...form}>

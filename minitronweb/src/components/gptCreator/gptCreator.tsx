@@ -1,30 +1,24 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-	KeyboardEvent,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
-import { Button } from '../forms/button';
-import { ChatForm } from '../chat/chatForm';
-import { ClearConvoCtx } from '@/src/providers/clearConvo';
 import { gptBuilderAI, postStartConvo } from '@/src/helpers';
-import { toast } from '../ui/use-toast';
-import { ChatRender } from '../chat/chatRender';
-import { GptConfigure } from './gptConfigure';
-import { LucideBot } from 'lucide-react';
-import { Loader } from '../misc/loader';
+import { ClearConvoCtx } from '@/src/providers/clearConvo';
 import { GetGptData, GetGptDataCtx } from '@/src/providers/getGptData';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { LucideBot } from 'lucide-react';
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
+import { ChatForm } from '../chat/chatForm';
+import { ChatRender } from '../chat/chatRender';
+import { Button } from '../forms/button';
+import { Loader } from '../misc/loader';
+import { toast } from '../ui/use-toast';
+import { GptConfigure } from './gptConfigure';
 
 export function GptCreator() {
 	const [disabled, setDisabled] = useState(true);
 	const [configVisible, setConfigVisible] = useState(false);
 	const [id, setId] = useState(-1);
 	const { chatHistory, setChatHistory } = useContext(ClearConvoCtx);
+	const [tempConfigArray, setTempConfigArray] = useState<string[]>([]);
 	const {
 		setName,
 		setDescription,
@@ -34,6 +28,14 @@ export function GptCreator() {
 		setStarters,
 	} = useContext(GetGptDataCtx);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
+	const prefixes = [
+		'Tone',
+		'Style',
+		'Starters',
+		'Name',
+		'Description',
+		'SystemPrompt',
+	];
 
 	async function handleNewGPTCreatorChat() {
 		let newId = await postStartConvo();
@@ -86,6 +88,7 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ['chat'],
 		mutationFn: async () => {
+			let configArray: string[] = [];
 			promptRef.current!.value = '';
 			setDisabled((prev) => !prev);
 
@@ -98,10 +101,14 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 			});
 
 			if (response) {
+				const matches = response.match(/"([^"]*)"/g);
+				if (matches) {
+					configArray = matches.map((str) => str.slice(1, -1));
+					setTempConfigArray(configArray);
+				}
 				setChatHistory((chatHistory) => {
 					return [...chatHistory, response.replaceAll('<br>', '\n')];
 				});
-				console.log(response);
 
 				/* 				const gptCreationData = parseGPTCreationData(response);
 				if (gptCreationData) {
@@ -168,6 +175,18 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 			.querySelector('main > div > div')
 			?.scrollTo({ top: 99999999, left: 0, behavior: 'smooth' });
 	}, [chatHistory, configVisible]);
+
+	useEffect(() => {
+		if (tempConfigArray) {
+			setSystemPrompt(tempConfigArray[0]);
+			setName(tempConfigArray[1]);
+			setDescription(tempConfigArray[2]);
+			setTone(tempConfigArray[3]);
+			setStyle(tempConfigArray[4]);
+			setStarters(tempConfigArray[5]);
+		}
+		// eslint-disable-next-line
+	}, [tempConfigArray]);
 
 	return (
 		<GetGptData>

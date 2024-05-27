@@ -16,11 +16,11 @@ import {
 } from '@/src/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import { FormHTMLAttributes, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FormHTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { postLogIn } from '../../helpers/accounts';
-import { useRouter } from 'next/navigation';
 
 export type LogInFormProps = FormHTMLAttributes<HTMLFormElement> & {
 	formHeading: string;
@@ -84,7 +84,6 @@ export function LogInForm({ ...props }: LogInFormProps) {
 
 	return (
 		<>
-    <div>asdasd</div>
 			<Form {...form}>
 				<form
 					noValidate
