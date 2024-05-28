@@ -1,28 +1,12 @@
 'use client';
 
-import {
-	ChatForm,
-	ChatRender,
-	Loader,
-	NotAllowed,
-	RobotChatBubble,
-	UserChatBubble,
-	toast,
-} from '@/src/components';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { LucideBot } from 'lucide-react';
-import {
-	Fragment,
-	KeyboardEvent,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from 'react';
-import { minitronAI } from '../../helpers';
+import { ChatForm, ChatRender, NotAllowed, toast } from '@/src/components';
 import { getConvos, postStartConvo } from '@/src/helpers/convos';
 import { useConvo } from '@/src/hooks/useConvo';
 import { ClearConvoCtx } from '@/src/providers/clearConvo';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
+import { minitronAI } from '../../helpers';
 
 export const ChatContainer = () => {
 	const [disabled, setDisabled] = useState(true);
@@ -138,6 +122,10 @@ export const ChatContainer = () => {
 		setChatHistory([]);
 		setForceClear(false); //eslint-disable-next-line
 	}, [forceClear, convoId]);
+
+	useEffect(() => {
+		if (convoId) setChatHistory([]); //eslint-disable-next-line
+	}, []);
 
 	return (
 		<>

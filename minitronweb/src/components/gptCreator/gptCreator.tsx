@@ -2,7 +2,7 @@
 
 import { gptBuilderAI, postStartConvo } from '@/src/helpers';
 import { ClearConvoCtx } from '@/src/providers/clearConvo';
-import { GetGptData, GetGptDataCtx } from '@/src/providers/getGptData';
+import { GetGptDataCtx } from '@/src/providers/getGptData';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { LucideBot } from 'lucide-react';
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
@@ -18,7 +18,6 @@ export function GptCreator() {
 	const [configVisible, setConfigVisible] = useState(false);
 	const [id, setId] = useState(-1);
 	const { chatHistory, setChatHistory } = useContext(ClearConvoCtx);
-	const [tempConfigArray, setTempConfigArray] = useState<string[]>([]);
 	const {
 		setName,
 		setDescription,
@@ -28,14 +27,6 @@ export function GptCreator() {
 		setStarters,
 	} = useContext(GetGptDataCtx);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
-	const prefixes = [
-		'Tone',
-		'Style',
-		'Starters',
-		'Name',
-		'Description',
-		'SystemPrompt',
-	];
 
 	async function handleNewGPTCreatorChat() {
 		let newId = await postStartConvo();
@@ -85,10 +76,32 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 		retry: false,
 	});
 
+	function getValues(values: string[], res: string) {
+		const matches = res.match(/"([^"]*)"/g);
+		if (matches) {
+			matches?.forEach((match, i) => {
+				values.push(match.slice(1, -1));
+			});
+
+			if (values) {
+				const starters = values[6].match(/\d([^0-9]*)/g);
+				if (starters) {
+					setSystemPrompt(values[1]);
+					setName(values[2]);
+					setDescription(values[3]);
+					setTone(values[4]);
+					setStyle(values[5]);
+					setStarters(starters.map((starter) => ({ starter: starter })));
+					return;
+				}
+			}
+		}
+	}
+
 	const { isPending, mutate } = useMutation({
 		mutationKey: ['chat'],
 		mutationFn: async () => {
-			let configArray: string[] = [];
+			let configArray: string[] = [''];
 			promptRef.current!.value = '';
 			setDisabled((prev) => !prev);
 
@@ -101,24 +114,17 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 			});
 
 			if (response) {
-				const matches = response.match(/"([^"]*)"/g);
-				if (matches) {
-					configArray = matches.map((str) => str.slice(1, -1));
-					setTempConfigArray(configArray);
-				}
-				setChatHistory((chatHistory) => {
-					return [...chatHistory, response.replaceAll('<br>', '\n')];
-				});
+				getValues(configArray, response);
 
-				/* 				const gptCreationData = parseGPTCreationData(response);
-				if (gptCreationData) {
-					setName(gptCreationData.NAME);
-					setDescription(gptCreationData.DESC);
-					setSystemPrompt(gptCreationData.SYSTEM_PROMPT);
-					setTone(gptCreationData.TONE);
-					setStyle(gptCreationData.STYLE);
-					setStarters(gptCreationData.STARTERS);
-				} */
+				setChatHistory((chatHistory) => {
+					return [
+						...chatHistory,
+						response
+							.replaceAll('<br>', '\n')
+							.replaceAll('::INFORMATION::', '')
+							.replaceAll('::', ''),
+					];
+				});
 			} else {
 				toast({
 					variant: 'destructive',
@@ -144,6 +150,13 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 			promptRef.current.value += '\n';
 			handleChange();
 		} else if (event.key === 'Enter' && !disabled) {
+			const lineHeight = parseInt(
+				getComputedStyle(promptRef.current).lineHeight,
+				10
+			);
+			const padding =
+				parseInt(getComputedStyle(promptRef.current).paddingTop, 10) * 2;
+			promptRef.current.style.height = `${lineHeight + padding}px`;
 			setChatHistory((chatHistory) => {
 				return [...chatHistory, promptRef.current!.value];
 			});
@@ -176,73 +189,59 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 			?.scrollTo({ top: 99999999, left: 0, behavior: 'smooth' });
 	}, [chatHistory, configVisible]);
 
-	useEffect(() => {
-		if (tempConfigArray) {
-			setSystemPrompt(tempConfigArray[0]);
-			setName(tempConfigArray[1]);
-			setDescription(tempConfigArray[2]);
-			setTone(tempConfigArray[3]);
-			setStyle(tempConfigArray[4]);
-			setStarters(tempConfigArray[5]);
-		}
-		// eslint-disable-next-line
-	}, [tempConfigArray]);
-
 	return (
-		<GetGptData>
-			<div className='bg-white w-full flex flex-col items-center h-screen overflow-y-auto'>
-				<div className='w-full flex justify-center sticky top-0 z-[10] bg-white'>
-					<div className='w-[45%] bg-black/5 flex gap-3 justify-center py-3 rounded-xl mt-4'>
-						<Button
-							className={`flex-1 ml-3 ${
-								configVisible
-									? 'bg-black/5 text-black hover:bg-black/15 focus-visible:bg-black/15'
-									: 'text-white'
-							}`}
-							onClick={() => setConfigVisible(false)}
-						>
-							Create
-						</Button>
-						<Button
-							className={`flex-1 mr-3 ${
-								configVisible
-									? 'text-white'
-									: 'bg-black/5 text-black hover:bg-black/15 focus-visible:bg-black/15'
-							}`}
-							onClick={() => setConfigVisible(true)}
-						>
-							Configure
-						</Button>
-					</div>
+		<div className='bg-white w-full flex flex-col items-center h-screen overflow-y-auto'>
+			<div className='w-full flex justify-center sticky top-0 z-[10] bg-white'>
+				<div className='w-[45%] bg-black/5 flex gap-3 justify-center py-3 rounded-xl mt-4'>
+					<Button
+						className={`flex-1 ml-3 ${
+							configVisible
+								? 'bg-black/5 text-black hover:bg-black/15 focus-visible:bg-black/15'
+								: 'text-white'
+						}`}
+						onClick={() => setConfigVisible(false)}
+					>
+						Create
+					</Button>
+					<Button
+						className={`flex-1 mr-3 ${
+							configVisible
+								? 'text-white'
+								: 'bg-black/5 text-black hover:bg-black/15 focus-visible:bg-black/15'
+						}`}
+						onClick={() => setConfigVisible(true)}
+					>
+						Configure
+					</Button>
 				</div>
-
-				<ChatRender
-					configVisible={configVisible}
-					isPending={isPending}
-					chatHistory={chatHistory}
-					gptCreationAi={true}
-				>
-					{isLoading && (
-						<div className='ml-6 mt-2'>
-							<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
-								<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
-								<h4>MinitronAI</h4>
-							</section>
-							<Loader />
-						</div>
-					)}
-				</ChatRender>
-
-				<ChatForm
-					className={configVisible ? 'absolute top-[200rem] sr-only' : ''}
-					disabled={disabled}
-					onKeyDown={handleKeyDown}
-					onChange={handleChange}
-					ref={promptRef}
-				/>
-
-				<GptConfigure configVisible={configVisible} />
 			</div>
-		</GetGptData>
+
+			<ChatRender
+				configVisible={configVisible}
+				isPending={isPending}
+				chatHistory={chatHistory}
+				gptCreationAi={true}
+			>
+				{isLoading && (
+					<div className='ml-6 mt-2'>
+						<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
+							<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
+							<h4>MinitronAI</h4>
+						</section>
+						<Loader />
+					</div>
+				)}
+			</ChatRender>
+
+			<ChatForm
+				className={configVisible ? 'absolute top-[200rem] sr-only' : ''}
+				disabled={disabled}
+				onKeyDown={handleKeyDown}
+				onChange={handleChange}
+				ref={promptRef}
+			/>
+
+			<GptConfigure configVisible={configVisible} />
+		</div>
 	);
 }

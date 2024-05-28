@@ -3,6 +3,7 @@
 import { GptCreator, GptReviewer, NotAllowed } from '@/src/components';
 import { getSession } from '@/src/helpers';
 import { useQuery } from '@tanstack/react-query';
+import { GetGptData } from '../../providers/getGptData';
 
 export default function CreateProfile() {
 	const { isLoading, error } = useQuery({
@@ -17,8 +18,10 @@ export default function CreateProfile() {
 				<NotAllowed />
 			) : !error && !isLoading ? (
 				<div className='flex min-h-screen w-full'>
-					<GptCreator />
-					<GptReviewer />
+					<GetGptData>
+						<GptCreator />
+						<GptReviewer />
+					</GetGptData>
 				</div>
 			) : (
 				<></>

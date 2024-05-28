@@ -1,8 +1,8 @@
+import { LucideBot } from 'lucide-react';
 import { Fragment, ReactNode } from 'react';
+import { Loader } from '../misc/loader';
 import { RobotChatBubble } from './robotChatBubble';
 import { UserChatBubble } from './userChatBubble';
-import { LucideBot } from 'lucide-react';
-import { Loader } from '../misc/loader';
 
 export function ChatRender({
 	chatHistory,
@@ -29,31 +29,37 @@ export function ChatRender({
 		>
 			{chatHistory.map((message, index) => (
 				<Fragment key={index}>
-					{index !== 0 && (
+					{index !== 0 && gptCreationAi && (
 						<section
 							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words ${
 								testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
 							}`}
 						>
-							{gptCreationAi &&
-								(index % 2 !== 0 ? (
-									<RobotChatBubble message={message} />
-								) : (
-									<UserChatBubble
-										testAi={testAi}
-										message={message}
-									/>
-								))}
+							{index % 2 !== 0 ? (
+								<RobotChatBubble message={message} />
+							) : (
+								<UserChatBubble
+									testAi={testAi}
+									message={message}
+								/>
+							)}
+						</section>
+					)}
 
-							{!gptCreationAi &&
-								(index % 2 === 0 ? (
-									<UserChatBubble
-										testAi={testAi}
-										message={message}
-									/>
-								) : (
-									<RobotChatBubble message={message} />
-								))}
+					{!gptCreationAi && (
+						<section
+							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words ${
+								testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
+							}`}
+						>
+							{index % 2 === 0 ? (
+								<UserChatBubble
+									testAi={testAi}
+									message={message}
+								/>
+							) : (
+								<RobotChatBubble message={message} />
+							)}
 						</section>
 					)}
 				</Fragment>

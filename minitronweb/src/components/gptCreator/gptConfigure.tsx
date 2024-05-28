@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { KeyboardEvent, useContext, useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { ClearConvoCtx } from '../../providers/clearConvo';
 import { Button } from '../forms/button';
 import {
 	Form,
@@ -48,17 +49,20 @@ const formSchema = z.object({
 export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 	const { name, description, systemPrompt, tone, style, starters } =
 		useContext(GetGptDataCtx);
+	const { chatHistory } = useContext(ClearConvoCtx);
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: name ? name : '',
-			desc: description ? description : '',
-			instructions: systemPrompt ? systemPrompt : '',
-			tone: tone ? tone : '',
-			style: style ? style : '',
-			starters: Array(4).fill({ starter: starters ? starters : '' }),
+			name: name || '',
+			desc: description || '',
+			instructions: systemPrompt || '',
+			tone: tone || '',
+			style: style || '',
+			starters: starters?.length
+				? starters.map((starter) => ({ starter: starter.starter }))
+				: Array(4).fill({ starter: '' }),
 		},
 	});
 
@@ -109,8 +113,17 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 	});
 
 	useEffect(() => {
-		console.log(systemPrompt);
-	}, [systemPrompt]);
+		form.reset({
+			name: name || '',
+			desc: description || '',
+			instructions: systemPrompt || '',
+			tone: tone || '',
+			style: style || '',
+			starters: starters?.length
+				? starters.map((starter) => ({ starter }))
+				: Array(4).fill({ starter: '' }),
+		});
+	}, [name, description, systemPrompt, tone, style, starters, form]);
 
 	return (
 		<Form {...form}>
@@ -151,11 +164,13 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 						<FormItem>
 							<FormLabel>Description</FormLabel>
 							<FormControl>
-								<Input
-									type='text'
+								<textarea
 									autoComplete='off'
-									placeholder='Brief description of the AI'
+									className='resize-none w-full rounded-md text-sm ring-offset-background border border-input bg-background bg-background placeholder:text-muted-foreground min-h-24 p-4 overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1'
+									placeholder='The instructions given to the AI'
 									required
+									rows={1}
+									onKeyDown={handleKeyDown}
 									{...field}
 								/>
 							</FormControl>
