@@ -73,11 +73,18 @@ builder.Services.AddIdentityCore<UserModel>(options =>
   .AddDefaultTokenProviders();
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+      options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+      options.JsonSerializerOptions.WriteIndented = true;
+    });
+
 builder.Services.AddSwaggerGen(c =>
 {
   c.SwaggerDoc("v1", new() { Title = "minitronapi", Version = "v1" });
 });
+
 builder.Services.AddScoped<SignInManager<UserModel>>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddEndpointsApiExplorer();

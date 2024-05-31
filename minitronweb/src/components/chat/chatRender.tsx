@@ -29,36 +29,51 @@ export function ChatRender({
 		>
 			{chatHistory.map((message, index) => (
 				<Fragment key={index}>
-					{index !== 0 && gptCreationAi && (
+					{index !== 0 && gptCreationAi && !testAi && (
 						<section
-							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words ${
+							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words leading-7 ${
 								testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
 							}`}
 						>
 							{index % 2 !== 0 ? (
 								<RobotChatBubble message={message} />
 							) : (
-								<UserChatBubble
-									testAi={testAi}
-									message={message}
-								/>
+								<UserChatBubble message={message} />
 							)}
 						</section>
 					)}
 
-					{!gptCreationAi && (
+					{!gptCreationAi && !testAi && (
 						<section
-							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words ${
+							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words leading-7 ${
 								testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
 							}`}
 						>
 							{index % 2 === 0 ? (
-								<UserChatBubble
-									testAi={testAi}
-									message={message}
-								/>
+								<UserChatBubble message={message} />
 							) : (
 								<RobotChatBubble message={message} />
+							)}
+						</section>
+					)}
+
+					{testAi && (
+						<section
+							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words leading-7 ${
+								testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
+							}`}
+						>
+							{index !== 0 && (
+								<>
+									{index % 2 !== 0 ? (
+										<RobotChatBubble message={message} />
+									) : (
+										<UserChatBubble
+											message={message}
+											testAi={testAi}
+										/>
+									)}
+								</>
 							)}
 						</section>
 					)}

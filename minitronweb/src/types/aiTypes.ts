@@ -39,3 +39,17 @@ export type GPTCreationType = {
 	style: string;
 	starters: string[];
 };
+
+export type Agent = {
+	name: string;
+	systemPrompt: string;
+};
+
+export type AgentResponse = {
+	$values: [
+		{
+			name: string;
+			systemPrompt: string;
+		}
+	];
+};

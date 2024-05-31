@@ -49,7 +49,7 @@ const formSchema = z.object({
 export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 	const { name, description, systemPrompt, tone, style, starters } =
 		useContext(GetGptDataCtx);
-	const { chatHistory } = useContext(ClearConvoCtx);
+	const { chatHistory, setNewChat, setForceClear } = useContext(ClearConvoCtx);
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -87,7 +87,7 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 			systemPrompt: values.instructions,
 			tone: values.tone,
 			style: values.style,
-			starters: values.starters.map((starters) => starters.starter),
+			starters: values.starters.map((starter) => starter.starter),
 		});
 
 		if (res) {
@@ -96,6 +96,9 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 				title: 'Success!',
 				description: `${values.name}AI successfully created!`,
 			});
+
+			setNewChat(true);
+			setForceClear(true);
 			router.push('/chat');
 		} else {
 			toast({
@@ -120,7 +123,7 @@ export function GptConfigure({ configVisible }: { configVisible: boolean }) {
 			tone: tone || '',
 			style: style || '',
 			starters: starters?.length
-				? starters.map((starter) => ({ starter }))
+				? starters.map((starter) => ({ starter: starter.starter }))
 				: Array(4).fill({ starter: '' }),
 		});
 	}, [name, description, systemPrompt, tone, style, starters, form]);

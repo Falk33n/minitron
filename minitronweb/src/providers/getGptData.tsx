@@ -25,6 +25,8 @@ type GptCtxProps = {
 	setStyle: Dispatch<SetStateAction<string>>;
 	starters: Starter[];
 	setStarters: Dispatch<SetStateAction<Starter[]>>;
+	starterPrompt: string;
+	setStarterPrompt: Dispatch<SetStateAction<string>>;
 };
 
 export const GetGptDataCtx = createContext<GptCtxProps>({
@@ -40,6 +42,8 @@ export const GetGptDataCtx = createContext<GptCtxProps>({
 	setStyle: () => {},
 	starters: [],
 	setStarters: () => {},
+	starterPrompt: '',
+	setStarterPrompt: () => {},
 });
 
 export function GetGptData({ children }: { children: ReactNode }) {
@@ -49,6 +53,7 @@ export function GetGptData({ children }: { children: ReactNode }) {
 	const [tone, setTone] = useState('');
 	const [style, setStyle] = useState('');
 	const [starters, setStarters] = useState<Starter[]>([]);
+	const [starterPrompt, setStarterPrompt] = useState('');
 
 	return (
 		<GetGptDataCtx.Provider
@@ -65,6 +70,8 @@ export function GetGptData({ children }: { children: ReactNode }) {
 				setStyle,
 				starters,
 				setStarters,
+				starterPrompt,
+				setStarterPrompt,
 			}}
 		>
 			{children}

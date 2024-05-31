@@ -4,12 +4,25 @@ import { ChatForm, ChatRender, NotAllowed, toast } from '@/src/components';
 import { getConvos, postStartConvo } from '@/src/helpers/convos';
 import { useConvo } from '@/src/hooks/useConvo';
 import { ClearConvoCtx } from '@/src/providers/clearConvo';
+import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { ChevronDown } from 'lucide-react';
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
-import { minitronAI } from '../../helpers';
+import { getAgentsByUserId, getCurrentUser, minitronAI } from '../../helpers';
+import { Agent } from '../../types/aiTypes';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 export const ChatContainer = () => {
 	const [disabled, setDisabled] = useState(true);
+	const [gpt, setGpt] = useState<Agent[]>([]);
+	const [gptName, setGptName] = useState('');
+	const [gptPrompt, setGptPrompt] = useState('');
 	const [convoId, updateConvoId] = useConvo();
 	const { forceClear, setForceClear, newChat, chatHistory, setChatHistory } =
 		useContext(ClearConvoCtx);
@@ -48,27 +61,57 @@ export const ChatContainer = () => {
 			promptRef.current!.value = '';
 			setDisabled((prev) => !prev);
 
-			const response = await minitronAI({
-				conversation: chatHistory.map((message, i) => ({
-					content: message,
-					role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
-				})),
-				conversationId: newId ? newId : parseInt(convoId!, 10),
-			});
+			if (chatHistory.length === 0) {
+				const response = await minitronAI({
+					conversation: [
+						{
+							content: gptPrompt ? gptPrompt : 'You are a helpfull assistant',
+							role: 'system',
+						},
+					],
+					conversationId: newId ? newId : parseInt(convoId!, 10),
+				});
 
-			if (response) {
-				setChatHistory((chatHistory) => {
-					return [...chatHistory, response];
-				});
+				if (response) {
+					setChatHistory((chatHistory) => {
+						return [
+							...chatHistory,
+							gptPrompt ? gptPrompt : 'You are a helpfull assistant',
+							response.replaceAll('<br>', '\n'),
+						];
+					});
+				} else {
+					toast({
+						variant: 'destructive',
+						title: 'Error!',
+						description: 'Something went wrong. Please try again.',
+					});
+					console.error('AI response was null');
+				}
+				return response;
 			} else {
-				toast({
-					variant: 'destructive',
-					title: 'Error!',
-					description: 'Something went wrong. Please try again.',
+				const response = await minitronAI({
+					conversation: chatHistory.map((message, i) => ({
+						content: message,
+						role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
+					})),
+					conversationId: newId ? newId : parseInt(convoId!, 10),
 				});
-				console.error('AI response was null');
+
+				if (response) {
+					setChatHistory((chatHistory) => {
+						return [...chatHistory, response];
+					});
+				} else {
+					toast({
+						variant: 'destructive',
+						title: 'Error!',
+						description: 'Something went wrong. Please try again.',
+					});
+					console.error('AI response was null');
+				}
+				return response;
 			}
-			return response;
 		},
 	});
 
@@ -110,6 +153,32 @@ export const ChatContainer = () => {
 		textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
 	}
 
+	async function getUserGpts() {
+		const res = await getCurrentUser();
+
+		if (res) {
+			try {
+				const agents = await getAgentsByUserId(res.id);
+				setGpt(agents);
+			} catch (error) {
+				toast({
+					variant: 'destructive',
+					title: 'Error!',
+					description: 'Something went wrong. Please try again.',
+				});
+				console.error('Could not retrieve Agents');
+				console.error('Failed to fetch agents:', error);
+			}
+		} else {
+			toast({
+				variant: 'destructive',
+				title: 'Error!',
+				description: 'Something went wrong. Please try again.',
+			});
+			console.error('User was null');
+		}
+	}
+
 	useEffect(() => {
 		document
 			.querySelector('main > div')
@@ -127,15 +196,43 @@ export const ChatContainer = () => {
 		if (convoId) setChatHistory([]); //eslint-disable-next-line
 	}, []);
 
+	useEffect(() => {
+		getUserGpts();
+	}, []);
+
 	return (
 		<>
 			{error && !isLoading ? (
 				<NotAllowed />
 			) : (
 				<div className='flex flex-col items-center w-full h-screen overflow-y-auto'>
-					<p className='text-muted-foreground text-sm justify-center items-center z-10 bg-white py-5 flex sticky top-0 w-[80%]'>
-						MinitronAI
-					</p>
+					<DropdownMenu>
+						<DropdownMenuTrigger className='mt-2 rounded-lg flex justify-between gap-1 items-center text-muted-foreground p-2 hover:text-black hover:bg-navbarList/80'>
+							{gptName ? gptName : 'Select your GPT'}
+							<ChevronDown
+								className='text-primary size-5'
+								aria-hidden
+							/>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className='w-[12rem]'>
+							<DropdownMenuLabel>Select your GPT</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<>
+								{gpt.map((agent, i) => (
+									<DropdownMenuItem
+										key={i}
+										onClick={() => {
+											setGptName(agent.name);
+											setGptPrompt(agent.systemPrompt);
+										}}
+										className='cursor-pointer hover:bg-navbarList/50 focus-visible:bg-navbarList/50 hover:font-medium focus-visible:font-medium'
+									>
+										{agent.name}
+									</DropdownMenuItem>
+								))}
+							</>
+						</DropdownMenuContent>
+					</DropdownMenu>
 
 					<ChatRender
 						isPending={isPending}

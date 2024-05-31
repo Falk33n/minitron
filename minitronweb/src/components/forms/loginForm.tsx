@@ -57,8 +57,8 @@ export function LogInForm({ ...props }: LogInFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: 'test@user.com',
-			password: 'TestUserTestUser1337',
+			email: 'string@string.com',
+			password: 'Stringstring1337',
 		},
 	});
 

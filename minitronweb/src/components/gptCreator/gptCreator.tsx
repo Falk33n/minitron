@@ -37,8 +37,8 @@ export function GptCreator() {
 			conversation: [
 				{
 					content:
-						'Hello Im ready to begin, please start your next message with Hello!',
-					role: 'user',
+						"You are an AI assistant designed to help users create a custom AI system prompt. To gather the necessary details, you interview the user with the following questions, but not all at once.: 1. Purpose and Goals: What is the main purpose of your AI assistant? What goals do you want to achieve? 2. Target Audience: Who will be using this AI assistant? Any specific characteristics or needs of this audience? 3. Tone and Style: Should the AI's tone be formal or informal? Any particular personality traits? 4. Key Functions and Capabilities: What functions should the assistant perform? Any key features to emphasize? 5. Content and Knowledge Scope: What topics should the assistant focus on? Any topics to avoid? 6. Interaction Preferences: How should the assistant handle complex or unclear queries? Any preferred interaction styles? 7. Privacy and Security: Any privacy or security considerations? How should sensitive information be handled? 8. Example Scenarios: Provide some example scenarios or queries. How should the assistant respond? Once you have the user's responses, confirm their satisfaction. If they are satisfied, generate and send the new system prompt as a single string. Start the conversation in a friendly and welcoming tone, without explicitly mentioning the system prompt. Instead, say you are helping them create a custom AI. Mark the system prompt with quotes and inside it should be the full system prompt, and after that include the following quotes the name and it should contain a suggested name for the AI in quotes. Description inside quites and inside it should be a brief description of what the AI. The tone in quotes containing the desired tone of the AI. The style of the AI inside quotes. And lastly Starters and inside this quote it should contain four distinct conversation starter examples. Remember not to quote the titles of the different values, only quote the values. You should make a short summary first of the ai that is not quoted or doesnt have any specifics. After the summary you should put the actual values we want to come you should seperate these with ::INFORMATION:: followed by the values we want. Never forget to quote the values and always remember to use a digit before each starters quote. Never use single quotes. Remember to make the starters values sound like the user is asking a question to you the AI Assistant.",
+					role: 'system',
 				},
 			],
 			conversationId: newId,
@@ -48,7 +48,7 @@ export function GptCreator() {
 			setChatHistory((chatHistory) => {
 				return [
 					...chatHistory,
-					'Hello Im ready to begin, please start your next message with Hello!',
+					"You are an AI assistant designed to help users create a custom AI system prompt. To gather the necessary details, you interview the user with the following questions, but not all at once.: 1. Purpose and Goals: What is the main purpose of your AI assistant? What goals do you want to achieve? 2. Target Audience: Who will be using this AI assistant? Any specific characteristics or needs of this audience? 3. Tone and Style: Should the AI's tone be formal or informal? Any particular personality traits? 4. Key Functions and Capabilities: What functions should the assistant perform? Any key features to emphasize? 5. Content and Knowledge Scope: What topics should the assistant focus on? Any topics to avoid? 6. Interaction Preferences: How should the assistant handle complex or unclear queries? Any preferred interaction styles? 7. Privacy and Security: Any privacy or security considerations? How should sensitive information be handled? 8. Example Scenarios: Provide some example scenarios or queries. How should the assistant respond? Once you have the user's responses, confirm their satisfaction. If they are satisfied, generate and send the new system prompt as a single string. Start the conversation in a friendly and welcoming tone, without explicitly mentioning the system prompt. Instead, say you are helping them create a custom AI. Mark the system prompt with quotes and inside it should be the full system prompt, and after that include the following quotes the name and it should contain a suggested name for the AI in quotes. Description inside quites and inside it should be a brief description of what the AI. The tone in quotes containing the desired tone of the AI. The style of the AI inside quotes. And lastly Starters and inside this quote it should contain four distinct conversation starter examples. Remember not to quote the titles of the different values, only quote the values. You should make a short summary first of the ai that is not quoted or doesnt have any specifics. After the summary you should put the actual values we want to come you should seperate these with ::INFORMATION:: followed by the values we want. Never forget to quote the values and always remember to use a digit before each starters quote. Never use single quotes. Remember to make the starters values sound like the user is asking a question to you the AI Assistant. Remember include all the specific values in the particular order I have given you.",
 					response.replaceAll('<br>', '\n'),
 				];
 			});
@@ -85,15 +85,28 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 
 			if (values) {
 				const starters = values[6].match(/\d([^0-9]*)/g);
+
+				setSystemPrompt(values[1]);
+				setName(values[2]);
+				setDescription(values[3]);
+				setTone(values[4]);
+				setStyle(values[5]);
+
 				if (starters) {
-					setSystemPrompt(values[1]);
-					setName(values[2]);
-					setDescription(values[3]);
-					setTone(values[4]);
-					setStyle(values[5]);
-					setStarters(starters.map((starter) => ({ starter: starter })));
+					setStarters(
+						starters.map((starter) => ({
+							starter: starter,
+						}))
+					);
 					return;
 				}
+
+				const startersArray: string[] = [];
+				startersArray.push(values[6]);
+				startersArray.push(values[7]);
+				startersArray.push(values[8]);
+				startersArray.push(values[9]);
+				setStarters(startersArray.map((starter) => ({ starter: starter })));
 			}
 		}
 	}
@@ -108,14 +121,13 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 			const response = await gptBuilderAI({
 				conversation: chatHistory.map((message, i) => ({
 					content: message,
-					role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
+					role: `${i === 0 ? 'system' : i % 2 === 0 ? 'user' : 'assistant'}`,
 				})),
 				conversationId: id,
 			});
 
 			if (response) {
 				getValues(configArray, response);
-
 				setChatHistory((chatHistory) => {
 					return [
 						...chatHistory,
