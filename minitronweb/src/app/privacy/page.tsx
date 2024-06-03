@@ -1,6 +1,7 @@
-import { PageContainer } from '@/src/components';
+import { PageContainer } from "../../components";
 
 export default function Privacy() {
+	// Page for the privacy policy
 	return (
 		<PageContainer
 			className='h-[35rem] justify-start p-20'

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Loader } from '@/src/components';
+import { Button, LoadingIcon } from '@/src/components';
 import { getSession } from '@/src/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { LucideArrowUp } from 'lucide-react';
@@ -97,7 +97,7 @@ export const ChatForm = forwardRef<HTMLTextAreaElement, ChatFormProps>(
 						}}
 					>
 						{isLoading ? (
-							<Loader sm={true} />
+							<LoadingIcon sm={true} />
 						) : (
 							<LucideArrowUp className='text-muted-foreground size-full scale-75 p-1 bg-muted rounded-2xl hover:bg-primary/10 focus-visible:bg-primary/10' />
 						)}

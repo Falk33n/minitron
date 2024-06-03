@@ -1,7 +1,11 @@
 'use client';
 
-import { LucidePencil, LucideTrash } from 'lucide-react';
+import { deleteSingleUser, editUser, getSingleUser } from '@/src/helpers';
+import { useQuery } from '@tanstack/react-query';
+import { LucidePencil } from 'lucide-react';
+import { useRef, useState } from 'react';
 import {
+	Button,
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -9,15 +13,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '@/src/components/ui/dialog';
-import { useRef, useState } from 'react';
-import { Label } from '../forms/label';
-import { Input } from '../forms/input';
-import { Button } from '../forms/button';
-import { useQuery } from '@tanstack/react-query';
-import { Loader } from '../misc/loader';
-import { deleteSingleUser, editUser, getSingleUser } from '@/src/helpers';
-import { toast } from '../ui/use-toast';
+	Input,
+	Label,
+	LoadingIcon,
+	toast,
+} from '../';
 
 export const Edit = ({
 	userId,
@@ -29,6 +29,7 @@ export const Edit = ({
 	const [enableRemoval, setEnbableRemoval] = useState(false);
 	const [render, setRender] = useState(true);
 
+	// Component to handle the UI for editing a users information
 	return (
 		<>
 			<Dialog>
@@ -73,6 +74,8 @@ export const EditContent = ({
 }) => {
 	const fullNameRef = useRef<HTMLInputElement>(null);
 	const emailRef = useRef<HTMLInputElement>(null);
+
+	// Query to access a single user
 	const { isLoading, data } = useQuery({
 		queryKey: ['getUserDetails', userId],
 		queryFn: async () => {
@@ -95,6 +98,7 @@ export const EditContent = ({
 		},
 	});
 
+	// Function to handle the removal of a user
 	async function handleDeleteUser() {
 		const res = await deleteSingleUser(userId);
 		if (res) {
@@ -105,8 +109,7 @@ export const EditContent = ({
 			});
 
 			setRender(false);
-			refetch();
-			return;
+			return refetch();
 		}
 
 		toast({
@@ -116,6 +119,7 @@ export const EditContent = ({
 		});
 	}
 
+	// Function to handle the edit of a user
 	async function handleEditUser() {
 		const res = await editUser({
 			userId: userId,
@@ -131,8 +135,7 @@ export const EditContent = ({
 			});
 
 			setRender(false);
-			refetch();
-			return;
+			return refetch();
 		}
 
 		toast({
@@ -142,60 +145,62 @@ export const EditContent = ({
 		});
 	}
 
-	if (!data) return null;
-	return (
-		<>
-			<DialogHeader>
-				<DialogTitle>Edit profile</DialogTitle>
-				<DialogDescription>
-					Make changes to the profile here. Click save when you&apos;re done.
-				</DialogDescription>
-			</DialogHeader>
-			<div className='grid gap-4 py-4'>
-				<div className='grid grid-cols-4 items-center gap-4'>
-					<Label
-						htmlFor='fullName'
-						className='text-right'
-					>
-						Full Name
-					</Label>
-					<Input
-						id='fullName'
-						defaultValue={data.fullName}
-						ref={fullNameRef}
-						className='col-span-3'
-					/>
+	if (data)
+		return (
+			<>
+				<DialogHeader>
+					<DialogTitle>Edit profile</DialogTitle>
+					<DialogDescription>
+						Make changes to the profile here. Click save when you&apos;re done.
+					</DialogDescription>
+				</DialogHeader>
+				<div className='grid gap-4 py-4'>
+					<div className='grid grid-cols-4 items-center gap-4'>
+						<Label
+							htmlFor='fullName'
+							className='text-right'
+						>
+							Full Name
+						</Label>
+						<Input
+							id='fullName'
+							defaultValue={data.fullName}
+							ref={fullNameRef}
+							className='col-span-3'
+						/>
+					</div>
+					<div className='grid grid-cols-4 items-center gap-4'>
+						<Label
+							htmlFor='email'
+							className='text-right'
+						>
+							Email
+						</Label>
+						<Input
+							id='email'
+							defaultValue={data.email}
+							ref={emailRef}
+							className='col-span-3'
+						/>
+					</div>
 				</div>
-				<div className='grid grid-cols-4 items-center gap-4'>
-					<Label
-						htmlFor='email'
-						className='text-right'
+				<DialogFooter className='sm:justify-between'>
+					<Button
+						variant='destructive'
+						disabled={enableRemoval}
+						onClick={() => setEnableRemoval(true)}
 					>
-						Email
-					</Label>
-					<Input
-						id='email'
-						defaultValue={data.email}
-						ref={emailRef}
-						className='col-span-3'
-					/>
-				</div>
-			</div>
-			<DialogFooter className='sm:justify-between'>
-				<Button
-					variant='destructive'
-					disabled={enableRemoval}
-					onClick={() => setEnableRemoval(true)}
-				>
-					{enableRemoval ? 'Will remove user on save ✔' : 'Delete User'}
-				</Button>
-				<Button
-					type='submit'
-					onClick={enableRemoval ? handleDeleteUser : handleEditUser}
-				>
-					{isLoading ? <Loader sm /> : 'Save changes'}
-				</Button>
-			</DialogFooter>
-		</>
-	);
+						{enableRemoval ? 'Will remove user on save ✔' : 'Delete User'}
+					</Button>
+					<Button
+						type='submit'
+						onClick={enableRemoval ? handleDeleteUser : handleEditUser}
+					>
+						{isLoading ? <LoadingIcon sm /> : 'Save changes'}
+					</Button>
+				</DialogFooter>
+			</>
+		);
+    
+	return null;
 };

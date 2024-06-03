@@ -9,9 +9,9 @@ import { useConvo } from '../../hooks/useConvo';
 import { GetGptDataCtx } from '../../providers/getGptData';
 import { ChatForm } from '../chat/chatForm';
 import { ChatRender } from '../chat/chatRender';
-import { Loader } from '../misc/loader';
 import { toast } from '../ui/use-toast';
 import { StarterPrompts } from './starterPrompts';
+import { LoadingIcon } from '../misc/loadingIcon';
 
 export function GptReviewer() {
 	const [disabled, setDisabled] = useState(true);
@@ -72,7 +72,7 @@ export function GptReviewer() {
 		enabled: !!systemPrompt,
 	});
 
-	const { isLoading: loader, refetch } = useQuery({
+	const { isLoading: iconIsLoading, refetch } = useQuery({
 		queryKey: ['starterPromptGpt'],
 		queryFn: async () => {
 			promptRef.current!.value = '';
@@ -216,13 +216,13 @@ export function GptReviewer() {
 				chatHistory={testAiChatHistory}
 				testAi={true}
 			>
-				{(isLoading || loader) && (
+				{(isLoading || iconIsLoading) && (
 					<div className='ml-6 mt-2'>
 						<section className='text-black font-bold flex gap-2 mb-1 text-sm -ml-7'>
 							<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
 							<h4>MinitronAI</h4>
 						</section>
-						<Loader />
+						<LoadingIcon />
 					</div>
 				)}
 			</ChatRender>

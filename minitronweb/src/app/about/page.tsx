@@ -1,6 +1,7 @@
-import { PageContainer } from '@/src/components';
+import { PageContainer } from "../../components";
 
 export default function About() {
+	// About us information
 	return (
 		<PageContainer
 			className='h-[35rem] justify-start p-20'

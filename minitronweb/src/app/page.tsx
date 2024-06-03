@@ -1,7 +1,7 @@
-import { AnchorLink, SectionWithForm } from '@/src/components';
-import { LogInForm } from '@/src/components/forms/loginForm';
+import { AnchorLink, LogInForm, SectionWithForm } from '../components';
 
 export default function Home() {
+	// Page component for the login page
 	return (
 		<SectionWithForm
 			sectionHeading='Welcome back to Minitron!'

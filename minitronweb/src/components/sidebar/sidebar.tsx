@@ -3,10 +3,13 @@
 import {
 	AnchorListItem,
 	Button,
-	Loader,
+	LoadingIcon,
 	UnorderedList,
 	toast,
 } from '@/src/components';
+import { getAllConvos, summarizeConvo } from '@/src/helpers/convos';
+import { useConvo } from '@/src/hooks/useConvo';
+import { ClearConvoCtx } from '@/src/providers/clearConvo';
 import { useQuery } from '@tanstack/react-query';
 import {
 	LucideChevronRight,
@@ -14,6 +17,7 @@ import {
 	LucideSettings,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
 	HTMLAttributes,
 	forwardRef,
@@ -32,10 +36,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { ClearConvoCtx } from '@/src/providers/clearConvo';
-import { useRouter } from 'next/navigation';
-import { getAllConvos, summarizeConvo } from '@/src/helpers/convos';
-import { useConvo } from '@/src/hooks/useConvo';
 
 export interface SidebarProps extends HTMLAttributes<HTMLElement> {}
 
@@ -91,7 +91,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
 
 		return (
 			<>
-				{sessionLoading && <Loader sm />}
+				{sessionLoading && <LoadingIcon sm />}
 				{!sessionLoading && !sessionError && (
 					<nav
 						className={cn(

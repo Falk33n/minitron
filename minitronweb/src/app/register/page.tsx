@@ -1,6 +1,7 @@
-import { AnchorLink, RegisterForm, SectionWithForm } from '@/src/components';
+import { AnchorLink, RegisterForm, SectionWithForm } from '../../components';
 
 export default function Register() {
+	// Page component for the register account page
 	return (
 		<SectionWithForm
 			isRegisterPage={true}

@@ -1,33 +1,18 @@
 'use client';
 
-import { NotAllowed, PageContainer } from '@/src/components';
 import { getSession } from '@/src/helpers';
 import { useQuery } from '@tanstack/react-query';
+import { NotAllowed, PageContainer } from '../../components';
 
 export default function Profile() {
+	// Page component for the user profile
 	const { isLoading, error } = useQuery({
 		queryKey: ['session'],
 		queryFn: getSession,
 		retry: false,
 	});
 
-	return (
-		<>
-			{error && !isLoading ? (
-				<NotAllowed />
-			) : !error && !isLoading ? (
-				<PageContainer
-					className='h-[35rem] justify-start p-20'
-					heading='Profile'
-				>
-					<p className='text-lg mt-16 leading-8 text-white px-16 drop-shadow-text'>
-						We are currently fixing here take it chill man soon it will come
-						very good stuff here
-					</p>
-				</PageContainer>
-			) : (
-				<></>
-			)}
-		</>
-	);
+	if (error && !isLoading) return <NotAllowed />;
+	if (!error && !isLoading) return <PageContainer />;
+	return null;
 }

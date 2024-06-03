@@ -1,7 +1,8 @@
-import { PageContainer } from '@/src/components';
 import Link from 'next/link';
+import { PageContainer } from '../../components';
 
 export default function Contact() {
+	// Page for contact information
 	return (
 		<PageContainer
 			className='h-[40rem] justify-start p-20'
@@ -19,7 +20,6 @@ export default function Contact() {
 				your thoughts about MinitronAI - your opinion is crucial in shaping our
 				future. We look forward to getting to know you better!
 			</p>
-
 			<ul className='px-16 mt-10 mr-auto text-background drop-shadow-text flex flex-col gap-1.5'>
 				<li>
 					<span className='font-bold'>Phone Number: </span>

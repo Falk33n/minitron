@@ -1,13 +1,13 @@
 import { LogType, UserType } from '@/src/types/adminTypes';
 import { ReactNode } from 'react';
-import { Button } from '../forms/button';
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from '../ui/accordion';
-import { Edit } from './edit';
+	Button,
+	Edit,
+} from '../';
 
 export const DataWindow = ({
 	userHistory,
@@ -22,6 +22,7 @@ export const DataWindow = ({
 	refetch: () => Promise<unknown>;
 	getLogs: () => Promise<unknown>;
 }) => {
+	// Page for the admin panel to show data
 	return (
 		<>
 			<div className='flex justify-center fixed top-0 -translate-x-1/2 left-1/2 mt-4'>

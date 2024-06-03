@@ -1,6 +1,6 @@
 import { LucideBot } from 'lucide-react';
 import { Fragment, ReactNode } from 'react';
-import { Loader } from '../misc/loader';
+import { LoadingIcon } from '../misc/loadingIcon';
 import { RobotChatBubble } from './robotChatBubble';
 import { UserChatBubble } from './userChatBubble';
 
@@ -91,7 +91,7 @@ export function ChatRender({
 						<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
 						<h4>MinitronAI</h4>
 					</section>
-					<Loader />
+					<LoadingIcon />
 				</div>
 			)}
 		</div>

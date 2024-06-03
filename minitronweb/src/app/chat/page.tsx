@@ -1,26 +1,18 @@
 'use client';
 
-import { ChatContainer, NotAllowed } from '@/src/components';
 import { getSession } from '@/src/helpers';
-import { useConvo } from '@/src/hooks/useConvo';
 import { useQuery } from '@tanstack/react-query';
+import { ChatContainer, NotAllowed } from '../../components';
 
 export default function Chat() {
+	// Page component for the AI chatbot
 	const { isLoading, error } = useQuery({
 		queryKey: ['session'],
 		queryFn: getSession,
 		retry: false,
 	});
 
-	return (
-		<>
-			{error && !isLoading ? (
-				<NotAllowed />
-			) : !error && !isLoading ? (
-				<ChatContainer />
-			) : (
-				<></>
-			)}
-		</>
-	);
+	if (error && !isLoading) return <NotAllowed />;
+	if (!error && !isLoading) return <ChatContainer />;
+	return null;
 }

@@ -10,7 +10,7 @@ import { useConvo } from '../../hooks/useConvo';
 import { ChatForm } from '../chat/chatForm';
 import { ChatRender } from '../chat/chatRender';
 import { Button } from '../forms/button';
-import { Loader } from '../misc/loader';
+import { LoadingIcon } from '../misc/loadingIcon';
 import { toast } from '../ui/use-toast';
 import { GptConfigure } from './gptConfigure';
 
@@ -254,7 +254,7 @@ Example queries that the ai should handle is, how do i make a map loop in react 
 							<LucideBot className='size-[1.15rem] -mt-[2px] text-primary' />
 							<h4>MinitronAI</h4>
 						</section>
-						<Loader />
+						<LoadingIcon />
 					</div>
 				)}
 			</ChatRender>
