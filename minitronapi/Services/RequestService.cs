@@ -44,12 +44,6 @@ namespace minitronapi.Services
         return "User not found";
       }
 
-      if (conversation[0].Role != "system")
-      {
-        conversation.Insert(0, new ChatMessage { Role = "system", Content = user.DefaultSystemPrompt });
-      }
-      // Assuming the conversation already includes the system prompt and user messages
-
       var data = new
       {
         messages = conversation.Select(m => new { role = m.Role, content = m.Content }).ToArray(),
@@ -82,7 +76,7 @@ namespace minitronapi.Services
       {
         messages = conversation.Select(m => new { role = m.Role, content = m.Content }).ToArray(),
         model = "gpt-4",
-        temperature = 0.6
+        temperature = 0.5
       };
 
       // Create the content

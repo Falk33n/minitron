@@ -83,7 +83,15 @@ namespace minitronapi.Controllers
       await _conversationService.SaveRequestToDatabase(newRequest);
       await _conversationService.SaveResponseToDatabase(newResponse);
       _logger.LogInformation("Request and response saved to database");
-      return Ok(new { response = formattedResponse });
+
+      // Prepare the response in the ConvoProps format
+      var convoProps = new
+      {
+        requests = request.Conversation.Select(c => c.Content).ToList(),
+        responses = new[] { new { response = formattedResponse } }
+      };
+
+      return Ok(convoProps);
       //return Ok(request.Conversation);
     }
 
@@ -115,11 +123,39 @@ namespace minitronapi.Controllers
         request.Conversation = new List<ChatMessage>();
       }
 
+      // Send the conversation to OpenAI
       var response = await _requestService.SendMessageToOpenAI(request.Conversation);
 
-      //var formattedResponse = _requestService.FormatResponse(response);
+      // Format the response
+      var formattedResponse = _requestService.FormatResponse(response);
 
-      return Ok(new { response });//= formattedResponse });
+      // Save the request and response to the database
+      var newRequest = new RequestModel
+      {
+        ConversationId = request.ConversationId.Value,
+        Request = request.Conversation.Last().Content!,
+        TimeStamp = DateTime.UtcNow,
+      };
+
+      var newResponse = new ResponseModel
+      {
+        ConversationId = request.ConversationId.Value,
+        Response = formattedResponse,
+        TimeStamp = DateTime.UtcNow
+      };
+
+      await _conversationService.SaveRequestToDatabase(newRequest);
+      await _conversationService.SaveResponseToDatabase(newResponse);
+      _logger.LogInformation("Request and response saved to database");
+
+      // Prepare the response in the ConvoProps format
+      var convoProps = new
+      {
+        requests = request.Conversation.Select(c => c.Content).ToList(),
+        responses = new[] { new { response = formattedResponse } }
+      };
+
+      return Ok(convoProps);
     }
 
     [HttpPost("StartConversation")]
@@ -201,6 +237,7 @@ namespace minitronapi.Controllers
       return Ok(conversationDTO);
     }
 
+
     [HttpGet("GetAllConversationsByUserId")]
     public async Task<IActionResult> GetAllConversationsByUserId()
     {
@@ -223,9 +260,8 @@ namespace minitronapi.Controllers
       foreach (var conversation in conversations)
       {
         var requests = await _conversationService.GetRequestsByConversationId(conversation.ConversationId);
-        var responses = await _conversationService.GetResponsesByConversationId(conversation.ConversationId);
 
-        if (!requests.Any() && !responses.Any())
+        if (!requests.Any())
         {
           continue;
         }
@@ -234,12 +270,6 @@ namespace minitronapi.Controllers
         {
           ConversationId = conversation.ConversationId,
           Requests = requests.Select(r => r.Request).ToList(),
-          Responses = responses.Select(r => new ResponseModel
-          {
-            ResponseId = r.ResponseId,
-            Response = r.Response,
-          }).ToList(),
-          Timestamp = conversation.Timestamp
         };
         conversationsReqRes.Add(DTO);
       };

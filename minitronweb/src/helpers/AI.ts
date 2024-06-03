@@ -27,7 +27,8 @@ export async function minitronAI(data: MinitronAiProps) {
 	});
 
 	if (!res.ok) throw new Error('Something went wrong');
-	return ((await res.json()) as { response: string }).response;
+	return ((await res.json()) as { responses: [{ response: string }] })
+		.responses;
 }
 
 export async function gptBuilderAI(data: MinitronAiProps) {

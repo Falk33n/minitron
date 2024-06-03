@@ -19,16 +19,17 @@ export type MinitronAiProps = {
 };
 
 export type ConvoProps = {
-	requests: string[];
-	responses: [{ response: string }];
+	requests: { $values: string[] };
+	responses: { $values: [{ response: string }] };
 };
 
-export type AllConvosProps = [
-	{
-		conversationId: number;
-		requests: string[];
-	}
-];
+export type ConvoStarterProps = {
+	conversationId: number;
+};
+
+export type AllConvosProps = {
+	$values: [{ conversationId: number; requests: { $values: string[] } }];
+};
 
 export type GPTCreationType = {
 	id: string;

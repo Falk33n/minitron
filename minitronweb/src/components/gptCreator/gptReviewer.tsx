@@ -5,6 +5,7 @@ import { ClearConvoCtx } from '@/src/providers/clearConvo';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { LucideBot } from 'lucide-react';
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
+import { useConvo } from '../../hooks/useConvo';
 import { GetGptDataCtx } from '../../providers/getGptData';
 import { ChatForm } from '../chat/chatForm';
 import { ChatRender } from '../chat/chatRender';
@@ -16,15 +17,29 @@ export function GptReviewer() {
 	const [disabled, setDisabled] = useState(true);
 	const { systemPrompt, starters, starterPrompt } = useContext(GetGptDataCtx);
 	const { testAiChatHistory, setTestAiChatHistory } = useContext(ClearConvoCtx);
+	const [convoId, updateConvoId] = useConvo();
 	const promptRef = useRef<HTMLTextAreaElement>(null);
 	const [id, setId] = useState(-1);
+
+	async function handleNewChat() {
+		if (id !== -1) return;
+
+		let newId = await postStartConvo();
+		console.log(newId);
+
+		if (newId?.conversationId) {
+			updateConvoId('chat', newId.conversationId);
+			setId(newId.conversationId);
+			console.log(newId);
+			return newId.conversationId;
+		}
+	}
 
 	const { isLoading } = useQuery({
 		queryKey: ['tryGptChat', systemPrompt],
 		queryFn: async () => {
-			let newId = await postStartConvo();
-			newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
-			setId(newId);
+			let newId = await handleNewChat();
+
 			const response = await gptBuilderAI({
 				conversation: [
 					{
@@ -32,7 +47,7 @@ export function GptReviewer() {
 						role: 'system',
 					},
 				],
-				conversationId: newId,
+				conversationId: id !== -1 ? id : (await handleNewChat())!,
 			});
 
 			if (response) {

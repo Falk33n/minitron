@@ -1,8 +1,11 @@
 import { baseURL } from '.';
-import { toast } from '../components';
-import { AllConvosProps, ConvoProps } from '../types/aiTypes';
+import {
+	AllConvosProps,
+	ConvoProps,
+	ConvoStarterProps,
+} from '../types/aiTypes';
 
-export async function postStartConvo(): Promise<number> {
+export async function postStartConvo(): Promise<ConvoStarterProps> {
 	const response = await fetch(`${baseURL}/Chat/StartConversation`, {
 		method: 'POST',
 		headers: {
@@ -11,8 +14,7 @@ export async function postStartConvo(): Promise<number> {
 	});
 
 	if (!response.ok) throw new Error('Failed to Start Conversation');
-
-	return response.json();
+	return await response.json();
 }
 
 export async function getConvos(id: string) {
@@ -41,18 +43,11 @@ export async function getAllConvos() {
 export function summarizeConvo(convoArray: AllConvosProps) {
 	const ids: number[] = [];
 	const convos: string[] = [];
+	const id = convoArray.$values.map((value) => ids.push(value.conversationId));
+	const convo = convoArray.$values.map((value) =>
+		value.requests.$values.map((request) => convos.push(request))
+	);
 
-	for (const convo of convoArray) {
-		if (!convo.conversationId || !convo.requests) continue;
-		ids.push(convo.conversationId);
-
-		for (const request of convo.requests) {
-			if (!request) continue;
-			convos.push(request);
-		}
-	}
-
-	if (convos.length > ids.length) convos.length = ids.length;
-
+	if (!id || !convo) throw new Error('Could not retrieve chat details');
 	return { ids, convos };
 }

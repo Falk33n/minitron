@@ -8,7 +8,7 @@ import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
-import { getAgentsByUserId, getCurrentUser, minitronAI } from '../../helpers';
+import { getAgentsByUserId, getCurrentUser, gptBuilderAI } from '../../helpers';
 import { Agent } from '../../types/aiTypes';
 import {
 	DropdownMenu,
@@ -23,6 +23,7 @@ export const ChatContainer = () => {
 	const [gpt, setGpt] = useState<Agent[]>([]);
 	const [gptName, setGptName] = useState('');
 	const [gptPrompt, setGptPrompt] = useState('');
+	const [id, setId] = useState(-1);
 	const [convoId, updateConvoId] = useConvo();
 	const { forceClear, setForceClear, newChat, chatHistory, setChatHistory } =
 		useContext(ClearConvoCtx);
@@ -35,8 +36,9 @@ export const ChatContainer = () => {
 				const response = await getConvos(convoId);
 				const convoArray: string[] = [];
 
-				response.responses.forEach((res, i) => {
-					if (response.requests[i]) convoArray.push(response.requests[i]);
+				response.responses.$values.forEach((res, i) => {
+					if (response.requests.$values[i])
+						convoArray.push(response.requests.$values[i]);
 					convoArray.push(res.response);
 				});
 				setChatHistory(convoArray);
@@ -47,71 +49,63 @@ export const ChatContainer = () => {
 	});
 
 	async function handleNewChat() {
-		if (convoId) return;
+		if (id !== -1) return;
+
 		let newId = await postStartConvo();
-		newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
-		updateConvoId('chat', newId);
-		return newId;
+		if (newId?.conversationId) {
+			updateConvoId('chat', newId.conversationId);
+			setId(newId.conversationId);
+			console.log(id, newId.conversationId);
+			return newId.conversationId;
+		}
 	}
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ['chat'],
 		mutationFn: async () => {
-			let newId = await handleNewChat();
+			let newId;
+			let response;
+
 			promptRef.current!.value = '';
 			setDisabled((prev) => !prev);
 
-			if (chatHistory.length === 0) {
-				const response = await minitronAI({
+			if (id === -1) {
+				newId = await handleNewChat();
+				response = await gptBuilderAI({
 					conversation: [
 						{
-							content: gptPrompt ? gptPrompt : 'You are a helpfull assistant',
+							content: gptPrompt
+								? gptPrompt
+								: 'You are a helpfull assistant, start the conversation with greeting the user.',
 							role: 'system',
 						},
 					],
-					conversationId: newId ? newId : parseInt(convoId!, 10),
+					conversationId: id !== -1 ? id : newId!,
 				});
-
-				if (response) {
-					setChatHistory((chatHistory) => {
-						return [
-							...chatHistory,
-							gptPrompt ? gptPrompt : 'You are a helpfull assistant',
-							response.replaceAll('<br>', '\n'),
-						];
-					});
-				} else {
-					toast({
-						variant: 'destructive',
-						title: 'Error!',
-						description: 'Something went wrong. Please try again.',
-					});
-					console.error('AI response was null');
-				}
-				return response;
 			} else {
-				const response = await minitronAI({
+				response = await gptBuilderAI({
 					conversation: chatHistory.map((message, i) => ({
 						content: message,
-						role: `${i % 2 === 0 ? 'user' : 'assistant'}`,
+						role: i === 0 ? 'system' : i % 2 === 0 ? 'assistant' : 'user',
 					})),
-					conversationId: newId ? newId : parseInt(convoId!, 10),
+					conversationId: id,
 				});
-
-				if (response) {
-					setChatHistory((chatHistory) => {
-						return [...chatHistory, response];
-					});
-				} else {
-					toast({
-						variant: 'destructive',
-						title: 'Error!',
-						description: 'Something went wrong. Please try again.',
-					});
-					console.error('AI response was null');
-				}
-				return response;
 			}
+
+			if (response) {
+				setChatHistory((chatHistory) => {
+					return [...chatHistory, response.replaceAll('<br>', '\n')];
+				});
+				console.log(chatHistory);
+			} else {
+				toast({
+					variant: 'destructive',
+					title: 'Error!',
+					description: 'Something went wrong. Please try again.',
+				});
+				console.error('AI response was null');
+			}
+			return response;
 		},
 	});
 
@@ -128,9 +122,20 @@ export const ChatContainer = () => {
 			promptRef.current.value += '\n';
 			handleChange();
 		} else if (event.key === 'Enter' && !disabled) {
-			setChatHistory((chatHistory) => {
-				return [...chatHistory, promptRef.current!.value];
-			});
+			if (chatHistory.length === 0)
+				setChatHistory((chatHistory) => {
+					return [
+						...chatHistory,
+						gptPrompt,
+						promptRef.current!.value ??
+							'You are a helpfull assistant, start the conversation with greeting the user.',
+						promptRef.current!.value,
+					];
+				});
+			else
+				setChatHistory((chatHistory) => {
+					return [...chatHistory, promptRef.current!.value];
+				});
 			return mutate();
 		}
 	}

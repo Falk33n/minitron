@@ -44,17 +44,21 @@ export function ChatRender({
 					)}
 
 					{!gptCreationAi && !testAi && (
-						<section
-							className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words leading-7 ${
-								testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
-							}`}
-						>
-							{index % 2 === 0 ? (
-								<UserChatBubble message={message} />
-							) : (
-								<RobotChatBubble message={message} />
+						<>
+							{index !== 0 && (
+								<section
+									className={`py-4 px-6 rounded-2xl w-[90%] text-foreground relative break-words leading-7 ${
+										testAi && testAi ? 'bg-[#F7F8F9]' : 'bg-white'
+									}`}
+								>
+									{index % 2 === 0 ? (
+										<RobotChatBubble message={message} />
+									) : (
+										<UserChatBubble message={message} />
+									)}
+								</section>
 							)}
-						</section>
+						</>
 					)}
 
 					{testAi && (

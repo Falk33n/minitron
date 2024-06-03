@@ -6,6 +6,7 @@ import { GetGptDataCtx } from '@/src/providers/getGptData';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { LucideBot } from 'lucide-react';
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
+import { useConvo } from '../../hooks/useConvo';
 import { ChatForm } from '../chat/chatForm';
 import { ChatRender } from '../chat/chatRender';
 import { Button } from '../forms/button';
@@ -17,6 +18,7 @@ export function GptCreator() {
 	const [disabled, setDisabled] = useState(true);
 	const [configVisible, setConfigVisible] = useState(false);
 	const [id, setId] = useState(-1);
+	const [convoId, updateConvoId] = useConvo();
 	const { chatHistory, setChatHistory } = useContext(ClearConvoCtx);
 	const {
 		setName,
@@ -28,10 +30,22 @@ export function GptCreator() {
 	} = useContext(GetGptDataCtx);
 	const promptRef = useRef<HTMLTextAreaElement>(null);
 
-	async function handleNewGPTCreatorChat() {
+	async function handleNewChat() {
+		if (id !== -1) return;
+
 		let newId = await postStartConvo();
-		newId = parseInt(JSON.stringify(newId).replace(/[^\d]/g, ''), 10);
-		setId(newId);
+		console.log(newId);
+
+		if (newId?.conversationId) {
+			updateConvoId('chat', newId.conversationId);
+			setId(newId.conversationId);
+			console.log(newId);
+			return newId.conversationId;
+		}
+	}
+
+	async function handleNewGPTCreatorChat() {
+		let newId = await handleNewChat();
 
 		const response = await gptBuilderAI({
 			conversation: [
@@ -41,7 +55,7 @@ export function GptCreator() {
 					role: 'system',
 				},
 			],
-			conversationId: newId,
+			conversationId: id !== -1 ? id : (await handleNewChat())!,
 		});
 
 		if (response) {
